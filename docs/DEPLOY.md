@@ -129,16 +129,41 @@ In **Supabase → Authentication → URL Configuration**, add **both** deployed 
 
 If you see a plain page like `404: NOT_FOUND` / `Code: NOT_FOUND` with a Vercel ID (not your FADEN site design), Vercel has **no deployment to serve** on that URL.
 
-**Check in order:**
+**Most common cause (FADEN team projects):** builds succeed and show **Ready**, but the **production alias** (`faden-web-app.vercel.app`) is not assigned to any deployment. Team URLs like `faden-web-app-faden-team.vercel.app` may return **401** (Deployment Protection) while the public alias returns **404**.
+
+**Fix (do all steps):**
+
+1. **Settings → Deployment Protection** → set **Production** to **None** (or “Only Preview Deployments”) so the site is public.
+2. **Deployments** → open the latest **Ready** deploy on `main` (commit `01b062a` or newer).
+3. Click **Visit** (while logged into Vercel). If the app loads here, the build is fine.
+4. Click **⋮ → Promote to Production** on that same deployment.
+5. Wait 1–2 minutes, then open `https://faden-web-app.vercel.app` again.
+
+**If “Configuration Settings differ from Project Settings” appears:** your live production deploy used old settings. After fixing settings below, you **must** Promote to Production or Redeploy — saving settings alone does not update the live site.
+
+**Project settings (Settings → Build and Deployment):**
+
+Turn **Override OFF** for Install / Build / Output unless you know the exact value. When Override is ON with wrong values, `vercel.json` is ignored.
+
+| Setting | Value |
+|--------|--------|
+| Root Directory | `apps/web` |
+| Framework Preset | **Next.js** |
+| Install Command | Override **OFF** (uses `apps/web/vercel.json`) |
+| Build Command | Override **OFF** |
+| Output Directory | Override **OFF**, value **empty** |
+| Include source files outside Root Directory | **Enabled** |
+
+**Check in order if still broken:**
 
 1. **Project Settings → General → Root Directory** = `apps/web` (web) or `apps/admin` (admin).
 2. **Framework Preset** = **Next.js** (if set to “Other”, change it and redeploy).
 3. **Output Directory** = **empty** — never `apps/web/.next` or `.next` when Root Directory is already `apps/web`.
 4. **Include source files outside of the Root Directory** = **Enabled** (monorepo workspace packages live in `packages/`).
-5. **Deployments** → open latest deploy → click **Visit** while logged into Vercel. If Visit works but `faden-web-app.vercel.app` does not, use **Promote to Production** on that deployment.
-6. **Settings → Deployment Protection** — if enabled, preview URLs return **401** until you log in. Disable for Production if the site should be public.
-7. **Settings → Domains** — confirm `faden-web-app.vercel.app` is listed and assigned to **this** project (not an old deleted project).
-8. **Redeploy** after changing settings (Deployments → ⋮ → Redeploy).
+5. **Settings → Domains** — confirm `faden-web-app.vercel.app` is on **this** project. Remove and re-add the domain if needed.
+6. **Redeploy** without build cache: Deployments → ⋮ → Redeploy → uncheck “Use existing Build Cache”.
+
+**Last resort:** delete the Vercel project and re-import the repo with Root Directory `apps/web` from the first deploy screen.
 
 **Live URLs (example):**
 
