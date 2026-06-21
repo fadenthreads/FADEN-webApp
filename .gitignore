@@ -8,9 +8,8 @@ out
 dist
 .turbo
 
-# Env
+# Env — .env.local is tracked for deployment convenience (remove before making repo public)
 .env
-.env.local
 .env.*.local
 
 # Debug
