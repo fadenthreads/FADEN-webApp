@@ -1,14 +1,142 @@
 # Deploying FADEN
 
-This guide covers production deployment for the **web** app (`apps/web`, port 3000) and **admin** app (`apps/admin`, port 3001).
+Deploy **two separate Vercel projects** from `github.com/fadenthreads/FADEN-webApp` — one for customers (`apps/web`) and one for platform admin (`apps/admin`).
 
 ## Prerequisites
 
-1. **Supabase project** with all SQL migrations applied in order through `009_phase6_reviews_rls.sql`.
-2. **Environment variables** copied from `.env.example` into each app’s `.env.local` (or your host’s secret store).
-3. **Node.js 20+** and **pnpm 9+** for local builds.
+1. **Supabase** — run all SQL migrations in order (`001` through `024`) in the SQL Editor.
+2. **GitHub** — repo pushed to `main`.
+3. **Node 20+** and **pnpm 9+** for local builds.
 
-## Required environment variables
+---
+
+## Step-by-step: Vercel setup
+
+### Project A — Customer web app
+
+1. [vercel.com/new](https://vercel.com/new) → Import **FADEN-webApp**
+2. **Project name:** e.g. `faden-web`
+3. **Settings before deploy:**
+
+   | Setting | Value |
+   |--------|--------|
+   | Root Directory | `apps/web` |
+   | Framework Preset | Next.js |
+   | Install Command | *(leave default — uses `apps/web/vercel.json`)* |
+   | Build Command | *(leave default)* |
+   | Output Directory | *(leave empty)* |
+
+4. **Environment variables** (Production):
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=
+   SUPABASE_SERVICE_ROLE_KEY=
+   NEXT_PUBLIC_APP_URL=https://YOUR-WEB-URL.vercel.app
+   NEXT_PUBLIC_RAZORPAY_KEY_ID=          (optional)
+   RAZORPAY_KEY_ID=                      (optional)
+   RAZORPAY_KEY_SECRET=                  (optional)
+   NEXT_PUBLIC_CALCOM_NAMESPACE=         (optional)
+   NEXT_PUBLIC_CALCOM_EVENT_SLUG=video-measurement
+   CALCOM_API_KEY=                       (optional)
+   REVALIDATE_SECRET=                    (optional)
+   ```
+
+   Values are in `apps/web/.env.local` in the repo.
+
+5. **Deploy** → note your URL, e.g. `https://faden-web.vercel.app`
+
+---
+
+### Project B — Admin console
+
+1. **Add New Project** again → same repo **FADEN-webApp**
+2. **Project name:** e.g. `faden-admin`
+3. **Settings before deploy:**
+
+   | Setting | Value |
+   |--------|--------|
+   | Root Directory | `apps/admin` |
+   | Framework Preset | Next.js |
+   | Install Command | *(leave default — uses `apps/admin/vercel.json`)* |
+   | Build Command | *(leave default)* |
+   | Output Directory | *(leave empty — do NOT set `apps/web/.next`)* |
+
+4. **Environment variables** (Production):
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=          (same as web)
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=     (same as web)
+   WEB_APP_URL=https://YOUR-WEB-URL.vercel.app
+   REVALIDATE_SECRET=                 (optional, match web)
+   ```
+
+5. **Deploy** → note your URL, e.g. `https://faden-admin.vercel.app`
+
+---
+
+## Step-by-step: Supabase auth URLs
+
+In **Supabase → Authentication → URL Configuration**, add **both** deployed URLs:
+
+| | URL |
+|--|-----|
+| Site URL | `https://YOUR-WEB-URL.vercel.app` |
+| Redirect URLs | `https://YOUR-WEB-URL.vercel.app/auth/callback` |
+| | `https://YOUR-ADMIN-URL.vercel.app/auth/callback` |
+| | `https://YOUR-WEB-URL.vercel.app/**` |
+| | `https://YOUR-ADMIN-URL.vercel.app/**` |
+
+---
+
+## Step-by-step: Create your admin login
+
+1. Open **`https://YOUR-ADMIN-URL.vercel.app/login`**
+2. Sign up / sign in with your email
+3. In **Supabase → SQL Editor**:
+
+   ```sql
+   UPDATE profiles SET role = 'admin' WHERE email = 'your-email@example.com';
+   ```
+
+4. Refresh admin — you should see the **FADEN Admin Console**
+
+---
+
+## What each URL is for
+
+| URL | App | Who uses it |
+|-----|-----|-------------|
+| `https://faden-web.vercel.app` | Customer site | Customers, boutique owners |
+| `https://faden-web.vercel.app/dashboard` | Boutique owner dashboard | Verified boutique owners |
+| `https://faden-admin.vercel.app` | Platform admin | FADEN staff (`role = admin`) |
+
+---
+
+## Fix a broken deploy
+
+| Error | Fix |
+|-------|-----|
+| `apps/admin/.next` not found | Web project Root Directory must be **`apps/web`**, not `apps/admin` |
+| `apps/admin/apps/web/.next` not found | Admin project Build must be **`admin`**, Output Directory **empty**, Root **`apps/admin`** |
+| Login fails on mobile/production | Add redirect URLs in Supabase (see above) |
+| Access forbidden on admin | Run the `UPDATE profiles SET role = 'admin'` SQL |
+
+---
+
+## Local development
+
+```bash
+pnpm install
+pnpm dev
+```
+
+- Web: http://localhost:3000
+- Admin: http://localhost:3001
+
+---
+
+## Environment variable reference
 
 ### Web (`apps/web`)
 
@@ -16,12 +144,11 @@ This guide covers production deployment for the **web** app (`apps/web`, port 30
 |----------|----------|--------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Public anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Yes (payments) | Server-only; used by payment API routes |
-| `RAZORPAY_KEY_ID` | Production | Omit for simulated checkout in dev |
-| `RAZORPAY_KEY_SECRET` | Production | Server-only |
-| `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Production | Same as `RAZORPAY_KEY_ID` |
-| `REVALIDATE_SECRET` | Recommended | Bust discovery cache when admin approves a boutique |
-| `WEB_APP_URL` | Recommended | Public URL, e.g. `https://faden.example.com` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes (payments) | Server-only |
+| `NEXT_PUBLIC_APP_URL` | Recommended | Your deployed web URL |
+| `RAZORPAY_*` | Production | Omit for simulated checkout in dev |
+| `NEXT_PUBLIC_CALCOM_*` | Video fittings | Optional |
+| `REVALIDATE_SECRET` | Recommended | Cache bust when admin approves boutique |
 
 ### Admin (`apps/admin`)
 
@@ -29,45 +156,7 @@ This guide covers production deployment for the **web** app (`apps/web`, port 30
 |----------|----------|--------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Same Supabase project |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | |
-| `REVALIDATE_SECRET` | Recommended | Must match web if using cache revalidation |
-| `WEB_APP_URL` | Recommended | Used after boutique approval |
+| `WEB_APP_URL` | Recommended | Your deployed **web** URL |
+| `REVALIDATE_SECRET` | Recommended | Must match web if used |
 
-## Vercel (recommended)
-
-Deploy **two separate Vercel projects** from the same monorepo:
-
-### Web project
-
-- **Root directory:** `apps/web` ← required; do not use `apps/admin` or repo root
-- **Framework preset:** Next.js
-- **Build command:** leave default (uses `apps/web/vercel.json`) or `cd ../.. && pnpm install && pnpm --filter web build`
-- **Install command:** `cd ../.. && pnpm install`
-- **Output directory:** leave empty (defaults to `.next` inside `apps/web`)
-
-If Root Directory is wrong (e.g. `apps/admin`), the build may succeed but deploy fails looking for `apps/admin/.next`.
-
-### Admin project
-
-- **Root directory:** `apps/admin`
-- **Build command:** `cd ../.. && pnpm install && pnpm --filter admin build`
-
-Set all env vars in each project’s Vercel dashboard. Never expose `SUPABASE_SERVICE_ROLE_KEY` or `RAZORPAY_KEY_SECRET` to the browser.
-
-## Post-deploy checklist
-
-1. Promote an admin user in Supabase SQL:
-   ```sql
-   UPDATE profiles SET role = 'admin' WHERE email = 'your-admin@email.com';
-   ```
-2. Register and verify at least one boutique via admin console.
-3. Smoke-test: customize → match/connect → quote → pay → fulfill → review.
-4. Configure Razorpay webhook URL (optional) — current flow verifies payments client-side after checkout.
-
-## Local production build
-
-```bash
-pnpm install
-pnpm build
-pnpm --filter web start    # :3000
-pnpm --filter admin start  # :3001
-```
+Never expose `SUPABASE_SERVICE_ROLE_KEY` or `RAZORPAY_KEY_SECRET` on the admin project.
