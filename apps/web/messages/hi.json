@@ -1,0 +1,48 @@
+{
+  "LanguageSwitcher": {
+    "label": "भाषा",
+    "en": "English",
+    "hi": "हिन्दी",
+    "te": "తెలుగు"
+  },
+  "Nav": {
+    "wishlist": "विशलिस्ट",
+    "cart": "कार्ट",
+    "wishlistWithCount": "विशलिस्ट, {count} आइटम",
+    "cartWithCount": "कार्ट, {count} आइटम"
+  },
+  "Footer": {
+    "tagline": "यह सब एक धागे से शुरू होता है",
+    "copyright": "© {year} FADEN. सर्वाधिकार सुरक्षित।",
+    "sections": {
+      "company": "कंपनी",
+      "support": "सहायता",
+      "legal": "कानूनी"
+    },
+    "links": {
+      "about": "हमारे बारे में",
+      "careers": "करियर",
+      "press": "प्रेस",
+      "help": "मदद",
+      "contact": "संपर्क",
+      "faq": "अक्सर पूछे जाने वाले प्रश्न",
+      "privacy": "गोपनीयता",
+      "terms": "नियम और शर्तें"
+    }
+  },
+  "Home": {
+    "featuredBoutiques": "विशेष बुटीक",
+    "exploreBoutiques": "बुटीक देखें",
+    "audienceBoutiques": "{audience} के बुटीक",
+    "boutiquesNearYou": "आपके पास {count} बुटीक"
+  },
+  "CategoryNav": {
+    "all": "सभी",
+    "women": "महिला",
+    "men": "पुरुष",
+    "kids": "बच्चे",
+    "outfitTypes": "पोशाक के प्रकार",
+    "browseAll": "सभी देखें →",
+    "ariaLabel": "श्रेणी नेविगेशन"
+  }
+}

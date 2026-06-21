@@ -1,0 +1,7 @@
+# Local Supabase — configured in Phase 2
+# See: https://supabase.com/docs/guides/cli/local-development
+
+services:
+  placeholder:
+    image: alpine:latest
+    command: ["echo", "Supabase local stack will be configured in Phase 2"]

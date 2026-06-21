@@ -1,0 +1,48 @@
+{
+  "LanguageSwitcher": {
+    "label": "భాష",
+    "en": "English",
+    "hi": "हिन्दी",
+    "te": "తెలుగు"
+  },
+  "Nav": {
+    "wishlist": "విష్‌లిస్ట్",
+    "cart": "కార్ట్",
+    "wishlistWithCount": "విష్‌లిస్ట్, {count} అంశాలు",
+    "cartWithCount": "కార్ట్, {count} అంశాలు"
+  },
+  "Footer": {
+    "tagline": "అన్నీ ఒక నూలుతో ప్రారంభమవుతాయి",
+    "copyright": "© {year} FADEN. అన్ని హక్కులు రక్షించబడ్డాయి.",
+    "sections": {
+      "company": "కంపెనీ",
+      "support": "మద్దతు",
+      "legal": "చట్టపరమైన"
+    },
+    "links": {
+      "about": "మా గురించి",
+      "careers": "కెరీర్లు",
+      "press": "ప్రెస్",
+      "help": "సహాయం",
+      "contact": "సంప్రదించండి",
+      "faq": "తరచుగా అడిగే ప్రశ్నలు",
+      "privacy": "గోప్యత",
+      "terms": "నిబంధనలు"
+    }
+  },
+  "Home": {
+    "featuredBoutiques": "Featured Boutiques",
+    "exploreBoutiques": "బుటీక్‌లను అన్వేషించండి",
+    "audienceBoutiques": "{audience} బుటీక్‌లు",
+    "boutiquesNearYou": "మీ దగ్గర {count} బుటీక్‌లు"
+  },
+  "CategoryNav": {
+    "all": "అన్నీ",
+    "women": "మహిళలు",
+    "men": "పురుషులు",
+    "kids": "పిల్లలు",
+    "outfitTypes": "దుస్తుల రకాలు",
+    "browseAll": "అన్నీ చూడండి →",
+    "ariaLabel": "వర్గ నావిగేషన్"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "LanguageSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "hi": "Hindi",
+    "te": "Telugu"
+  },
+  "Nav": {
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "wishlistWithCount": "Wishlist, {count} items",
+    "cartWithCount": "Cart, {count} items"
+  },
+  "Footer": {
+    "tagline": "It All Starts With a Thread",
+    "copyright": "© {year} FADEN. All rights reserved.",
+    "sections": {
+      "company": "Company",
+      "support": "Support",
+      "legal": "Legal"
+    },
+    "links": {
+      "about": "About",
+      "careers": "Careers",
+      "press": "Press",
+      "help": "Help",
+      "contact": "Contact",
+      "faq": "FAQ",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  },
+  "Home": {
+    "featuredBoutiques": "Featured Boutiques",
+    "exploreBoutiques": "Explore boutiques",
+    "audienceBoutiques": "{audience}'s Boutiques",
+    "boutiquesNearYou": "{count} boutique(s) near you"
+  },
+  "CategoryNav": {
+    "all": "All",
+    "women": "Women",
+    "men": "Men",
+    "kids": "Kids",
+    "outfitTypes": "Outfit types",
+    "browseAll": "Browse all →",
+    "ariaLabel": "Category navigation"
+  }
+}
