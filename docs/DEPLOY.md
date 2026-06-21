@@ -21,10 +21,11 @@ Deploy **two separate Vercel projects** from `github.com/fadenthreads/FADEN-webA
    | Setting | Value |
    |--------|--------|
    | Root Directory | `apps/web` |
-   | Framework Preset | Next.js |
+   | Framework Preset | **Next.js** (not “Other”) |
    | Install Command | *(leave default — uses `apps/web/vercel.json`)* |
-   | Build Command | *(leave default)* |
-   | Output Directory | *(leave empty)* |
+   | Build Command | *(leave default — `pnpm run build` in `apps/web`)* |
+   | Output Directory | **Leave empty** (do NOT set `.next` or `apps/web/.next`) |
+   | Include source files outside Root Directory | **Enabled** (required for workspace packages) |
 
 4. **Environment variables** (Production):
 
@@ -57,10 +58,11 @@ Deploy **two separate Vercel projects** from `github.com/fadenthreads/FADEN-webA
    | Setting | Value |
    |--------|--------|
    | Root Directory | `apps/admin` |
-   | Framework Preset | Next.js |
+   | Framework Preset | **Next.js** (not “Other”) |
    | Install Command | *(leave default — uses `apps/admin/vercel.json`)* |
-   | Build Command | *(leave default)* |
-   | Output Directory | *(leave empty — do NOT set `apps/web/.next`)* |
+   | Build Command | *(leave default — `pnpm run build` in `apps/admin`)* |
+   | Output Directory | **Leave empty** (do NOT set `apps/web/.next`) |
+   | Include source files outside Root Directory | **Enabled** |
 
 4. **Environment variables** (Production):
 
@@ -117,10 +119,33 @@ In **Supabase → Authentication → URL Configuration**, add **both** deployed 
 
 | Error | Fix |
 |-------|-----|
+| `404: NOT_FOUND` with `Code: NOT_FOUND` (Vercel plain-text page) | See **Vercel NOT_FOUND** section below — this is a platform routing issue, not your Next.js 404 page |
 | `apps/admin/.next` not found | Web project Root Directory must be **`apps/web`**, not `apps/admin` |
 | `apps/admin/apps/web/.next` not found | Admin project Build must be **`admin`**, Output Directory **empty**, Root **`apps/admin`** |
 | Login fails on mobile/production | Add redirect URLs in Supabase (see above) |
 | Access forbidden on admin | Run the `UPDATE profiles SET role = 'admin'` SQL |
+
+### Vercel `404: NOT_FOUND` (platform error)
+
+If you see a plain page like `404: NOT_FOUND` / `Code: NOT_FOUND` with a Vercel ID (not your FADEN site design), Vercel has **no deployment to serve** on that URL.
+
+**Check in order:**
+
+1. **Project Settings → General → Root Directory** = `apps/web` (web) or `apps/admin` (admin).
+2. **Framework Preset** = **Next.js** (if set to “Other”, change it and redeploy).
+3. **Output Directory** = **empty** — never `apps/web/.next` or `.next` when Root Directory is already `apps/web`.
+4. **Include source files outside of the Root Directory** = **Enabled** (monorepo workspace packages live in `packages/`).
+5. **Deployments** → open latest deploy → click **Visit** while logged into Vercel. If Visit works but `faden-web-app.vercel.app` does not, use **Promote to Production** on that deployment.
+6. **Settings → Deployment Protection** — if enabled, preview URLs return **401** until you log in. Disable for Production if the site should be public.
+7. **Settings → Domains** — confirm `faden-web-app.vercel.app` is listed and assigned to **this** project (not an old deleted project).
+8. **Redeploy** after changing settings (Deployments → ⋮ → Redeploy).
+
+**Live URLs (example):**
+
+| App | Production URL |
+|-----|----------------|
+| Web | https://faden-web-app.vercel.app |
+| Admin | *(create second project — see Project B above)* |
 
 ---
 
