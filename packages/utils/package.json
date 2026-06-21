@@ -13,7 +13,9 @@
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
+    "@faden/config-eslint": "workspace:*",
     "@faden/config-typescript": "workspace:*",
+    "eslint": "^9.17.0",
     "typescript": "^5.7.2"
   }
 }
