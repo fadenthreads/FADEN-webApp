@@ -20,7 +20,7 @@ export function parseAudiences(value: string | null | undefined): AudienceCatego
     .split(/[\n,]+/)
     .map((item) => item.trim().toLowerCase())
     .filter((item): item is AudienceCategory => AUDIENCE_VALUES.includes(item as AudienceCategory));
-  return [...new Set(parsed)];
+  return Array.from(new Set(parsed));
 }
 
 export function formatAudiencesForForm(audiences: AudienceCategory[] | null | undefined): string {
@@ -40,5 +40,5 @@ export function inferAudiencesFromOutfitLabels(labels: string[]): AudienceCatego
   for (const label of labels) {
     inferred.add(inferOutfitAudience(label));
   }
-  return inferred.size > 0 ? [...inferred] : ["women"];
+  return inferred.size > 0 ? Array.from(inferred) : ["women"];
 }
