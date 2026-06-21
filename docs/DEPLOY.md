@@ -38,10 +38,13 @@ Deploy **two separate Vercel projects** from the same monorepo:
 
 ### Web project
 
-- **Root directory:** `apps/web`
-- **Build command:** `cd ../.. && pnpm install && pnpm --filter web build`
-- **Install command:** `pnpm install`
-- **Output:** Next.js default
+- **Root directory:** `apps/web` ← required; do not use `apps/admin` or repo root
+- **Framework preset:** Next.js
+- **Build command:** leave default (uses `apps/web/vercel.json`) or `cd ../.. && pnpm install && pnpm --filter web build`
+- **Install command:** `cd ../.. && pnpm install`
+- **Output directory:** leave empty (defaults to `.next` inside `apps/web`)
+
+If Root Directory is wrong (e.g. `apps/admin`), the build may succeed but deploy fails looking for `apps/admin/.next`.
 
 ### Admin project
 
