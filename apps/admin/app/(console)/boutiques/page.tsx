@@ -32,6 +32,7 @@ async function getPendingBoutiques(): Promise<PendingBoutiqueReview[]> {
           mapsUrl: (boutique.maps_url as string | null) ?? "",
           yearsInBusiness: (boutique.years_in_business as number | null) ?? undefined,
           portfolioPhotoUrls: "",
+          audiences: "women",
           outfitTypes: "",
           servicesOffered: "",
           pricingInfo: (boutique.pricing_info as string | null) ?? "",
