@@ -24,18 +24,20 @@ export function useScrollProgress(containerRef: React.RefObject<HTMLElement | nu
 
     let touchStartY = 0;
     const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
+      touchStartY = e.touches[0]?.clientY ?? 0;
     };
     const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const delta = touchStartY - e.touches[0].clientY;
-      touchStartY = e.touches[0].clientY;
-      update(delta * 1.2);
+      const currentY = e.touches[0]?.clientY ?? touchStartY;
+      const delta = touchStartY - currentY;
+      touchStartY = currentY;
+      if (Math.abs(delta) > 0) {
+        update(delta * 1.2);
+      }
     };
 
     container.addEventListener("wheel", onWheel, { passive: false });
     container.addEventListener("touchstart", onTouchStart, { passive: true });
-    container.addEventListener("touchmove", onTouchMove, { passive: false });
+    container.addEventListener("touchmove", onTouchMove, { passive: true });
 
     return () => {
       container.removeEventListener("wheel", onWheel);

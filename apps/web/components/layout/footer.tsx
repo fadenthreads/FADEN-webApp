@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { homeHref } from "@/lib/landing/home-nav";
+import { FADEN_CONTACT } from "@/lib/content/faden-contact";
 
 const FOOTER_SECTIONS = [
   {
@@ -41,6 +42,25 @@ export async function Footer() {
               FADEN
             </Link>
             <p className="mt-2 font-display text-sm italic text-foreground-muted">{t("tagline")}</p>
+            <div className="mt-4 space-y-1.5 text-sm text-foreground-muted">
+              <p>
+                <a
+                  href={FADEN_CONTACT.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-gold"
+                >
+                  {FADEN_CONTACT.phoneDisplay}
+                </a>
+              </p>
+              {FADEN_CONTACT.emails.map((email) => (
+                <p key={email}>
+                  <a href={`mailto:${email}`} className="transition-colors hover:text-gold">
+                    {email}
+                  </a>
+                </p>
+              ))}
+            </div>
           </div>
           {FOOTER_SECTIONS.map(({ sectionKey, links }) => (
             <div key={sectionKey}>

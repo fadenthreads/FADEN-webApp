@@ -30,7 +30,7 @@ function CategoryNavBarFallback() {
   return (
     <nav
       aria-label="Category navigation"
-      className="sticky top-[72px] z-30 border-b border-border bg-background/95 backdrop-blur-md"
+      className="sticky top-[72px] z-30 border-b border-border bg-background shadow-sm"
     >
       <div className="mx-auto flex h-12 max-w-container items-center px-4 lg:px-12" />
     </nav>
@@ -108,7 +108,7 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
   return (
     <nav
       aria-label={t("ariaLabel")}
-      className="sticky top-[72px] z-30 border-b border-border bg-background/95 backdrop-blur-md"
+      className="sticky top-[72px] z-30 border-b border-border bg-background shadow-sm"
     >
       <div className="mx-auto max-w-container px-4 lg:px-12">
         <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">{audienceLinks}</div>

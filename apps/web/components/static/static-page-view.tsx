@@ -1,11 +1,14 @@
 import Link from "next/link";
 import type { StaticPageContent } from "@/lib/content/static-pages";
+import { ContactDetailsCard } from "@/components/static/contact-details-card";
 
 interface StaticPageViewProps {
   page: StaticPageContent;
 }
 
 export function StaticPageView({ page }: StaticPageViewProps) {
+  const isContactPage = page.slug === "contact";
+
   return (
     <article className="px-4 pb-section-gap pt-10 lg:px-12">
       <div className="mx-auto max-w-3xl">
@@ -16,6 +19,10 @@ export function StaticPageView({ page }: StaticPageViewProps) {
             <p className="mt-4 text-base leading-relaxed text-foreground-muted md:text-lg">{page.intro}</p>
           )}
         </header>
+
+        {isContactPage && (
+          <ContactDetailsCard className="mt-8" title="Get in touch" />
+        )}
 
         {page.faq && page.faq.length > 0 && (
           <div className="mt-10 space-y-6">
@@ -53,15 +60,6 @@ export function StaticPageView({ page }: StaticPageViewProps) {
               </section>
             ))}
           </div>
-        )}
-
-        {page.contactEmail && (
-          <p className="mt-10 text-sm text-foreground-muted">
-            Email:{" "}
-            <a href={`mailto:${page.contactEmail}`} className="font-medium text-gold hover:underline">
-              {page.contactEmail}
-            </a>
-          </p>
         )}
 
         <footer className="mt-12 border-t border-border pt-6">

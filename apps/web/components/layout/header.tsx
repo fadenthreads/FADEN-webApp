@@ -15,7 +15,7 @@ function SearchBarFallback() {
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border bg-background shadow-sm">
       <div className="mx-auto flex h-[72px] max-w-container items-center gap-2 px-4 lg:gap-4 lg:px-12">
         <MobileMenu />
         <Logo />

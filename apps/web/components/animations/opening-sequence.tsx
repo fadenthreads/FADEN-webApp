@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Button } from "@faden/ui";
 import { FadenEmblem } from "./faden-emblem";
 import { FadenWordmark } from "./faden-wordmark";
 import { TaglineReveal } from "./tagline-reveal";
@@ -11,6 +12,11 @@ import { openingItem, openingStagger } from "@/lib/motion-presets";
 
 interface OpeningSequenceProps {
   onComplete: () => void;
+}
+
+function isTouchDevice(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 768px)").matches || "ontouchstart" in window;
 }
 
 export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
@@ -43,6 +49,14 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
   }, [scrollProgress, reducedMotion, handleComplete]);
 
   useEffect(() => {
+    if (reducedMotion) return;
+    const timer = window.setTimeout(() => {
+      if (isTouchDevice()) handleComplete();
+    }, 4500);
+    return () => window.clearTimeout(timer);
+  }, [reducedMotion, handleComplete]);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" || e.key === "Enter") handleComplete();
     };
@@ -51,7 +65,7 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
   }, [handleComplete]);
 
   const content = (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 py-16">
+    <div className="flex min-h-[100dvh] flex-col items-center justify-center px-6 py-16">
       <motion.div
         className="flex flex-col items-center"
         variants={openingStagger}
@@ -70,6 +84,11 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
         <motion.div variants={openingItem}>
           <SwipeDownPrompt />
         </motion.div>
+        <motion.div variants={openingItem} className="mt-8">
+          <Button type="button" variant="luxury" size="lg" onClick={handleComplete}>
+            Continue
+          </Button>
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -79,22 +98,25 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
       {visible && (
         <motion.div
           ref={containerRef}
-          className="fixed inset-0 z-[100] overflow-hidden bg-black"
+          className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-black"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           role="dialog"
-          aria-label="FADEN opening animation. Swipe down or press Escape to continue."
+          aria-label="FADEN opening animation. Swipe down or tap Continue."
+          onClick={handleComplete}
         >
-          {reducedMotion ? (
-            content
-          ) : (
-            <motion.div
-              animate={{ opacity: exiting ? 0 : 1 }}
-              transition={{ duration: 0.45 }}
-            >
-              {content}
-            </motion.div>
-          )}
+          <div className="min-h-[120dvh]" onClick={(event) => event.stopPropagation()}>
+            {reducedMotion ? (
+              content
+            ) : (
+              <motion.div
+                animate={{ opacity: exiting ? 0 : 1 }}
+                transition={{ duration: 0.45 }}
+              >
+                {content}
+              </motion.div>
+            )}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

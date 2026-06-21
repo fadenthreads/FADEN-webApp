@@ -16,7 +16,7 @@ const CustomerLocationMapInner = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[min(52vh,420px)] min-h-[240px] items-center justify-center rounded-xl border border-border bg-background-elevated text-sm text-foreground-muted">
+      <div className="flex h-[min(50dvh,420px)] min-h-[280px] items-center justify-center rounded-xl border border-border bg-background-elevated text-sm text-foreground-muted">
         Loading map…
       </div>
     ),
@@ -146,8 +146,14 @@ export function CustomerLocationMapDialog({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5">
-          <CustomerLocationMapInner lat={coords.lat} lng={coords.lng} onPick={handlePick} />
+        <div className="min-h-0 shrink-0 px-4 py-4 sm:px-5">
+          <CustomerLocationMapInner
+            key={`map-${open ? "open" : "closed"}`}
+            active={open}
+            lat={coords.lat}
+            lng={coords.lng}
+            onPick={handlePick}
+          />
           <p className="mt-3 text-sm text-foreground">
             <span className="text-foreground-muted">Selected: </span>
             {label}

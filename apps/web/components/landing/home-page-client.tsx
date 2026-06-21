@@ -56,6 +56,17 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
     if (skipIntro || hasSeenIntro()) {
       setPhase("main");
       setShowAllBoutiques(true);
+      return;
+    }
+
+    const isMobile =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(max-width: 768px)").matches || "ontouchstart" in window);
+
+    if (isMobile) {
+      markIntroSeen();
+      setPhase("main");
+      setShowAllBoutiques(true);
     }
   }, [skipIntro]);
 

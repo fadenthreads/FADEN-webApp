@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FADEN_CONTACT } from "./faden-contact";
 
 export type StaticPageSlug =
   | "about"
@@ -23,6 +24,8 @@ export interface StaticPageContent {
   intro?: string;
   sections: StaticPageSection[];
   contactEmail?: string;
+  contactEmails?: string[];
+  contactPhone?: string;
   faq?: { question: string; answer: string }[];
 }
 
@@ -151,7 +154,9 @@ export const STATIC_PAGES: Record<StaticPageSlug, StaticPageContent> = {
       },
       {
         heading: "Still stuck?",
-        paragraphs: ["Visit the FAQ for more detail, or contact us — we're happy to help."],
+        paragraphs: [
+          `Call or WhatsApp ${FADEN_CONTACT.phoneDisplay}, or email ${FADEN_CONTACT.emails.join(" / ")}. You can also visit the FAQ or Contact page for more.`,
+        ],
       },
     ],
   },
@@ -160,17 +165,31 @@ export const STATIC_PAGES: Record<StaticPageSlug, StaticPageContent> = {
     title: "Contact Us",
     description: "Get in touch with the FADEN team.",
     intro: "Questions about your order, account, or partnering as a boutique? We're here to help.",
+    contactPhone: FADEN_CONTACT.phoneDisplay,
+    contactEmails: [...FADEN_CONTACT.emails],
+    contactEmail: FADEN_CONTACT.primaryEmail,
     sections: [
+      {
+        heading: "Reach us directly",
+        paragraphs: [
+          "Call or WhatsApp us for quick questions about orders, customization, or boutique onboarding.",
+        ],
+        bullets: [
+          `Phone / WhatsApp: ${FADEN_CONTACT.phoneDisplay}`,
+          `Email: ${FADEN_CONTACT.emails[0]}`,
+          `Email: ${FADEN_CONTACT.emails[1]}`,
+        ],
+      },
       {
         heading: "Customer support",
         paragraphs: [
-          "For order status, customization requests, or account issues, email hello@faden.in. Include your registered email and any request or order reference if you have one.",
+          "For order status, customization requests, or account issues, email us with your registered email and any request or order reference if you have one.",
         ],
       },
       {
         heading: "Boutique partners",
         paragraphs: [
-          "Existing partners: use your owner dashboard for day-to-day operations. For onboarding or verification questions, email partners@faden.in.",
+          "Existing partners: use your owner dashboard for day-to-day operations. For onboarding or verification questions, reach out via the phone or emails above.",
         ],
       },
       {
@@ -180,7 +199,6 @@ export const STATIC_PAGES: Record<StaticPageSlug, StaticPageContent> = {
         ],
       },
     ],
-    contactEmail: "hello@faden.in",
   },
   faq: {
     slug: "faq",
