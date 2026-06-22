@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Button } from "@faden/ui";
 import { FadenEmblem } from "./faden-emblem";
 import { FadenWordmark } from "./faden-wordmark";
 import { TaglineReveal } from "./tagline-reveal";
@@ -84,11 +83,6 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
         <motion.div variants={openingItem}>
           <SwipeDownPrompt />
         </motion.div>
-        <motion.div variants={openingItem} className="mt-8">
-          <Button type="button" variant="luxury" size="lg" onClick={handleComplete}>
-            Continue
-          </Button>
-        </motion.div>
       </motion.div>
     </div>
   );
@@ -102,7 +96,7 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           role="dialog"
-          aria-label="FADEN opening animation. Swipe down or tap Continue."
+          aria-label="FADEN opening animation. Swipe down to continue."
           onClick={handleComplete}
         >
           <div className="min-h-[120dvh]" onClick={(event) => event.stopPropagation()}>

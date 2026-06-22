@@ -18,28 +18,9 @@ import {
 
 type LoadPhase = "opening" | "scissors" | "cta" | "main";
 
-const INTRO_SEEN_KEY = "faden-intro-seen";
-
 interface HomePageClientProps {
   skipIntro?: boolean;
   initialCategory?: AudienceCategory | null;
-}
-
-function hasSeenIntro(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return localStorage.getItem(INTRO_SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-function markIntroSeen(): void {
-  try {
-    localStorage.setItem(INTRO_SEEN_KEY, "1");
-  } catch {
-    /* private browsing */
-  }
 }
 
 export function HomePageClient({ skipIntro = false, initialCategory = null }: HomePageClientProps) {
@@ -53,20 +34,8 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
   const [showAllBoutiques, setShowAllBoutiques] = useState(skipIntro);
 
   useEffect(() => {
-    if (skipIntro || hasSeenIntro()) {
-      setPhase("main");
-      setShowAllBoutiques(true);
-      return;
-    }
-
-    const isMobile =
-      typeof window !== "undefined" &&
-      (window.matchMedia("(max-width: 768px)").matches || "ontouchstart" in window);
-
-    if (isMobile) {
-      markIntroSeen();
-      setPhase("main");
-      setShowAllBoutiques(true);
+    if (!skipIntro) {
+      window.scrollTo(0, 0);
     }
   }, [skipIntro]);
 
@@ -104,7 +73,6 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
   }, []);
 
   const handleEnterMain = useCallback(() => {
-    markIntroSeen();
     setPhase("main");
     setShowAllBoutiques(true);
   }, []);
