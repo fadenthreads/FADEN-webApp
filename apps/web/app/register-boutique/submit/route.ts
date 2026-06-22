@@ -3,8 +3,11 @@ import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { boutiqueRegistrationSchema } from "@faden/validators";
 import { registerBoutiqueForUser } from "@/lib/boutique/register-boutique";
+import { getBoutiqueRegistrationWriteClient } from "@/lib/boutique/registration-client";
 import { getOwnerBoutique } from "@/lib/boutique/queries";
 import { getWebSupabaseEnv, isWebSupabaseConfigured } from "@/lib/supabase/env";
+import { formatSupabaseKeyError } from "@/lib/supabase/errors";
+import { supabaseClientOptions } from "@/lib/supabase/fetch";
 import type { SupabaseCookie } from "@/lib/supabase/types";
 
 function errorResponse(message: string, status = 400) {
@@ -38,6 +41,7 @@ export async function POST(request: NextRequest) {
   const { url, anonKey } = getWebSupabaseEnv();
 
   const supabase = createServerClient(url, anonKey, {
+    ...supabaseClientOptions,
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -50,7 +54,12 @@ export async function POST(request: NextRequest) {
 
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser();
+
+  if (authError) {
+    return errorResponse(formatSupabaseKeyError(authError.message), 503);
+  }
 
   if (!user) {
     return errorResponse("You must be signed in to register a boutique.", 401);
@@ -61,9 +70,10 @@ export async function POST(request: NextRequest) {
     return errorResponse("You already have a boutique. Use Modify Boutique on your account.", 400);
   }
 
-  const result = await registerBoutiqueForUser(supabase, user.id, parsed.data);
+  const writeClient = getBoutiqueRegistrationWriteClient(supabase);
+  const result = await registerBoutiqueForUser(writeClient, user.id, parsed.data);
   if (!result.ok) {
-    return errorResponse(result.error ?? "Submission failed", 400);
+    return errorResponse(formatSupabaseKeyError(result.error ?? "Submission failed"), 400);
   }
 
   revalidatePath("/dashboard");

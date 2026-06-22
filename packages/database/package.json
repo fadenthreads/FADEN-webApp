@@ -10,8 +10,8 @@
   "dependencies": {
     "@faden/types": "workspace:*",
     "@faden/validators": "workspace:*",
-    "@supabase/ssr": "^0.5.2",
-    "@supabase/supabase-js": "^2.49.1"
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.108.2"
   },
   "devDependencies": {
     "@faden/config-typescript": "workspace:*",
