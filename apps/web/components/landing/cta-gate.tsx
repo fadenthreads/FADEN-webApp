@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@faden/ui";
 import { Store, Sparkles, Shirt } from "lucide-react";
@@ -32,31 +33,44 @@ interface CTAGateProps {
 
 export function CTAGate({ onExplore }: CTAGateProps) {
   const reducedMotion = useReducedMotion();
+  const scrollRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    scrollRef.current?.scrollTo(0, 0);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
 
   return (
     <motion.section
+      ref={scrollRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-background px-4"
+      className="fixed inset-0 z-[80] overflow-y-auto overscroll-contain bg-background [-webkit-overflow-scrolling:touch]"
       aria-label="Choose how to continue"
     >
-      <div className="mx-auto w-full max-w-container">
-        <div className="mb-12 text-center">
+      <div className="mx-auto flex min-h-[100dvh] w-full max-w-container flex-col justify-center px-4 py-10 sm:px-6 sm:py-14">
+        <div className="mb-8 text-center sm:mb-12">
           <p className="font-display text-sm tracking-[0.25em] text-gold">— WELCOME TO FADEN —</p>
           <h1 className="mt-4 font-display text-3xl font-semibold md:text-4xl">
             Where would you like to begin?
           </h1>
         </div>
 
-        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3 md:gap-6">
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
           {OPTIONS.map((opt, i) => (
             <motion.div
               key={opt.title}
               initial={reducedMotion ? false : { opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 + i * 0.15, duration: 0.5 }}
-              className="group rounded-xl border border-border bg-background-elevated p-8 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-gold md:p-8"
+              className="group rounded-xl border border-border bg-background-elevated p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-gold sm:p-8"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gold/30 bg-burgundy/30 text-gold">
                 <opt.icon className="h-5 w-5" aria-hidden />

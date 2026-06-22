@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { PaymentPhase } from "@/lib/payment/split-payment";
 
 export async function completeSuccessfulPayment(
   supabase: SupabaseClient,
@@ -8,6 +9,7 @@ export async function completeSuccessfulPayment(
     providerPaymentId: string;
     userId: string;
     customizationRequestId: string | null;
+    phase: PaymentPhase;
   },
 ) {
   const { error: paymentError } = await supabase
@@ -15,15 +17,27 @@ export async function completeSuccessfulPayment(
     .update({
       status: "captured",
       provider_payment_id: params.providerPaymentId,
-      metadata: { captured_at: new Date().toISOString() },
+      metadata: {
+        captured_at: new Date().toISOString(),
+        phase: params.phase,
+      },
     })
     .eq("id", params.paymentId);
 
   if (paymentError) throw new Error(paymentError.message);
 
+  const isDeposit = params.phase === "deposit";
+  const nextOrderStatus = isDeposit ? "in_progress" : "delivered";
+  const eventNote = isDeposit
+    ? "Advance payment received — production started"
+    : "Final payment received — order delivered";
+  const messageBody = isDeposit
+    ? "Advance payment received. Your order is now in production."
+    : "Final payment received. Your order has been delivered.";
+
   const { error: orderError } = await supabase
     .from("orders")
-    .update({ status: "in_progress" })
+    .update({ status: nextOrderStatus })
     .eq("id", params.orderId);
 
   if (orderError) throw new Error(orderError.message);
@@ -31,14 +45,14 @@ export async function completeSuccessfulPayment(
   if (params.customizationRequestId) {
     await supabase
       .from("customization_requests")
-      .update({ status: "in_production" })
+      .update({ status: isDeposit ? "in_production" : "completed" })
       .eq("id", params.customizationRequestId);
   }
 
   await supabase.from("order_events").insert({
     order_id: params.orderId,
-    status: "in_progress",
-    note: "Payment received — production started",
+    status: nextOrderStatus,
+    note: eventNote,
     created_by: params.userId,
   });
 
@@ -53,7 +67,7 @@ export async function completeSuccessfulPayment(
       conversation_id: conversation.id,
       sender_id: params.userId,
       sender_type: "system",
-      body: "Payment received. Your order is now in production.",
+      body: messageBody,
     });
 
     await supabase

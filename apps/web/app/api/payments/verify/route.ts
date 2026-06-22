@@ -80,8 +80,17 @@ export async function POST(request: NextRequest) {
     return errorResponse("Payment already completed.", 400);
   }
 
-  if (orderRow.status !== "confirmed") {
-    return errorResponse("Order is not awaiting payment.", 400);
+  const metadata = payment.metadata as { phase?: "deposit" | "balance" } | null;
+  const phase = metadata?.phase ?? "deposit";
+  const allowedStatuses = phase === "deposit" ? ["confirmed"] : ["shipped"];
+
+  if (!allowedStatuses.includes(orderRow.status)) {
+    return errorResponse(
+      phase === "deposit"
+        ? "Order is not awaiting advance payment."
+        : "Balance payment is only available when your order is ready for delivery.",
+      400,
+    );
   }
 
   let providerPaymentId: string;
@@ -99,8 +108,8 @@ export async function POST(request: NextRequest) {
       return errorResponse("Missing Razorpay verification fields.", 400);
     }
 
-    const metadata = payment.metadata as { razorpay_order_id?: string } | null;
-    const expectedOrderId = metadata?.razorpay_order_id ?? razorpayOrderId;
+    const paymentMetadata = payment.metadata as { razorpay_order_id?: string } | null;
+    const expectedOrderId = paymentMetadata?.razorpay_order_id ?? razorpayOrderId;
 
     const valid = verifyRazorpaySignature({
       orderId: expectedOrderId,
@@ -120,6 +129,7 @@ export async function POST(request: NextRequest) {
       providerPaymentId,
       userId: user.id,
       customizationRequestId: orderRow.customization_request_id,
+      phase,
     });
   } catch (err) {
     return errorResponse(err instanceof Error ? err.message : "Failed to complete payment", 500);

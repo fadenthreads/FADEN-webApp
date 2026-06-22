@@ -13,7 +13,7 @@ import { DESIGN_DETAIL_FIELDS } from "@/data/design-options";
 import { FABRIC_COLOR_SUGGESTIONS, FABRIC_KIND_SUGGESTIONS } from "@/data/fabric-options";
 import { formatSelfMeasurementsSummary } from "@/data/measurement-fields";
 import { formatDateOnly } from "@/lib/datetime/format";
-import { OCCASION_SUGGESTIONS, type CustomizeFormData } from "@/data/customize-form";
+import { FLOW_ORDER_LABELS, OCCASION_SUGGESTIONS, type CustomizeFormData } from "@/data/customize-form";
 import { AUDIENCE_LABELS, OUTFIT_TYPES_BY_AUDIENCE } from "@/lib/boutique/audiences";
 import { preferredAssistantGenderForAudience } from "@/lib/measurement/assistant-gender";
 import type { AudienceCategory } from "@faden/validators";
@@ -27,28 +27,12 @@ interface StepProps {
 export function StepStart({ data, onChange }: StepProps) {
   return (
     <div className="space-y-6">
-      <p className="text-foreground-muted">
-        Choose your path — pick a boutique first, or describe your dream outfit and we&apos;ll match
-        the best boutiques for you.
-      </p>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {(
-          [
-            { value: "requirements-first", label: "Requirements First", desc: "Describe outfit → get matched boutiques" },
-            { value: "boutique-first", label: "Boutique First", desc: "Choose a boutique → then customize" },
-          ] as const
-        ).map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => onChange({ flowOrder: opt.value })}
-            className={`premium-surface-3d rounded-xl p-6 text-left ${data.flowOrder === opt.value ? "ring-2 ring-gold" : ""}`}
-          >
-            <h3 className="font-display text-lg font-semibold text-gold">{opt.label}</h3>
-            <p className="mt-2 text-sm text-foreground-muted">{opt.desc}</p>
-          </button>
-        ))}
-      </div>
+      {data.flowOrder === "requirements-first" && (
+        <p className="text-sm text-foreground-muted">
+          Continue through the steps to describe your outfit. At the end, we&apos;ll suggest boutiques
+          that match your requirements.
+        </p>
+      )}
       {data.flowOrder === "boutique-first" && (
         <FormField
           label="Choose your boutique"
@@ -364,6 +348,13 @@ function formatReviewValue(key: string, val: unknown, data: CustomizeFormData): 
   if (key === "outfitAudience") {
     return AUDIENCE_LABELS[text as AudienceCategory] ?? text;
   }
+  if (key === "flowOrder") {
+    return FLOW_ORDER_LABELS[text as CustomizeFormData["flowOrder"]] ?? text;
+  }
+  if (key === "fabricSource") {
+    return text === "customer" ? "I will provide fabric" : "Boutique supplies fabric";
+  }
+  if (key === "selectedBoutiqueSlug" && !text) return null;
   if (imageCount > 0) return `${text} · ${imageCount} photo(s)`;
   return text;
 }
@@ -385,7 +376,14 @@ export function StepReview({
     "specialRequestImages",
     "portfolioOrderSame",
   ]);
-  const rows = Object.entries(data).filter(([key]) => !hiddenKeys.has(key) && (key !== "flowOrder" || data.flowOrder));
+  const priorityKeys = ["flowOrder", "selectedBoutiqueSlug", "outfitAudience", "outfitType"] as const;
+  const rows = Object.entries(data).filter(([key]) => !hiddenKeys.has(key));
+  const sortedRows = [
+    ...priorityKeys
+      .filter((key) => key in data)
+      .map((key) => [key, data[key as keyof CustomizeFormData]] as const),
+    ...rows.filter(([key]) => !priorityKeys.includes(key as (typeof priorityKeys)[number])),
+  ];
   return (
     <div className="space-y-3">
       {data.portfolioOrderSame && data.portfolioReferenceTitle && (
@@ -400,7 +398,7 @@ export function StepReview({
           : "Review your request, then browse suggested boutiques and pick one before submitting."}
       </p>
       <dl className="premium-surface divide-y divide-border rounded-xl">
-        {rows.map(([key, val]) => {
+        {sortedRows.map(([key, val]) => {
           const display = formatReviewValue(key, val, data);
           if (!display) return null;
           return (

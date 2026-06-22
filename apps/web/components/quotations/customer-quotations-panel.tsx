@@ -57,7 +57,8 @@ export function CustomerQuotationsPanel({ quotations, embedded = false }: Custom
         <PremiumCard hover={false}>
           <h3 className="font-display text-lg font-semibold text-gold">Quotations</h3>
           <p className="mt-2 text-sm text-foreground-muted">
-            Review price breakdowns from boutiques and accept to proceed to payment.
+            Review price breakdowns from boutiques. Accept to pay advance (up to 40%) and start
+            production — balance is due before delivery.
           </p>
           {error && (
             <p className="mt-3 rounded-lg border border-red-accent/40 bg-red-accent/10 px-3 py-2 text-sm text-red-accent">

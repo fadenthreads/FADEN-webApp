@@ -350,6 +350,12 @@ export const createQuotationSchema = z.object({
   tax: z.coerce.number().min(0).default(0),
   notes: z.string().optional(),
   validUntilDays: z.coerce.number().int().min(1).max(30).default(7),
+  advancePercent: z.coerce
+    .number()
+    .int("Advance must be a whole number")
+    .min(0, "Advance cannot be negative")
+    .max(40, "Advance payment cannot exceed 40%")
+    .default(40),
 });
 
 export type CreateQuotationInput = z.infer<typeof createQuotationSchema>;
@@ -363,6 +369,7 @@ export type QuotationDecisionInput = z.infer<typeof quotationDecisionSchema>;
 
 export const createPaymentOrderSchema = z.object({
   orderId: z.string().uuid(),
+  phase: z.enum(["deposit", "balance"]).optional(),
 });
 
 export type CreatePaymentOrderInput = z.infer<typeof createPaymentOrderSchema>;

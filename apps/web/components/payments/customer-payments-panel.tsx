@@ -11,6 +11,7 @@ import {
   type PayableOrder,
   type PaymentSummary,
 } from "@/lib/payment/queries";
+import { paymentPhaseLabel } from "@/lib/payment/split-payment";
 import { orderStatusLabel } from "@/lib/order/status";
 
 interface CustomerPaymentsPanelProps {
@@ -51,16 +52,16 @@ export function CustomerPaymentsPanel({
   const [error, setError] = useState<string | null>(null);
   const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
 
-  async function handlePay(orderId: string) {
+  async function handlePay(order: PayableOrder) {
     setError(null);
-    setPayingOrderId(orderId);
+    setPayingOrderId(order.id);
 
     try {
       const createRes = await fetch("/api/payments/create-order", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
+        body: JSON.stringify({ orderId: order.id, phase: order.payment_phase }),
       });
       const createPayload = (await createRes.json()) as {
         ok?: boolean;
@@ -174,7 +175,7 @@ export function CustomerPaymentsPanel({
           <h3 className="font-display text-lg font-semibold text-gold">Payments</h3>
           <p className="mt-2 text-sm text-foreground-muted">
             {razorpayEnabled
-              ? "Pay securely via Razorpay after accepting a quotation."
+              ? "Pay up to 40% advance after accepting a quotation. The remaining balance is due before delivery."
               : "Development mode — use simulated payment (configure Razorpay keys for live checkout)."}
           </p>
           {error && (
@@ -194,29 +195,51 @@ export function CustomerPaymentsPanel({
         <div className="space-y-4">
           <p className="text-xs font-semibold tracking-[0.2em] text-gold">AWAITING PAYMENT</p>
           {payableOrders.map((order) => (
-            <PremiumCard key={order.id} hover={false}>
+            <PremiumCard key={`${order.id}-${order.payment_phase}`} hover={false}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-medium">{order.outfit_type ?? "Custom order"}</p>
                   <p className="mt-1 text-sm text-foreground-muted">
                     {order.boutique_name ?? "Boutique"}
                   </p>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-wide text-gold">
+                    {paymentPhaseLabel(order.payment_phase)}
+                  </p>
                 </div>
-                <p className="text-lg font-semibold text-gold">{formatInr(order.total_amount)}</p>
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-gold">{formatInr(order.due_amount)}</p>
+                  <p className="mt-1 text-xs text-foreground-muted">
+                    of {formatInr(order.total_amount)} total
+                  </p>
+                </div>
               </div>
+              {order.payment_phase === "deposit" && order.advance_percent > 0 && (
+                <p className="mt-3 text-xs text-foreground-muted">
+                  {order.advance_percent}% advance to start production. Balance due before delivery.
+                </p>
+              )}
+              {order.payment_phase === "balance" && (
+                <p className="mt-3 text-xs text-foreground-muted">
+                  Your order is ready for delivery. Pay the remaining balance to complete delivery.
+                </p>
+              )}
               <PostedAt value={order.created_at} prefix="Quoted" className="mt-3 text-xs text-foreground-muted/70" />
               <Button
                 type="button"
                 variant="luxury"
                 className="mt-4"
                 disabled={pending || payingOrderId === order.id}
-                onClick={() => handlePay(order.id)}
+                onClick={() => handlePay(order)}
               >
                 {payingOrderId === order.id
                   ? "Processing…"
-                  : razorpayEnabled
-                    ? "Pay with Razorpay"
-                    : "Simulate payment"}
+                  : order.payment_phase === "deposit"
+                    ? razorpayEnabled
+                      ? "Pay advance"
+                      : "Simulate advance payment"
+                    : razorpayEnabled
+                      ? "Pay balance"
+                      : "Simulate balance payment"}
               </Button>
             </PremiumCard>
           ))}
@@ -238,7 +261,9 @@ export function CustomerPaymentsPanel({
                 <div className="text-right">
                   <p className="font-semibold text-gold">{formatInr(payment.amount)}</p>
                   <p className="mt-1 text-xs capitalize text-foreground-muted">
-                    {paymentStatusLabel(payment.status)}
+                    {payment.payment_phase
+                      ? paymentPhaseLabel(payment.payment_phase)
+                      : paymentStatusLabel(payment.status)}
                   </p>
                   <PostedAt value={payment.created_at} prefix="Paid" className="mt-1 text-xs text-foreground-muted/70" />
                   {payment.order_status && payment.order_status !== "confirmed" && (

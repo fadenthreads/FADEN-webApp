@@ -40,6 +40,12 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
   }, [skipIntro]);
 
   useEffect(() => {
+    if (phase === "cta") {
+      window.scrollTo(0, 0);
+    }
+  }, [phase]);
+
+  useEffect(() => {
     if (phase !== "main") return;
 
     const syncFromHash = () => {

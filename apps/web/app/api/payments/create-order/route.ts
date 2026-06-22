@@ -8,6 +8,10 @@ import {
   getRazorpayPublicKey,
   isRazorpayConfigured,
 } from "@/lib/payment/razorpay";
+import {
+  resolveOutstandingPayment,
+  type PaymentPhase,
+} from "@/lib/payment/split-payment";
 import { isAdminClientConfigured } from "@/lib/supabase/admin";
 import { getWebSupabaseEnv, isWebSupabaseConfigured } from "@/lib/supabase/env";
 import type { SupabaseCookie } from "@/lib/supabase/types";
@@ -70,39 +74,70 @@ export async function POST(request: NextRequest) {
 
   if (orderError || !order) return errorResponse("Order not found.", 404);
   if (order.customer_id !== user.id) return errorResponse("Access denied.", 403);
-  if (order.status !== "confirmed") {
-    return errorResponse("This order is not ready for payment. Accept the quotation first.", 400);
+
+  const total = Number(order.total_amount);
+  if (!total || total <= 0) {
+    return errorResponse("Order has no payable amount.", 400);
   }
 
-  const amount = Number(order.total_amount);
+  const { data: quotation } = await supabase
+    .from("quotations")
+    .select("advance_percent")
+    .eq("order_id", order.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const { data: capturedPayments } = await supabase
+    .from("payments")
+    .select("amount, metadata")
+    .eq("order_id", order.id)
+    .eq("status", "captured");
+
+  const outstanding = resolveOutstandingPayment({
+    total,
+    advancePercent: Number(quotation?.advance_percent ?? 40),
+    orderStatus: order.status as string,
+    capturedPayments: (capturedPayments ?? []).map((payment) => ({
+      amount: Number(payment.amount),
+      metadata: payment.metadata as { phase?: string } | null,
+    })),
+  });
+
+  if (!outstanding) {
+    return errorResponse("This order has no outstanding payment.", 400);
+  }
+
+  const phase: PaymentPhase = parsed.data.phase ?? outstanding.phase;
+  if (phase !== outstanding.phase) {
+    return errorResponse(
+      phase === "deposit"
+        ? "Advance payment is not due for this order."
+        : "Balance payment is not due yet. Pay the advance first or wait until the order is ready for delivery.",
+      400,
+    );
+  }
+
+  const amount = outstanding.dueAmount;
   if (!amount || amount <= 0) {
-    return errorResponse("Order has no payable amount.", 400);
+    return errorResponse("Nothing to pay for this phase.", 400);
   }
 
   const db = getPaymentWriteClient(supabase);
 
-  const { data: existingCaptured } = await db
-    .from("payments")
-    .select("id")
-    .eq("order_id", order.id)
-    .eq("status", "captured")
-    .maybeSingle();
-
-  if (existingCaptured) {
-    return errorResponse("This order has already been paid.", 400);
-  }
-
-  let paymentId: string;
-  let existingRazorpayOrderId: string | null = null;
-
-  const { data: existingPending } = await db
+  const { data: pendingPayments } = await db
     .from("payments")
     .select("id, metadata")
     .eq("order_id", order.id)
-    .eq("status", "pending")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .eq("status", "pending");
+
+  const existingPending = (pendingPayments ?? []).find((payment) => {
+    const meta = payment.metadata as { phase?: PaymentPhase } | null;
+    return meta?.phase === phase;
+  });
+
+  let paymentId: string;
+  let existingRazorpayOrderId: string | null = null;
 
   if (existingPending) {
     paymentId = existingPending.id;
@@ -116,6 +151,7 @@ export async function POST(request: NextRequest) {
         amount,
         currency: order.currency,
         status: "pending",
+        metadata: { phase },
       })
       .select("id")
       .single();
@@ -139,10 +175,11 @@ export async function POST(request: NextRequest) {
     try {
       const razorpayOrder = await createRazorpayOrder({
         amountPaise: amountToPaise(amount),
-        receipt: `faden_${order.id.slice(0, 8)}`,
+        receipt: `faden_${order.id.slice(0, 8)}_${phase}`,
         notes: {
           faden_order_id: order.id,
           faden_payment_id: paymentId,
+          faden_phase: phase,
         },
       });
 
@@ -150,7 +187,7 @@ export async function POST(request: NextRequest) {
 
       const { error: updateError } = await db
         .from("payments")
-        .update({ metadata: { razorpay_order_id: razorpayOrder.id } })
+        .update({ metadata: { phase, razorpay_order_id: razorpayOrder.id } })
         .eq("id", paymentId);
 
       if (updateError) {
@@ -165,6 +202,9 @@ export async function POST(request: NextRequest) {
     ok: true,
     paymentId,
     amount,
+    phase,
+    totalAmount: total,
+    advancePercent: outstanding.advancePercent,
     currency: order.currency,
     mock,
     keyId: getRazorpayPublicKey(),

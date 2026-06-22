@@ -145,6 +145,26 @@ export const INITIAL_CUSTOMIZE_DATA: CustomizeFormData = {
   portfolioOrderSame: false,
 };
 
+export const FLOW_ORDER_LABELS: Record<CustomizeFormData["flowOrder"], string> = {
+  "requirements-first": "Requirements First",
+  "boutique-first": "Boutique First",
+};
+
+export const FLOW_ORDER_OPTIONS = [
+  {
+    value: "requirements-first" as const,
+    label: "Requirements First",
+    number: "1",
+    desc: "Describe outfit → get matched boutiques",
+  },
+  {
+    value: "boutique-first" as const,
+    label: "Boutique First",
+    number: "2",
+    desc: "Choose a boutique → then customize",
+  },
+];
+
 export const CUSTOMIZE_STEPS = [
   { id: "start", title: "How to Begin" },
   { id: "category", title: "Outfit & Occasion" },

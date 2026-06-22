@@ -13,9 +13,8 @@ interface OrdersPanelProps {
   orders: OrderSummary[];
 }
 
-const STATUS_ACTIONS: Record<string, { label: string; next: "in_progress" | "shipped" | "delivered" }[]> = {
-  in_progress: [{ label: "Mark shipped", next: "shipped" }],
-  shipped: [{ label: "Mark delivered", next: "delivered" }],
+const STATUS_ACTIONS: Record<string, { label: string; next: "in_progress" | "shipped" }[]> = {
+  in_progress: [{ label: "Mark ready for delivery", next: "shipped" }],
 };
 
 function formatAmount(amount: number | null, currency: string) {
@@ -32,7 +31,7 @@ export function OrdersPanel({ orders }: OrdersPanelProps) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  function handleStatusUpdate(orderId: string, status: "in_progress" | "shipped" | "delivered") {
+  function handleStatusUpdate(orderId: string, status: "in_progress" | "shipped") {
     setError(null);
     startTransition(async () => {
       const result = await updateOrderStatus({ orderId, status });
@@ -92,6 +91,11 @@ export function OrdersPanel({ orders }: OrdersPanelProps) {
               </div>
             </div>
             <PostedAt value={order.created_at} className="mt-3 text-xs text-foreground-muted" />
+            {order.status === "shipped" && (
+              <p className="mt-3 text-xs text-foreground-muted">
+                Awaiting customer balance payment — delivery completes automatically after they pay.
+              </p>
+            )}
             {actions.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
                 {actions.map((action) => (

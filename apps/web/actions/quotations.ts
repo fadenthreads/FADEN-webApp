@@ -7,12 +7,33 @@ import {
 } from "@faden/validators";
 import type { ActionResult } from "@faden/types";
 import { createClient } from "@/lib/supabase/server";
+import {
+  computeDepositAmount,
+  getDefaultAdvancePercent,
+  MAX_ADVANCE_PERCENT,
+} from "@/lib/payment/split-payment";
 
 function readOwnerId(boutiques: unknown): string | undefined {
   if (Array.isArray(boutiques)) {
     return (boutiques[0] as { owner_id?: string } | undefined)?.owner_id;
   }
   return (boutiques as { owner_id?: string } | null)?.owner_id;
+}
+
+function readCustomizationRequest(value: unknown): { fabric_source?: string | null } | null {
+  if (Array.isArray(value)) {
+    return (value[0] as { fabric_source?: string | null } | undefined) ?? null;
+  }
+  return (value as { fabric_source?: string | null } | null) ?? null;
+}
+
+async function assertAuthenticatedUser() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated.");
+  return { supabase, userId: user.id };
 }
 
 function readOrderJoin(value: unknown): {
@@ -23,15 +44,6 @@ function readOrderJoin(value: unknown): {
     return (value[0] as { status: string; customization_request_id: string | null } | undefined) ?? null;
   }
   return (value as { status: string; customization_request_id: string | null } | null) ?? null;
-}
-
-async function assertAuthenticatedUser() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated.");
-  return { supabase, userId: user.id };
 }
 
 async function notifyConversation(
@@ -69,12 +81,12 @@ export async function createQuotation(input: unknown): Promise<ActionResult<{ qu
     }
 
     const { supabase, userId } = await assertAuthenticatedUser();
-    const { orderId, lineItems, tax, notes, validUntilDays } = parsed.data;
+    const { orderId, lineItems, tax, notes, validUntilDays, advancePercent } = parsed.data;
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .select(
-        "id, customer_id, boutique_id, customization_request_id, status, boutiques ( owner_id )",
+        "id, customer_id, boutique_id, customization_request_id, status, boutiques ( owner_id ), customization_requests ( fabric_source )",
       )
       .eq("id", orderId)
       .maybeSingle();
@@ -93,6 +105,29 @@ export async function createQuotation(input: unknown): Promise<ActionResult<{ qu
     const validUntil = new Date();
     validUntil.setDate(validUntil.getDate() + validUntilDays);
 
+    const requestRow = readCustomizationRequest(order.customization_requests);
+    const fabricSource = requestRow?.fabric_source ?? null;
+    const maxAdvance = getDefaultAdvancePercent(fabricSource) > 0 ? MAX_ADVANCE_PERCENT : 0;
+
+    if (advancePercent > MAX_ADVANCE_PERCENT) {
+      return {
+        ok: false,
+        error: `Advance payment cannot exceed ${MAX_ADVANCE_PERCENT}%.`,
+      };
+    }
+
+    if (advancePercent > maxAdvance) {
+      return {
+        ok: false,
+        error:
+          maxAdvance === 0
+            ? "This customer is providing fabric — advance payment must be 0%."
+            : `Advance payment cannot exceed ${maxAdvance}%.`,
+      };
+    }
+
+    const resolvedAdvance = advancePercent;
+
     const { data: quotation, error: quotationError } = await supabase
       .from("quotations")
       .insert({
@@ -102,6 +137,7 @@ export async function createQuotation(input: unknown): Promise<ActionResult<{ qu
         subtotal,
         tax,
         total,
+        advance_percent: resolvedAdvance,
         notes: notes?.trim() || null,
         valid_until: validUntil.toISOString(),
       })
@@ -148,7 +184,7 @@ export async function createQuotation(input: unknown): Promise<ActionResult<{ qu
       supabase,
       orderId,
       userId,
-      `Quotation sent: ₹${total.toLocaleString("en-IN")}. Valid until ${validUntil.toLocaleDateString("en-IN")}.`,
+      `Quotation sent: ₹${total.toLocaleString("en-IN")} (${resolvedAdvance}% advance). Valid until ${validUntil.toLocaleDateString("en-IN")}.`,
     );
 
     revalidatePath("/dashboard");
@@ -171,7 +207,7 @@ export async function decideQuotation(input: unknown): Promise<ActionResult> {
 
     const { data: quotation, error: quoteError } = await supabase
       .from("quotations")
-      .select("id, order_id, customer_id, total, valid_until, orders ( status, customization_request_id )")
+      .select("id, order_id, customer_id, total, advance_percent, valid_until, orders ( status, customization_request_id )")
       .eq("id", quotationId)
       .maybeSingle();
 
@@ -191,9 +227,13 @@ export async function decideQuotation(input: unknown): Promise<ActionResult> {
     }
 
     if (decision === "accepted") {
+      const advancePercent = Number(quotation.advance_percent ?? 40);
+      const depositAmount = computeDepositAmount(Number(quotation.total), advancePercent);
+      const nextStatus = depositAmount > 0 ? "confirmed" : "in_progress";
+
       const { error: orderError } = await supabase
         .from("orders")
-        .update({ status: "confirmed", total_amount: quotation.total })
+        .update({ status: nextStatus, total_amount: quotation.total })
         .eq("id", quotation.order_id);
 
       if (orderError) return { ok: false, error: orderError.message };
@@ -201,14 +241,17 @@ export async function decideQuotation(input: unknown): Promise<ActionResult> {
       if (order.customization_request_id) {
         await supabase
           .from("customization_requests")
-          .update({ status: "accepted" })
+          .update({ status: depositAmount > 0 ? "accepted" : "in_production" })
           .eq("id", order.customization_request_id);
       }
 
       await supabase.from("order_events").insert({
         order_id: quotation.order_id,
-        status: "confirmed",
-        note: "Customer accepted quotation",
+        status: nextStatus,
+        note:
+          depositAmount > 0
+            ? `Customer accepted quotation — ${advancePercent}% advance due`
+            : "Customer accepted quotation — production started (no advance required)",
         created_by: userId,
       });
 
@@ -216,7 +259,9 @@ export async function decideQuotation(input: unknown): Promise<ActionResult> {
         supabase,
         quotation.order_id,
         userId,
-        `Quotation accepted — ₹${Number(quotation.total).toLocaleString("en-IN")}. Complete payment on your account to start production.`,
+        depositAmount > 0
+          ? `Quotation accepted — pay ${advancePercent}% advance (₹${depositAmount.toLocaleString("en-IN")}) to start production. Remaining balance is due before delivery.`
+          : "Quotation accepted — production will begin. Pay the full balance when your order is ready for delivery.",
       );
     } else {
       const { error: orderError } = await supabase

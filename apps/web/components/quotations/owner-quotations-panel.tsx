@@ -10,6 +10,7 @@ import type { OrderSummary } from "@/lib/customization/queries";
 import type { QuotationSummary } from "@/lib/quotation/queries";
 import { formatPostedAt } from "@/lib/datetime/format";
 import { formatInr } from "@/lib/quotation/queries";
+import { MAX_ADVANCE_PERCENT } from "@/lib/payment/split-payment";
 
 interface LineItemDraft {
   label: string;
@@ -89,6 +90,7 @@ export function OwnerQuotationsPanel({ orders, quotations }: OwnerQuotationsPane
     { label: "Tailoring", quantity: "1", unitPrice: "" },
   ]);
   const [tax, setTax] = useState("0");
+  const [advancePercent, setAdvancePercent] = useState("40");
   const [notes, setNotes] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -100,6 +102,18 @@ export function OwnerQuotationsPanel({ orders, quotations }: OwnerQuotationsPane
     return sum + qty * price;
   }, 0);
   const total = subtotal + (Number(tax) || 0);
+  const parsedAdvance = Number(advancePercent);
+  const advanceInvalid =
+    advancePercent.trim() !== "" &&
+    (!Number.isFinite(parsedAdvance) ||
+      parsedAdvance < 0 ||
+      parsedAdvance > MAX_ADVANCE_PERCENT ||
+      !Number.isInteger(parsedAdvance));
+  const advanceError = advanceInvalid
+    ? parsedAdvance > MAX_ADVANCE_PERCENT
+      ? `Advance payment cannot exceed ${MAX_ADVANCE_PERCENT}%.`
+      : "Enter a whole number between 0 and 40."
+    : null;
 
   function updateLine(index: number, patch: Partial<LineItemDraft>) {
     setLineItems((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
@@ -127,6 +141,11 @@ export function OwnerQuotationsPanel({ orders, quotations }: OwnerQuotationsPane
       return;
     }
 
+    if (advanceInvalid) {
+      setError(advanceError ?? `Advance payment cannot exceed ${MAX_ADVANCE_PERCENT}%.`);
+      return;
+    }
+
     startTransition(async () => {
       const result = await createQuotation({
         orderId: selectedOrderId,
@@ -138,6 +157,7 @@ export function OwnerQuotationsPanel({ orders, quotations }: OwnerQuotationsPane
         tax: Number(tax) || 0,
         notes,
         validUntilDays: 7,
+        advancePercent: Number(advancePercent) || 0,
       });
 
       if (!result.ok) {
@@ -156,7 +176,8 @@ export function OwnerQuotationsPanel({ orders, quotations }: OwnerQuotationsPane
       <PremiumCard hover={false}>
         <h3 className="font-display text-lg font-semibold text-gold">Send Quotation</h3>
         <p className="mt-2 text-sm text-foreground-muted">
-          Build a line-item quote for a pending order. The customer will see it on their account.
+          Build a line-item quote for a pending order. Set advance payment up to 40% when you supply
+          fabric — the customer pays the balance before delivery.
         </p>
 
         {error && (
@@ -279,11 +300,47 @@ export function OwnerQuotationsPanel({ orders, quotations }: OwnerQuotationsPane
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-gold/40"
                 />
               </label>
-              <div className="flex items-end">
-                <p className="text-sm text-foreground-muted">
-                  Total: <span className="font-semibold text-gold">{formatInr(total)}</span>
-                </p>
-              </div>
+              <label className="block text-sm">
+                <span className="text-foreground-muted">Advance payment (%)</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={MAX_ADVANCE_PERCENT}
+                  step={1}
+                  value={advancePercent}
+                  onChange={(e) => {
+                    setAdvancePercent(e.target.value);
+                    setError(null);
+                  }}
+                  aria-invalid={advanceInvalid}
+                  className={`mt-1 w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:border-gold/40 ${
+                    advanceInvalid ? "border-red-accent" : "border-border"
+                  }`}
+                />
+                {advanceError ? (
+                  <span className="mt-1 block text-xs text-red-accent">{advanceError}</span>
+                ) : (
+                  <span className="mt-1 block text-xs text-foreground-muted">
+                    Max {MAX_ADVANCE_PERCENT}% when boutique supplies fabric. Use 0% if the customer
+                    provides fabric.
+                  </span>
+                )}
+              </label>
+            </div>
+
+            <div className="flex items-end">
+              <p className="text-sm text-foreground-muted">
+                Total: <span className="font-semibold text-gold">{formatInr(total)}</span>
+                {Number(advancePercent) > 0 && !advanceInvalid && (
+                  <>
+                    {" "}
+                    · Advance:{" "}
+                    <span className="font-semibold text-gold">
+                      {formatInr(Math.round((total * parsedAdvance) / 100))}
+                    </span>
+                  </>
+                )}
+              </p>
             </div>
 
             <label className="block text-sm">
@@ -297,7 +354,12 @@ export function OwnerQuotationsPanel({ orders, quotations }: OwnerQuotationsPane
               />
             </label>
 
-            <Button type="button" variant="luxury" disabled={pending} onClick={handleSubmit}>
+            <Button
+              type="button"
+              variant="luxury"
+              disabled={pending || advanceInvalid}
+              onClick={handleSubmit}
+            >
               {pending ? "Sending…" : "Send quotation"}
             </Button>
           </div>

@@ -15,7 +15,6 @@ function readOwnerId(boutiques: unknown): string | undefined {
 const ALLOWED_TRANSITIONS: Record<string, string[]> = {
   confirmed: ["in_progress"],
   in_progress: ["shipped"],
-  shipped: ["delivered"],
 };
 
 export async function updateOrderStatus(input: unknown): Promise<ActionResult> {
@@ -58,14 +57,13 @@ export async function updateOrderStatus(input: unknown): Promise<ActionResult> {
 
     const statusNotes: Record<string, string> = {
       in_progress: "Production started",
-      shipped: "Order shipped",
-      delivered: "Order delivered",
+      shipped: "Order ready for delivery — awaiting customer balance payment",
     };
 
-    if (parsed.data.status === "delivered" && order.customization_request_id) {
+    if (parsed.data.status === "shipped" && order.customization_request_id) {
       await supabase
         .from("customization_requests")
-        .update({ status: "completed" })
+        .update({ status: "in_production" })
         .eq("id", order.customization_request_id);
     }
 

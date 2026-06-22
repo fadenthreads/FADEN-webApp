@@ -5,6 +5,7 @@ import {
   isQuotationExpired,
   type QuotationSummary,
 } from "@/lib/quotation/queries";
+import { computeDepositAmount, computeBalanceAmount } from "@/lib/payment/split-payment";
 import { formatDateOnly } from "@/lib/datetime/format";
 
 interface QuotationCardProps {
@@ -15,6 +16,9 @@ interface QuotationCardProps {
 
 export function QuotationCard({ quotation, mode, footer }: QuotationCardProps) {
   const expired = isQuotationExpired(quotation.valid_until);
+  const advancePercent = quotation.advance_percent ?? 40;
+  const depositAmount = computeDepositAmount(quotation.total, advancePercent);
+  const balanceAmount = computeBalanceAmount(quotation.total, advancePercent);
   const title =
     mode === "customer"
       ? quotation.boutique_name ?? "Boutique"
@@ -51,6 +55,21 @@ export function QuotationCard({ quotation, mode, footer }: QuotationCardProps) {
           </li>
         )}
       </ul>
+
+      <div className="mt-3 rounded-lg border border-gold/20 bg-gold/5 px-3 py-2 text-sm text-foreground-muted">
+        {advancePercent > 0 ? (
+          <>
+            <span className="text-gold/80">Payment:</span> {advancePercent}% advance (
+            {formatInr(depositAmount)}) to start production · balance {formatInr(balanceAmount)} due
+            before delivery
+          </>
+        ) : (
+          <>
+            <span className="text-gold/80">Payment:</span> No advance — pay {formatInr(balanceAmount)}{" "}
+            when ready for delivery
+          </>
+        )}
+      </div>
 
       {quotation.notes && (
         <p className="mt-3 text-sm text-foreground-muted">

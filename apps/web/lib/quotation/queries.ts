@@ -14,6 +14,7 @@ export interface QuotationSummary {
   subtotal: number;
   tax: number;
   total: number;
+  advance_percent: number;
   notes: string | null;
   valid_until: string | null;
   created_at: string;
@@ -45,6 +46,7 @@ const QUOTATION_SELECT = `
   subtotal,
   tax,
   total,
+  advance_percent,
   notes,
   valid_until,
   created_at,
@@ -75,6 +77,7 @@ function mapQuotationRow(row: Record<string, unknown>): QuotationSummary {
     subtotal: Number(row.subtotal),
     tax: Number(row.tax),
     total: Number(row.total),
+    advance_percent: Number(row.advance_percent ?? 40),
     notes: row.notes as string | null,
     valid_until: row.valid_until as string | null,
     created_at: row.created_at as string,

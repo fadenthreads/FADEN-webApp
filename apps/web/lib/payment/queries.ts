@@ -2,6 +2,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PaymentStatus } from "@faden/types";
 import type { OrderSummary } from "@/lib/customization/queries";
 import { formatInr } from "@/lib/quotation/queries";
+import {
+  resolveOutstandingPayment,
+  type PaymentPhase,
+} from "@/lib/payment/split-payment";
 
 export interface PaymentSummary {
   id: string;
@@ -16,15 +20,20 @@ export interface PaymentSummary {
   boutique_name: string | null;
   customer_name: string | null;
   order_status: string | null;
+  payment_phase: PaymentPhase | null;
 }
 
 export interface PayableOrder {
   id: string;
   total_amount: number;
+  due_amount: number;
   currency: string;
   outfit_type: string | null;
   boutique_name: string | null;
   created_at: string;
+  payment_phase: PaymentPhase;
+  advance_percent: number;
+  order_status: string;
 }
 
 function readNestedRecord<T extends Record<string, unknown>>(value: unknown): T | null {
@@ -48,6 +57,7 @@ const PAYMENT_SELECT = `
   currency,
   status,
   provider_payment_id,
+  metadata,
   created_at,
   updated_at,
   orders (
@@ -68,6 +78,7 @@ function mapPaymentRow(row: Record<string, unknown>): PaymentSummary {
   const request = readNestedRecord<{ outfit_type: string | null }>(order?.customization_requests);
   const boutique = readNestedRecord<{ name: string }>(order?.boutiques);
   const customer = readProfile(order?.profiles);
+  const metadata = row.metadata as { phase?: PaymentPhase } | null;
 
   return {
     id: row.id as string,
@@ -82,6 +93,7 @@ function mapPaymentRow(row: Record<string, unknown>): PaymentSummary {
     boutique_name: boutique?.name ?? null,
     customer_name: customer?.full_name ?? customer?.email ?? null,
     order_status: order?.status ?? null,
+    payment_phase: metadata?.phase ?? null,
   };
 }
 
@@ -139,13 +151,14 @@ export async function listCustomerPayableOrders(
       id,
       total_amount,
       currency,
+      status,
       created_at,
       boutiques ( name ),
       customization_requests ( outfit_type )
     `,
     )
     .eq("customer_id", customerId)
-    .eq("status", "confirmed")
+    .in("status", ["confirmed", "shipped"])
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(error.message);
@@ -153,14 +166,31 @@ export async function listCustomerPayableOrders(
   const payable: PayableOrder[] = [];
 
   for (const order of orders ?? []) {
-    const { data: captured } = await supabase
-      .from("payments")
-      .select("id")
+    const { data: quotation } = await supabase
+      .from("quotations")
+      .select("advance_percent")
       .eq("order_id", order.id)
-      .eq("status", "captured")
+      .order("created_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
-    if (captured) continue;
+    const { data: capturedPayments } = await supabase
+      .from("payments")
+      .select("amount, metadata")
+      .eq("order_id", order.id)
+      .eq("status", "captured");
+
+    const outstanding = resolveOutstandingPayment({
+      total: Number(order.total_amount ?? 0),
+      advancePercent: Number(quotation?.advance_percent ?? 40),
+      orderStatus: order.status as string,
+      capturedPayments: (capturedPayments ?? []).map((payment) => ({
+        amount: Number(payment.amount),
+        metadata: payment.metadata as { phase?: string } | null,
+      })),
+    });
+
+    if (!outstanding) continue;
 
     const boutique = readNestedRecord<{ name: string }>(order.boutiques);
     const request = readNestedRecord<{ outfit_type: string | null }>(order.customization_requests);
@@ -168,10 +198,14 @@ export async function listCustomerPayableOrders(
     payable.push({
       id: order.id,
       total_amount: Number(order.total_amount ?? 0),
+      due_amount: outstanding.dueAmount,
       currency: order.currency as string,
       outfit_type: request?.outfit_type ?? null,
       boutique_name: boutique?.name ?? null,
       created_at: order.created_at as string,
+      payment_phase: outstanding.phase,
+      advance_percent: outstanding.advancePercent,
+      order_status: order.status as string,
     });
   }
 

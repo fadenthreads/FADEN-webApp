@@ -27,6 +27,7 @@ import {
   StepReview,
   StepStart,
 } from "./customize-steps";
+import { CustomizeFlowBanner } from "./customize-flow-banner";
 
 function stepContent(step: CustomizeStepId, data: CustomizeFormData, onChange: (p: Partial<CustomizeFormData>) => void) {
   switch (step) {
@@ -259,6 +260,10 @@ export function CustomizeWizard() {
       </nav>
 
       <div className="premium-surface-3d rounded-xl p-6 md:p-8">
+        <CustomizeFlowBanner
+          data={data}
+          onChange={stepIndex === 0 ? (flowOrder) => onChange({ flowOrder }) : undefined}
+        />
         <h2 className="font-display text-xl font-semibold text-gold">{step.title}</h2>
         {error && (
           <p className="mt-4 rounded-lg border border-red-accent/40 bg-red-accent/10 px-3 py-2 text-sm text-red-accent">
