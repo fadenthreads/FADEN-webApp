@@ -2,21 +2,46 @@ import { z } from "zod";
 
 export * from "./audiences";
 
+export const normalizedEmailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .email("Enter a valid email");
+
+export const strongPasswordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-Z]/, "Include at least 1 uppercase letter")
+  .regex(/[a-z]/, "Include at least 1 lowercase letter")
+  .regex(/[0-9]/, "Include at least 1 number")
+  .regex(/[^A-Za-z0-9]/, "Include at least 1 special character");
+
 export const loginSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: normalizedEmailSchema,
+  password: z.string().min(1, "Enter your password"),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
 
 export const signupSchema = z.object({
-  fullName: z.string().min(2, "Enter your full name"),
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  fullName: z.string().trim().min(2, "Enter your full name"),
+  email: normalizedEmailSchema,
+  password: strongPasswordSchema,
   role: z.enum(["customer", "boutique_owner"]).default("customer"),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;
+
+export const signupFormSchema = signupSchema
+  .extend({
+    confirmPassword: z.string().min(1, "Confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type SignupFormInput = z.infer<typeof signupFormSchema>;
 
 export const boutiqueRegistrationSchema = z.object({
   name: z.string().min(2, "Boutique name is required"),
@@ -476,6 +501,25 @@ export const adminCancelOrderSchema = z.object({
 });
 
 export type AdminCancelOrderInput = z.infer<typeof adminCancelOrderSchema>;
+
+export const alterationRequestSchema = z.object({
+  alterationType: z.string().trim().min(3, "Describe the alteration you need"),
+  urgencyHours: z.coerce
+    .number()
+    .int()
+    .min(1, "Select how soon you need it")
+    .max(48, "Urgency must be within 48 hours"),
+  homeServiceOk: z.boolean().default(false),
+  homeAddress: z.string().optional(),
+  homeLat: z.coerce.number().optional().nullable(),
+  homeLng: z.coerce.number().optional().nullable(),
+  photoUrls: z.array(z.string()).max(6).default([]),
+  notes: z.string().max(2000).optional(),
+  customerLat: z.coerce.number().optional().nullable(),
+  customerLng: z.coerce.number().optional().nullable(),
+});
+
+export type AlterationRequestInput = z.infer<typeof alterationRequestSchema>;
 
 /** Split newline- or comma-separated free text into trimmed tokens. */
 export function splitList(value?: string): string[] {

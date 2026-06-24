@@ -5,9 +5,10 @@ import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { OpeningSequence } from "@/components/animations/opening-sequence";
 import { ScissorsLoading } from "@/components/animations/scissors-loading";
-import { CTAGate } from "@/components/landing/cta-gate";
 import { HeroSection } from "@/components/landing/hero-section";
 import { FeaturedPreview } from "@/components/landing/featured-preview";
+import { FeaturedClothing } from "@/components/landing/featured-clothing";
+import { MobileHomeToolbar } from "@/components/landing/mobile-home-toolbar";
 import { CoreAim } from "@/components/landing/core-aim";
 import { ProblemsWeSolve } from "@/components/landing/problems-we-solve";
 import { VisionStatement } from "@/components/landing/vision-statement";
@@ -16,7 +17,7 @@ import {
   type AudienceCategory,
 } from "@/lib/landing/audience-categories";
 
-type LoadPhase = "opening" | "scissors" | "cta" | "main";
+type LoadPhase = "opening" | "scissors" | "main";
 
 interface HomePageClientProps {
   skipIntro?: boolean;
@@ -31,7 +32,6 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
     if (skipIntro) return "main";
     return "opening";
   });
-  const [showAllBoutiques, setShowAllBoutiques] = useState(skipIntro);
 
   useEffect(() => {
     if (!skipIntro) {
@@ -40,17 +40,10 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
   }, [skipIntro]);
 
   useEffect(() => {
-    if (phase === "cta") {
-      window.scrollTo(0, 0);
-    }
-  }, [phase]);
-
-  useEffect(() => {
     if (phase !== "main") return;
 
     const syncFromHash = () => {
       if (window.location.hash === "#featured-boutiques") {
-        setShowAllBoutiques(true);
         requestAnimationFrame(() => {
           document.getElementById("featured-boutiques")?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
@@ -64,7 +57,6 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
 
   useEffect(() => {
     if (categoryFromUrl && phase === "main") {
-      setShowAllBoutiques(true);
       requestAnimationFrame(() => {
         document.getElementById("featured-boutiques")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -72,15 +64,9 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
   }, [categoryFromUrl, phase]);
 
   const handleExploreBoutiques = useCallback(() => {
-    setShowAllBoutiques(true);
     requestAnimationFrame(() => {
       document.getElementById("featured-boutiques")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-  }, []);
-
-  const handleEnterMain = useCallback(() => {
-    setPhase("main");
-    setShowAllBoutiques(true);
   }, []);
 
   const handleOpeningComplete = useCallback(() => {
@@ -88,7 +74,7 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
   }, []);
 
   const handleScissorsComplete = useCallback(() => {
-    setPhase("cta");
+    setPhase("main");
   }, []);
 
   return (
@@ -102,16 +88,16 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
         )}
       </AnimatePresence>
 
-      {phase === "cta" && <CTAGate onExplore={handleEnterMain} />}
-
       {phase === "main" && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
+          <MobileHomeToolbar />
           <HeroSection onExploreBoutiques={handleExploreBoutiques} />
           <FeaturedPreview audienceCategory={categoryFromUrl} />
+          <FeaturedClothing audienceCategory={categoryFromUrl} />
           <CoreAim />
           <ProblemsWeSolve />
           <VisionStatement />

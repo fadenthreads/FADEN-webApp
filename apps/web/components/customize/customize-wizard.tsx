@@ -29,29 +29,6 @@ import {
 } from "./customize-steps";
 import { CustomizeFlowBanner } from "./customize-flow-banner";
 
-function stepContent(step: CustomizeStepId, data: CustomizeFormData, onChange: (p: Partial<CustomizeFormData>) => void) {
-  switch (step) {
-    case "start":
-      return <StepStart data={data} onChange={onChange} />;
-    case "category":
-      return <StepCategory data={data} onChange={onChange} />;
-    case "inspiration":
-      return <StepInspiration data={data} onChange={onChange} />;
-    case "fabric":
-      return <StepFabric data={data} onChange={onChange} />;
-    case "measurements":
-      return <StepMeasurements data={data} onChange={onChange} />;
-    case "design":
-      return <StepDesign data={data} onChange={onChange} />;
-    case "delivery":
-      return <StepDelivery data={data} onChange={onChange} />;
-    case "review":
-      return <StepReview data={data} hasPreselectedBoutique={Boolean(data.selectedBoutiqueSlug)} />;
-    default:
-      return null;
-  }
-}
-
 export function CustomizeWizard() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -84,6 +61,43 @@ export function CustomizeWizard() {
   const step = CUSTOMIZE_STEPS[stepIndex];
   const onChange = (patch: Partial<CustomizeFormData>) => setData((d) => ({ ...d, ...patch }));
   const hasBoutique = Boolean(data.selectedBoutiqueSlug?.trim() || boutiqueParam);
+
+  function goToStep(stepId: CustomizeStepId) {
+    const index = CUSTOMIZE_STEPS.findIndex((s) => s.id === stepId);
+    if (index >= 0) {
+      setError(null);
+      setStepIndex(index);
+    }
+  }
+
+  function renderStepContent(stepId: CustomizeStepId) {
+    switch (stepId) {
+      case "start":
+        return <StepStart data={data} onChange={onChange} />;
+      case "category":
+        return <StepCategory data={data} onChange={onChange} />;
+      case "inspiration":
+        return <StepInspiration data={data} onChange={onChange} />;
+      case "fabric":
+        return <StepFabric data={data} onChange={onChange} />;
+      case "measurements":
+        return <StepMeasurements data={data} onChange={onChange} />;
+      case "design":
+        return <StepDesign data={data} onChange={onChange} />;
+      case "delivery":
+        return <StepDelivery data={data} onChange={onChange} />;
+      case "review":
+        return (
+          <StepReview
+            data={data}
+            hasPreselectedBoutique={Boolean(data.selectedBoutiqueSlug)}
+            onGoToStep={goToStep}
+          />
+        );
+      default:
+        return null;
+    }
+  }
 
   useEffect(() => {
     if (!referenceParam || !boutiqueParam) return;
@@ -270,7 +284,7 @@ export function CustomizeWizard() {
             {error}
           </p>
         )}
-        <div className="mt-6">{stepContent(step.id, data, onChange)}</div>
+        <div className="mt-6">{renderStepContent(step.id)}</div>
 
         <div className="mt-8 flex justify-between gap-4">
           <Button

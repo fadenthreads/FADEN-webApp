@@ -15,7 +15,10 @@ import {
 import type { BoutiqueModificationSummary } from "@/lib/boutique/modification-queries";
 import { boutiqueDetailsChanged } from "@/components/boutique/boutique-form-constants";
 import { AudienceFormField } from "@/components/boutique/audience-form-field";
+import { ImageUrlUpload } from "@/components/ui/image-url-upload";
 import { formatPostedAt } from "@/lib/datetime/format";
+
+const ALL_CLOTHING_TYPES_LABEL = "All kinds of clothing — full customization for women, men, and kids";
 
 const DRAFT_KEY = "faden-boutique-registration-draft";
 
@@ -117,6 +120,30 @@ export function BoutiqueRegistrationForm({
   const [modifySubmitted, setModifySubmitted] = useState(false);
   const [draftSaved, setDraftSaved] = useState(false);
   const [pending, setPending] = useState(false);
+  const [allKindsOfClothing, setAllKindsOfClothing] = useState(
+    () => initialForm?.outfitTypes?.includes("All kinds of clothing") ?? false,
+  );
+
+  const activeIndex = SECTIONS.indexOf(active);
+  const isLastSection = activeIndex === SECTIONS.length - 1;
+
+  function goToNextSection() {
+    if (!isLastSection) setActive(SECTIONS[activeIndex + 1]);
+  }
+
+  function goToPreviousSection() {
+    if (activeIndex > 0) setActive(SECTIONS[activeIndex - 1]);
+  }
+
+  function toggleAllKindsOfClothing(checked: boolean) {
+    setAllKindsOfClothing(checked);
+    if (checked) {
+      updateField("outfitTypes", ALL_CLOTHING_TYPES_LABEL);
+      updateField("audiences", "women,men,kids");
+    } else if (form.outfitTypes === ALL_CLOTHING_TYPES_LABEL) {
+      updateField("outfitTypes", "");
+    }
+  }
 
   const hasDetailChanges = useMemo(
     () => isModify && boutiqueDetailsChanged(form, baselineForm),
@@ -391,26 +418,43 @@ export function BoutiqueRegistrationForm({
           )}
           {active === "portfolio" && (
             <>
-              <FormField label="Completed outfit photos" hint="One URL per line until file upload is enabled.">
-                <TextArea
-                  value={form.portfolioPhotoUrls}
-                  onChange={(e) => updateField("portfolioPhotoUrls", e.target.value)}
-                  placeholder="Photo URLs, one per line"
-                />
-              </FormField>
+              <ImageUrlUpload
+                label="Completed outfit photos"
+                hint="Upload portfolio photos or paste URLs — show your best work."
+                value={form.portfolioPhotoUrls ?? ""}
+                onChange={(value) => updateField("portfolioPhotoUrls", value)}
+              />
               <AudienceFormField
                 value={form.audiences}
                 onChange={(value) => updateField("audiences", value)}
               />
+              <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={allKindsOfClothing}
+                  onChange={(e) => toggleAllKindsOfClothing(e.target.checked)}
+                  className="mt-1"
+                />
+                <span>
+                  <span className="block text-sm font-medium">All kinds of clothing</span>
+                  <span className="mt-1 block text-xs text-foreground-muted">
+                    We customize everything — women&apos;s, men&apos;s, and kids&apos; wear across all outfit types.
+                  </span>
+                </span>
+              </label>
               <FormField
                 label="Outfit types you make"
                 hint="List women's, men's, and kids' types — e.g. Lehenga, Sherwani, Kids Kurta."
               >
                 <TextArea
                   value={form.outfitTypes}
-                  onChange={(e) => updateField("outfitTypes", e.target.value)}
+                  onChange={(e) => {
+                    setAllKindsOfClothing(false);
+                    updateField("outfitTypes", e.target.value);
+                  }}
                   placeholder="Lehenga, Saree, Sherwani, Kids Lehenga…"
-                  required
+                  required={!allKindsOfClothing}
+                  disabled={allKindsOfClothing}
                 />
               </FormField>
             </>
@@ -466,18 +510,17 @@ export function BoutiqueRegistrationForm({
           )}
           {active === "trust" && (
             <>
+              <ImageUrlUpload
+                label="Verification photos & videos"
+                hint="Upload workshop, portfolio, or storefront photos. Required — or FADEN will schedule a visit."
+                value={form.trustMediaUrls ?? ""}
+                onChange={(value) => updateField("trustMediaUrls", value)}
+              />
               <FormField label="Customer reviews summary">
                 <TextArea
                   value={form.reviewsSummary}
                   onChange={(e) => updateField("reviewsSummary", e.target.value)}
                   placeholder="Written reviews, delivery ratings, quality ranges"
-                />
-              </FormField>
-              <FormField label="Photos & videos" hint="Required — or FADEN will schedule a visit.">
-                <TextArea
-                  value={form.trustMediaUrls}
-                  onChange={(e) => updateField("trustMediaUrls", e.target.value)}
-                  placeholder="Portfolio / workshop video URLs"
                 />
               </FormField>
               <FormField label="Social media links">
@@ -560,25 +603,37 @@ export function BoutiqueRegistrationForm({
                 : "Change at least one field to enable submission."
               : "Required: basic details, outfit types, and services (check all sections)."}
           </p>
+          {!isModify && activeIndex > 0 && (
+            <Button type="button" variant="luxury-outline" onClick={goToPreviousSection} disabled={pending}>
+              Back
+            </Button>
+          )}
           {!isModify && (
             <Button type="button" variant="luxury-outline" onClick={saveDraft} disabled={pending}>
               Save Draft
             </Button>
           )}
-          <Button
-            type="button"
-            variant="luxury"
-            onClick={handleSubmit}
-            disabled={pending || (isModify && !hasDetailChanges)}
-          >
-            {pending
-              ? "Submitting…"
-              : isModify
-                ? isVerifiedModify
-                  ? "Submit modification"
-                  : "Save changes"
-                : "Submit Registration"}
-          </Button>
+          {!isModify && !isLastSection && (
+            <Button type="button" variant="luxury" onClick={goToNextSection} disabled={pending}>
+              Next
+            </Button>
+          )}
+          {(isModify || isLastSection) && (
+            <Button
+              type="button"
+              variant="luxury"
+              onClick={handleSubmit}
+              disabled={pending || (isModify && !hasDetailChanges)}
+            >
+              {pending
+                ? "Submitting…"
+                : isModify
+                  ? isVerifiedModify
+                    ? "Submit modification"
+                    : "Save changes"
+                  : "Submit Registration"}
+            </Button>
+          )}
         </div>
       </PremiumCard>
     </div>

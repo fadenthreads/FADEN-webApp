@@ -13,7 +13,8 @@ import { DESIGN_DETAIL_FIELDS } from "@/data/design-options";
 import { FABRIC_COLOR_SUGGESTIONS, FABRIC_KIND_SUGGESTIONS } from "@/data/fabric-options";
 import { formatSelfMeasurementsSummary } from "@/data/measurement-fields";
 import { formatDateOnly } from "@/lib/datetime/format";
-import { FLOW_ORDER_LABELS, OCCASION_SUGGESTIONS, type CustomizeFormData } from "@/data/customize-form";
+import { FLOW_ORDER_LABELS, OCCASION_SUGGESTIONS, type CustomizeFormData, type CustomizeStepId } from "@/data/customize-form";
+import { getCustomizeReviewWarnings } from "@/lib/customize/review-warnings";
 import { AUDIENCE_LABELS, OUTFIT_TYPES_BY_AUDIENCE } from "@/lib/boutique/audiences";
 import { preferredAssistantGenderForAudience } from "@/lib/measurement/assistant-gender";
 import type { AudienceCategory } from "@faden/validators";
@@ -362,10 +363,13 @@ function formatReviewValue(key: string, val: unknown, data: CustomizeFormData): 
 export function StepReview({
   data,
   hasPreselectedBoutique = false,
+  onGoToStep,
 }: {
   data: CustomizeFormData;
   hasPreselectedBoutique?: boolean;
+  onGoToStep?: (stepId: CustomizeStepId) => void;
 }) {
+  const warnings = getCustomizeReviewWarnings(data);
   const hiddenKeys = new Set([
     "selfMeasurements",
     "mixOutfitImages",
@@ -397,6 +401,29 @@ export function StepReview({
           ? "Review your request before sending it to your chosen boutique."
           : "Review your request, then browse suggested boutiques and pick one before submitting."}
       </p>
+      {warnings.length > 0 && (
+        <ul className="space-y-2">
+          {warnings.map((warning) => (
+            <li key={warning.id}>
+              <button
+                type="button"
+                onClick={() => onGoToStep?.(warning.stepId)}
+                className={cn(
+                  "w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors hover:ring-1 hover:ring-gold/40",
+                  warning.severity === "error"
+                    ? "border-red-accent/40 bg-red-accent/10 text-red-accent"
+                    : "border-amber-500/40 bg-amber-500/10 text-amber-200",
+                )}
+              >
+                {warning.message}
+                {onGoToStep && (
+                  <span className="mt-1 block text-xs opacity-80">Tap to fix →</span>
+                )}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       <dl className="premium-surface divide-y divide-border rounded-xl">
         {sortedRows.map(([key, val]) => {
           const display = formatReviewValue(key, val, data);

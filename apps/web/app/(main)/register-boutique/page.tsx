@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { BoutiqueRegistrationForm } from "@/components/register-boutique/boutique-registration-form";
 import { getOwnerBoutique } from "@/lib/boutique/queries";
 import {
@@ -27,6 +29,7 @@ export async function generateMetadata({ searchParams }: RegisterBoutiquePagePro
 }
 
 export default async function RegisterBoutiquePage({ searchParams }: RegisterBoutiquePageProps) {
+  const t = await getTranslations("RegisterBoutique");
   const params = await searchParams;
   const modifyRequested = params.mode === "modify";
 
@@ -76,16 +79,22 @@ export default async function RegisterBoutiquePage({ searchParams }: RegisterBou
     <div className="faden-page-glow min-h-[calc(100vh-120px)] px-4 py-10 lg:px-12">
       <div className="mx-auto max-w-container">
         <header className="mb-10 text-center">
-          <p className="text-xs font-semibold tracking-[0.3em] text-gold">FOR BOUTIQUES</p>
+          <p className="text-xs font-semibold tracking-[0.3em] text-gold">{t("forBoutiques")}</p>
           <h1 className="mt-3 font-display text-3xl font-bold md:text-4xl">
-            {modifyMode ? "Modify Boutique Details" : "Register Your Boutique"}
+            {modifyMode ? t("modifyTitle") : t("title")}
           </h1>
-          <p className="mx-auto mt-3 max-w-xl text-foreground-muted">
-            {modifyMode
-              ? boutiqueStatus === "verified"
-                ? "Update your studio profile. Changes go live after admin approval."
-                : "Update your registration details while your boutique is under review."
-              : "List your portfolio, services, and trust signals to join India's boutique fashion platform."}
+          <p className="mx-auto mt-3 max-w-xl text-foreground-muted">{t("subtitle")}</p>
+          <p className="mt-4 text-sm text-foreground-muted">
+            <Link href="/login?next=/register-boutique" className="text-gold hover:text-gold-light">
+              {t("signIn")}
+            </Link>
+            {" · "}
+            <Link
+              href="/signup?next=/register-boutique&role=boutique_owner"
+              className="text-gold hover:text-gold-light"
+            >
+              {t("createAccount")}
+            </Link>
           </p>
         </header>
         <BoutiqueRegistrationForm

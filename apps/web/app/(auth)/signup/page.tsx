@@ -8,11 +8,15 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 interface SignupPageProps {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; role?: string }>;
 }
 
 export default async function SignupPage({ searchParams }: SignupPageProps) {
   const params = await searchParams;
+  const defaultRole = params.role === "boutique_owner" ? "boutique_owner" : "customer";
+  const next =
+    params.next ??
+    (defaultRole === "boutique_owner" ? "/register-boutique" : "/");
 
-  return <SignupForm next={params.next ?? "/register-boutique"} />;
+  return <SignupForm next={next} defaultRole={defaultRole} />;
 }

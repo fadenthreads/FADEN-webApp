@@ -62,11 +62,11 @@ export function ProfileMenu({ className }: ProfileMenuProps) {
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 cursor-default"
+            className="fixed inset-0 z-[90] cursor-default bg-transparent"
             aria-label="Close account menu"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-border bg-background-elevated p-4 shadow-xl">
+          <div className="absolute right-0 top-full z-[100] mt-2 w-64 rounded-xl border border-border bg-background-elevated p-4 shadow-xl">
             <p className="font-display text-sm font-semibold text-gold">{displayName}</p>
             <p className="mt-1 truncate text-xs text-foreground-muted">{email}</p>
             {profile?.role && (
@@ -75,11 +75,11 @@ export function ProfileMenu({ className }: ProfileMenuProps) {
               </p>
             )}
             <div className="mt-4 space-y-1 border-t border-border pt-3">
-              <Link
-                href="/account"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-foreground-muted transition-colors hover:bg-cherry/20 hover:text-gold"
-              >
+        <Link
+          href="/account"
+          onClick={() => setOpen(false)}
+          className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-foreground-muted transition-colors hover:bg-cherry/20 hover:text-gold"
+        >
                 <User className="h-4 w-4" />
                 My Account
               </Link>

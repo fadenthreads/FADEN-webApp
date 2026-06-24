@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Button } from "@faden/ui";
 import { HeroDecoration } from "./hero-decoration";
 import { HeroStats } from "./hero-stats";
@@ -12,6 +13,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onExploreBoutiques }: HeroSectionProps) {
+  const t = useTranslations("Hero");
   const reducedMotion = useReducedMotion();
 
   return (
@@ -34,28 +36,33 @@ export function HeroSection({ onExploreBoutiques }: HeroSectionProps) {
             transition={fadeUpTransition}
             className="font-display text-4xl font-bold leading-[1.15] tracking-tight md:text-5xl lg:text-[3.5rem]"
           >
-            FADEN — Where Fashion Begins With{" "}
-            <span className="faden-trust-gradient">Trust.</span>
+            {t("headlinePrefix")}{" "}
+            <span className="faden-trust-gradient">{t("headlineTrust")}</span>
           </motion.h1>
 
           <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-6">
-            <h2 className="text-xs font-semibold tracking-[0.3em] text-gold">WHY FADEN</h2>
+            <h2 className="text-xs font-semibold tracking-[0.3em] text-gold">{t("whyFaden")}</h2>
             <p className="mt-3 max-w-lg text-base leading-relaxed text-foreground-muted md:text-lg">
-              Discover highly rated boutiques, browse designer portfolios and get your dream outfits
-              created with confidence — along with secure payments and verified reviews.
+              {t("subtitle")}
             </p>
           </motion.div>
 
           <motion.div
             variants={fadeUp}
             transition={fadeUpTransition}
-            className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center"
+            className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
           >
             <Button variant="luxury" size="lg" onClick={onExploreBoutiques}>
-              Explore Boutiques
+              {t("exploreBoutiques")}
             </Button>
             <Button asChild variant="luxury-outline" size="lg">
-              <Link href="/customize">Customize Outfit</Link>
+              <Link href="/customize">{t("customizeOutfit")}</Link>
+            </Button>
+            <Button asChild variant="luxury-outline" size="lg">
+              <Link href="/signup?next=/register-boutique&role=boutique_owner">{t("registerBoutique")}</Link>
+            </Button>
+            <Button asChild variant="luxury-outline" size="lg">
+              <Link href="/alterations">{t("alterations")}</Link>
             </Button>
           </motion.div>
         </div>

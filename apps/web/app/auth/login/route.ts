@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { loginSchema } from "@faden/validators";
 import { resolveAuthRedirect } from "@/lib/boutique/auth-redirect";
+import { formatAuthErrorMessage } from "@/lib/auth-errors";
 import { getWebSupabaseEnv, isWebSupabaseConfigured } from "@/lib/supabase/env";
 import type { SupabaseCookie } from "@/lib/supabase/types";
 
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
-    const msg = error.message || "Invalid login credentials";
+    const msg = formatAuthErrorMessage(error.message || "Invalid login credentials");
     return authErrorResponse(msg, 401);
   }
 

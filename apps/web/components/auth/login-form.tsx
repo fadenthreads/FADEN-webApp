@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@faden/ui";
 import { PremiumCard } from "@/components/ui/premium-card";
 import { FormField, TextInput } from "@/components/ui/form-field";
+import { PasswordInput } from "@/components/ui/password-input";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { formatAuthError } from "@/lib/auth-errors";
 import { authFetch, isBrowserSupabaseConfigured, navigateAfterAuth } from "@/lib/supabase/client";
 import { loginSchema } from "@faden/validators";
@@ -16,6 +19,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ next = "/", registered = false, authError = null }: LoginFormProps) {
+  const t = useTranslations("Auth");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -24,7 +28,7 @@ export function LoginForm({ next = "/", registered = false, authError = null }: 
     setError(null);
 
     if (!isBrowserSupabaseConfigured()) {
-      setError("Supabase is not configured. Add credentials to .env.local.");
+      setError(t("supabaseNotConfigured"));
       return;
     }
 
@@ -35,7 +39,7 @@ export function LoginForm({ next = "/", registered = false, authError = null }: 
     });
 
     if (!parsed.success) {
-      setError(parsed.error.errors[0]?.message ?? "Invalid input");
+      setError(parsed.error.errors[0]?.message ?? t("invalidInput"));
       return;
     }
 
@@ -57,7 +61,7 @@ export function LoginForm({ next = "/", registered = false, authError = null }: 
     } catch (err) {
       const message =
         err instanceof DOMException && err.name === "AbortError"
-          ? "Request timed out. Restart the dev server and try again."
+          ? t("requestTimeout")
           : formatAuthError(err);
       setError(message);
       setPending(false);
@@ -66,20 +70,22 @@ export function LoginForm({ next = "/", registered = false, authError = null }: 
 
   return (
     <PremiumCard className="mx-auto w-full max-w-md" hover={false}>
-      <p className="text-xs font-semibold tracking-[0.3em] text-gold">WELCOME BACK</p>
-      <h1 className="mt-2 font-display text-2xl font-semibold">Sign In</h1>
-      <p className="mt-2 text-sm text-foreground-muted">
-        Access your dashboard, orders, and boutique portal.
-      </p>
+      <p className="text-xs font-semibold tracking-[0.3em] text-gold">{t("welcomeBack")}</p>
+      <h1 className="mt-2 font-display text-2xl font-semibold">{t("signIn")}</h1>
+      <p className="mt-2 text-sm text-foreground-muted">{t("loginSubtitle")}</p>
+
+      <div className="mt-6">
+        <OAuthButtons next={next} />
+      </div>
 
       {registered && (
         <p className="mt-4 rounded-lg border border-gold/30 bg-gold/10 px-3 py-2 text-sm text-gold-light">
-          Account created. Check your email if confirmation is required, then sign in.
+          {t("registeredMessage")}
         </p>
       )}
       {authError && (
         <p className="mt-4 rounded-lg border border-red-accent/40 bg-red-accent/10 px-3 py-2 text-sm text-red-accent">
-          Authentication failed. Please try again.
+          {t("authCallbackFailed")}
         </p>
       )}
       {error && (
@@ -89,27 +95,27 @@ export function LoginForm({ next = "/", registered = false, authError = null }: 
       )}
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-        <FormField label="Email">
-          <TextInput name="email" type="email" autoComplete="email" required placeholder="you@example.com" />
+        <FormField label={t("email")}>
+          <TextInput name="email" type="email" autoComplete="email" required placeholder={t("emailPlaceholder")} />
         </FormField>
-        <FormField label="Password">
-          <TextInput
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            placeholder="••••••••"
-          />
+        <FormField label={t("password")}>
+          <PasswordInput name="password" autoComplete="current-password" required placeholder="••••••••" />
         </FormField>
         <Button type="submit" variant="luxury" className="w-full" disabled={pending}>
-          {pending ? "Signing in…" : "Sign In"}
+          {pending ? t("signingIn") : t("signIn")}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-foreground-muted">
-        New to FADEN?{" "}
+        {t("newToFaden")}{" "}
         <Link href={`/signup${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`} className="text-gold hover:text-gold-light">
-          Create an account
+          {t("createAccount")}
+        </Link>
+      </p>
+      <p className="mt-3 text-center text-sm text-foreground-muted">
+        {t("boutiqueOwner")}{" "}
+        <Link href={`/signup?next=${encodeURIComponent("/register-boutique")}&role=boutique_owner`} className="text-gold hover:text-gold-light">
+          {t("registerBoutique")}
         </Link>
       </p>
     </PremiumCard>

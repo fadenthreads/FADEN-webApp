@@ -4,6 +4,7 @@ import { signupSchema } from "@faden/validators";
 import { resolveAuthRedirect } from "@/lib/boutique/auth-redirect";
 import { getWebSupabaseEnv, isWebSupabaseConfigured } from "@/lib/supabase/env";
 import { formatSupabaseKeyError } from "@/lib/supabase/errors";
+import { formatAuthErrorMessage } from "@/lib/auth-errors";
 import type { SupabaseCookie } from "@/lib/supabase/types";
 
 function authErrorResponse(message: string, status = 400) {
@@ -58,7 +59,10 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
-    return authErrorResponse(formatSupabaseKeyError(error.message || "Sign up failed"), 400);
+    return authErrorResponse(
+      formatAuthErrorMessage(formatSupabaseKeyError(error.message || "Sign up failed")),
+      400,
+    );
   }
 
   if (!data.session || !data.user) {

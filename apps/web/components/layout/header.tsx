@@ -24,8 +24,8 @@ export function Header() {
           <SearchBar className="hidden md:flex" />
         </Suspense>
         <FeaturedBoutiquesToggle className="md:hidden" />
+        <NavActions className="ml-auto flex shrink-0 md:ml-auto" />
         <LanguageSwitcher className="hidden shrink-0 md:inline-flex" />
-        <NavActions className="ml-auto hidden shrink-0 md:flex" />
       </div>
     </header>
   );

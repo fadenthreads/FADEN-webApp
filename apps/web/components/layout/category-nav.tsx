@@ -120,6 +120,12 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
           >
             {t("browseAll")}
           </Link>
+          <Link
+            href="/alterations"
+            className="shrink-0 text-xs font-medium text-gold hover:underline"
+          >
+            {t("alterations")}
+          </Link>
         </div>
       </div>
     </nav>
