@@ -129,5 +129,317 @@
     "subtitle": "పోర్ట్‌ఫోలియో, సేవలు మరియు trust signals జాబితా చేయండి.",
     "signIn": "సైన్ ఇన్",
     "createAccount": "బుటీక్ ఖాతా సృష్టించండి"
+  },
+  "Common": {
+    "back": "వెనక్కి",
+    "next": "తదుపరి",
+    "cancel": "రద్దు",
+    "yes": "అవును",
+    "no": "కాదు",
+    "submitting": "పంపుతోంది…",
+    "uploading": "అప్‌లోడ్ అవుతోంది…",
+    "uploadFailed": "అప్‌లోడ్ విఫలమైంది",
+    "customer": "కస్టమర్",
+    "boutique": "బుటీక్",
+    "signIn": "సైన్ ఇన్",
+    "viewPublicProfile": "పబ్లిక్ ప్రొఫైల్ చూడండి →",
+    "viewBoutique": "బుటీక్ చూడండి →",
+    "comingSoon": "వివరమైన టూల్స్ — త్వరలో",
+    "status": "స్థితి"
+  },
+  "Upload": {
+    "tapToAdd": "ఫోటోలు జోడించడానికి ట్యాప్ చేయండి",
+    "fileHint": "JPG, PNG లేదా చిన్న వీడియోలు · {maxImages} ఫైళ్లు · {maxMb} MB ప్రతి",
+    "pasteUrls": "లేదా image/video URLలు paste చేయండి, ఒక్కో లైన్‌కు ఒకటి",
+    "removePhoto": "ఫోటో తీసివేయండి"
+  },
+  "Dashboard": {
+    "title": "బుటీక్ డాష్‌బోర్డ్",
+    "nav": {
+      "overview": "అవలోకనం",
+      "orders": "ఆర్డర్లు",
+      "customization": "కస్టమైజేషన్ అభ్యర్థనలు",
+      "appointments": "ఫిట్టింగ్ & విజిట్‌లు",
+      "alterations": "Alterations",
+      "customers": "కస్టమర్లు",
+      "portfolio": "పోర్ట్‌ఫోలియో",
+      "listings": "ఉత్పత్తులు & సేవలు",
+      "messages": "సందేశాలు",
+      "quotations": "కోటేషన్లు",
+      "reviews": "రివ్యూలు",
+      "analytics": "అనాలిటిక్స్",
+      "payments": "చెల్లింపులు",
+      "delivery": "డెలివరీ ట్రాకింగ్",
+      "staff": "స్టాఫ్",
+      "marketing": "మార్కెటింగ్",
+      "performance": "పనితీరు స్కోర్"
+    },
+    "overview": {
+      "yourBoutique": "మీ బుటీక్",
+      "notRegistered": "నమోదు కాలేదు",
+      "pendingVerification": "మీ స్టూడియో admin verification queueలో ఉంది. ఆమోదం తర్వాత discoveryలో కనిపిస్తుంది.",
+      "noBoutiqueLinked": "ఇంకా బుటీక్ లింక్ కాలేదు.",
+      "registerBoutique": "మీ బుటీక్‌ను నమోదు చేయండి",
+      "newRequests": "కొత్త అభ్యర్థనలు",
+      "pendingOrders": "పెండింగ్ ఆర్డర్లు",
+      "conversations": "సంభాషణలు",
+      "totalRequests": "మొత్తం అభ్యర్థనలు",
+      "todaysSnapshot": "నేటి సారాంశం",
+      "awaitingReview": "{count} కొత్త customization అభ్యర్థన(లు) review కోసం",
+      "activeOrders": "{count} active ఆర్డర్(లు) pipelineలో",
+      "customerConversations": "{count} కస్టమర్ సంభాషణ(లు)",
+      "approveToStart": "కస్టమర్ అభ్యర్థనలు పొందడానికి బుటీక్ approve చేయండి",
+      "ordersWhenLive": "కస్టమర్లు customize చేసినప్పుడు ఆర్డర్లు & సందేశాలు కనిపిస్తాయి"
+    },
+    "empty": {
+      "alterationsTitle": "Alterations",
+      "alterationsBody": "బుటీక్ నమోదు & verified అయిన తర్వాత alteration అభ్యర్థనలు కనిపిస్తాయి.",
+      "listingsTitle": "ఉత్పత్తులు & సేవా జాబితాలు",
+      "listingsBody": "బుటీక్ verified అయిన తర్వాత listing settings కనిపిస్తాయి.",
+      "analyticsTitle": "అనాలిటిక్స్",
+      "analyticsBody": "బుటీక్ live అయి activity మొదలైన తర్వాత analytics కనిపిస్తాయి.",
+      "performanceTitle": "పనితీరు స్కోర్",
+      "performanceBody": "ఆర్డర్లు పూర్తి చేసి reviews సేకరించినప్పుడు metrics నిర్మిస్తాయి.",
+      "staffTitle": "స్టాఫ్ నిర్వహణ",
+      "staffBody": "బుటీక్ నమోదు & verified అయిన తర్వాత staff management అందుబాటులో."
+    },
+    "marketing": {
+      "title": "మార్కెటింగ్ టూల్స్",
+      "items": "Featured listings, promotions, discount campaigns, festival offers, sponsored placement"
+    }
+  },
+  "Customize": {
+    "steps": {
+      "start": "ఎలా ప్రారంభించాలి",
+      "category": "ఆఉట్‌ఫిట్ & సందర్భం",
+      "inspiration": "ప్రేరణ",
+      "fabric": "ఫ్యాబ్రిక్ & రంగు",
+      "measurements": "కొలతలు",
+      "design": "డిజైన్ వివరాలు",
+      "delivery": "డెలివరీ & బడ్జెట్",
+      "review": "సమీక్ష"
+    },
+    "navAria": "Customize outfit దశలు",
+    "back": "వెనక్కి",
+    "next": "తదుపరి",
+    "submitRequest": "అభ్యర్థన పంపండి",
+    "viewSuggestedBoutiques": "సూచించిన బుటీక్‌లు చూడండి",
+    "submitFailed": "సమర్పణ విఫలమైంది. మళ్లీ ప్రయత్నించండి.",
+    "selectAudience": "ఈ outfit ఎవరికో (Women, Men, Kids) ఎంచుకోండి.",
+    "selectOutfitType": "బుటీక్‌లు కనుగొనే ముందు outfit type ఎంచుకోండి.",
+    "submittedTitle": "అభ్యర్థన పంపబడింది",
+    "submittedBody": "మీ బుటీక్ అభ్యర్థనను review చేసి quotation పంపుతుంది.",
+    "reference": "రిఫరెన్స్",
+    "submittedAt": "పంపబడింది {date}",
+    "viewInAccount": "నా ఖాతాలో చూడండి",
+    "goToAccount": "ఖాతాకు వెళ్లండి",
+    "nextSteps": "తదుపరి: quotation → payment → production → delivery → review",
+    "start": {
+      "requirementsHint": "మీ outfit వివరించండి. చివరిలో matching boutiques సూచిస్తాము.",
+      "chooseBoutique": "మీ బుటీక్ ఎంచుకోండి",
+      "chooseBoutiqueHint": "బుటీక్ పేరు టైప్ చేయండి — matching studios కనిపిస్తాయి."
+    },
+    "category": {
+      "whoFor": "ఈ outfit ఎవరికి?",
+      "whoForHint": "Women, Men, Kids ఎంచుకోండి.",
+      "outfitType": "Outfit type",
+      "selectType": "రకం ఎంచుకోండి…",
+      "describeOutfit": "మీ outfit వివరించండి",
+      "describeOutfitHint": "పై జాబితాలో లేకపోతే స్వేచ్ఛగా రాయండి.",
+      "describePlaceholder": "ఉదా. floor-length lehenga, cape sleeves…",
+      "occasion": "సందర్భం",
+      "occasionHint": "టైప్ చేయండి — సూచనలు కనిపిస్తాయి.",
+      "occasionPlaceholder": "Wedding, reception, festival…",
+      "popularOccasions": "జనాదరణ పొందిన సందర్భాలు"
+    },
+    "inspiration": {
+      "linksLabel": "డిజైన్ ప్రేరణ (links / references)",
+      "linksHint": "Pinterest, Instagram links paste చేయండి — ఒక్కో లైన్‌కు ఒకటి.",
+      "sketchLabel": "Sketch / change notes",
+      "sketchHint": "Neckline, length లేదా alterations వివరించండి.",
+      "sketchPlaceholder": "Neckline, length adjustments…"
+    },
+    "mixOutfit": {
+      "label": "రెండు outfits కలపడం?",
+      "hint": "ప్రతి reference నుండి ఏమి కావalo చెప్పండి. రెండు designs కలపే ముందు boutiqueతో చర్చించండి.",
+      "notesPlaceholder": "Outfit 1 నుండి sleeve… outfit 2 నుండి skirt…",
+      "linksLabel": "Outfit reference links",
+      "linksHint": "ఒక్కో లైన్‌కు ఒక link — Pinterest, Instagram…",
+      "photosLabel": "Outfit reference photos",
+      "photosHint": "{max} images వరకు (ప్రతి {maxMb} MB)."
+    },
+    "fabric": {
+      "whoSupplies": "ఫ్యాబ్రిక్ ఎవరు ఇస్తారు?",
+      "boutiqueSources": "బుటీక్ ఫ్యాబ్రిక్ తెస్తుంది (FADEN support తో)",
+      "customerProvides": "నేను నా material ఇస్తాను",
+      "fabricProviding": "మీరు ఇచ్చే fabric",
+      "fabricPreferred": "ఇష్టమైన fabric type",
+      "fabricHint": "టైప్ చేయండి — silk, georgette, cotton suggestions.",
+      "fabricPlaceholder": "ఉదా. Silk, Georgette",
+      "coloursLabel": "ఇష్టమైన fabric రంగులు",
+      "coloursHint": "టైప్ చేయండి — comma తో వేరు చేయండి.",
+      "coloursPlaceholder": "ఉదా. Emerald green, gold accents",
+      "colourCount": "Outfitలో ఎన్ని రంగులు?",
+      "advanceNote": "Advance payment: boutique material ఇస్తే max 40%. లేకపోతే పని పూర్తి & satisfaction తర్వాత చెల్లించండి."
+    },
+    "design": {
+      "intro": "ప్రతి design element వివరించండి మరియు reference photos upload చేయండి."
+    },
+    "delivery": {
+      "dateLabel": "Delivery date అవసరం",
+      "dateHint": "Alterations కోసం 1–2 రోజుల ముందు order చేయాలని సలహా.",
+      "datePlaceholder": "Delivery date ఎంచుకోండి",
+      "budgetLabel": "Budget range",
+      "budgetPlaceholder": "ఉదా. ₹15,000 – ₹25,000"
+    },
+    "review": {
+      "directOrder": "Direct order: \"{title}\" outfit page size & lengths తో replicate.",
+      "withBoutique": "ఎంచుకున్న boutiqueకు పంపే ముందు review చేయండి.",
+      "withoutBoutique": "Review చేసి, suggested boutiques నుండి ఒకటి ఎంచుకోండి.",
+      "tapToFix": "సరిచేయడానికి tap →",
+      "selfMeasurements": "Self measurements",
+      "provideFabric": "నేను fabric ఇస్తాను",
+      "boutiqueSuppliesFabric": "బుటీక్ fabric ఇస్తుంది",
+      "referencePhotos": "{count} reference photo(s)"
+    }
+  },
+  "RegisterBoutiqueForm": {
+    "sections": {
+      "basic": "ప్రాథమిక వివరాలు",
+      "portfolio": "పోర్ట్‌ఫోలియో",
+      "services": "అందించే సేవలు",
+      "pricing": "ధర సమాచారం",
+      "delivery": "డెలివరీ సమాచారం",
+      "trust": "Trust Signals & Reviews",
+      "availability": "లభ్యత",
+      "communication": "కమ్యూనికేషన్"
+    },
+    "fields": {
+      "boutiqueName": "బుటీక్ పేరు",
+      "boutiqueNamePlaceholder": "Silk & Thread Studio",
+      "ownerName": "యజమాని పేరు",
+      "ownerNamePlaceholder": "పూర్తి పేరు",
+      "phone": "ఫోన్",
+      "email": "ఇమెయిల్",
+      "address": "చిరునామా",
+      "addressPlaceholder": "పూర్తి చిరునామా",
+      "mapsUrl": "Google Maps location",
+      "mapsUrlHint": "Maps link లేదా coordinates paste చేయండి.",
+      "mapsUrlPlaceholder": "https://maps.google.com/…",
+      "yearsInBusiness": "వ్యాపార సంవత్సరాలు",
+      "portfolioPhotos": "పూర్తి outfit photos",
+      "portfolioPhotosHint": "Portfolio photos upload లేదా URLs paste.",
+      "allClothing": "అన్ని రకాల దుస్తులు",
+      "allClothingHint": "women, men, kids అన్ని outfit types customize చేస్తాము.",
+      "outfitTypes": "మీరు తయారు చేసే outfit types",
+      "outfitTypesHint": "Women, men, kids types — Lehenga, Sherwani…",
+      "outfitTypesPlaceholder": "Lehenga, Saree, Sherwani, Kids Lehenga…",
+      "servicesOffered": "అందించే సేవలు",
+      "servicesPlaceholder": "Stitching, custom design, alterations…",
+      "pricingInfo": "ధర సమాచారం",
+      "pricingHint": "ఉదా. Blouses ₹2,500 నుండి",
+      "pricingPlaceholder": "Garment type ప్రకారం pricing ranges",
+      "avgDeliveryTime": "సగటు delivery time",
+      "avgDeliveryPlaceholder": "ఉదా. 12–18 days",
+      "rushOrders": "Rush orders అంగీకరిస్తారా?",
+      "maxOrders": "నెలకు max orders",
+      "verificationMedia": "Verification photos & videos",
+      "verificationMediaHint": "Workshop, portfolio లేదా storefront photos. అవసరం — లేకపోతే FADEN visit schedule.",
+      "reviewsSummary": "Customer reviews summary",
+      "reviewsPlaceholder": "Written reviews, delivery ratings…",
+      "socialLinks": "Social media links",
+      "socialPlaceholder": "Instagram, Facebook…",
+      "completedOrders": "పూర్తి orders (approx.)",
+      "status": "స్థితి",
+      "open": "Open",
+      "closed": "Closed",
+      "workingHours": "పని గంటలు",
+      "workingHoursPlaceholder": "Mon–Sat 10am–7pm",
+      "booking": "Booking",
+      "bookingAppointment": "Appointment booking",
+      "bookingVideo": "Video call booking",
+      "bookingBoth": "రెండూ",
+      "communicationPrefs": "ఇష్టమైన కమ్యూనికేషన్",
+      "communicationPlaceholder": "In-app messaging, consultation preferences…",
+      "adminNote": "Admin కోసం note (optional)",
+      "adminNotePlaceholder": "ఏమి మార్చారు లేదా ఎందుకు update…"
+    },
+    "footer": {
+      "modifyVerified": "Admin review కోసం changes submit.",
+      "modifyUnverified": "Updated registration details save.",
+      "modifyNoChanges": "Submission enable చేయడానికి కనీసం ఒక field మార్చండి.",
+      "registerRequired": "అవసరం: basic details, outfit types, services (అన్ని sections)."
+    },
+    "buttons": {
+      "saveDraft": "Draft Save",
+      "submitRegistration": "Registration Submit",
+      "submitModification": "Modification submit",
+      "saveChanges": "Changes save"
+    },
+    "draftSaved": "Draft ఈ deviceలో save అయింది.",
+    "success": {
+      "registrationTitle": "Registration అందింది",
+      "registrationBody": "portfolio & trust signals verify చేస్తాము. Approve తర్వాత dashboard access.",
+      "goToDashboard": "Dashboardకు వెళ్లండి",
+      "modificationSent": "Modification Request పంపబడింది",
+      "detailsUpdated": "వివరాలు Updated",
+      "modificationBody": "changes review చేస్తాము. Admin approve వరకు live profile unchanged.",
+      "updatedBody": "మీ boutique registration update అయింది.",
+      "backToAccount": "Accountకు వెళ్లండి",
+      "pendingTitle": "Modification Review Pending",
+      "pendingBody": "{date} న changes submit చేశారు. Admin approve వరకు live profile unchanged.",
+      "yourNote": "మీ note"
+    },
+    "errors": {
+      "boutiqueNotFound": "బుటీక్ కనుగొనలేదు.",
+      "updateOneField": "Submit చేయడానికి కనీసం ఒక field update.",
+      "updateFailed": "Update విఫలమైంది",
+      "submissionFailed": "Submission విఫలమైంది",
+      "requestTimeout": "అభ్యర్థన timeout. Dev server restart."
+    }
+  },
+  "AlterationsPanel": {
+    "owner": {
+      "eyebrow": "ALTERATIONS",
+      "title": "Incoming alteration అభ్యర్థనలు",
+      "emptyBody": "కస్టమర్లు FADENలో alterations book చేసినప్పుడు matched requests ఇక్కడ కనిపిస్తాయి. Products & Servicesలో \"Alterations\" జోడించండి.",
+      "activeCount": "{active} active · {closed} closed",
+      "active": "Active",
+      "history": "చరిత్ర",
+      "homeServiceOk": "Home service OK",
+      "submitted": "Submit {date}",
+      "startAlteration": "Alteration ప్రారంభించండి",
+      "markComplete": "Complete mark",
+      "updateFailed": "Update విఫలమైంది",
+      "status": {
+        "requested": "Boutique assignment కోసం",
+        "assigned": "Assigned — ప్రారంభించడానికి ready",
+        "in_progress": "ప్రగతిలో",
+        "completed": "పూర్తి",
+        "cancelled": "రద్దు"
+      },
+      "urgency": {
+        "2": "2 గంటల్లోపు",
+        "4": "4 గంటల్లోపు",
+        "8": "ఈ రోజే",
+        "24": "24 గంటల్లోపు",
+        "48": "2 రోజుల్లోపు",
+        "hours": "{hours} గంటల్లోపు"
+      }
+    },
+    "customer": {
+      "emptyTitle": "alteration అభ్యర్థనలు లేవు",
+      "emptyBody": "సమీప boutiqueతో quick alteration book — urgentలో 2 గంటల్లో.",
+      "bookAlteration": "Alteration book",
+      "requested": "అభ్యర్థన {date}",
+      "urgent": "Urgent (2 గంటల్లోపు)",
+      "status": {
+        "requested": "Boutique match అవుతోంది",
+        "assigned": "Boutique assigned",
+        "in_progress": "ప్రగతిలో",
+        "completed": "పూర్తి",
+        "cancelled": "రద్దు"
+      }
+    }
   }
 }

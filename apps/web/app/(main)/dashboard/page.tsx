@@ -13,6 +13,7 @@ import { listBoutiquePayments } from "@/lib/payment/queries";
 import { listBoutiqueReviewsForOwner } from "@/lib/review/queries";
 import { listTailorAppointments } from "@/lib/appointments/queries";
 import { listBoutiqueHomeVisits } from "@/lib/home-visits/queries";
+import { listBoutiqueAlterationRequests } from "@/lib/alterations/queries";
 import { getOwnerListingSettings } from "@/lib/dashboard/boutique-listings";
 import { isBoutiqueStaffAvailable, listBoutiqueStaff } from "@/lib/dashboard/boutique-staff";
 import {
@@ -48,6 +49,7 @@ const EMPTY_DASHBOARD: DashboardData = {
   publicProfile: null,
   staff: [],
   staffTableAvailable: false,
+  alterationRequests: [],
 };
 
 export default async function DashboardPage({
@@ -61,6 +63,7 @@ export default async function DashboardPage({
     "orders",
     "customization",
     "appointments",
+    "alterations",
     "customers",
     "portfolio",
     "listings",
@@ -116,9 +119,10 @@ export default async function DashboardPage({
             isBoutiqueStaffAvailable(supabase),
           ]);
 
-          const [staff, homeVisits] = await Promise.all([
+          const [staff, homeVisits, alterationRequests] = await Promise.all([
             staffTableAvailable ? listBoutiqueStaff(supabase, boutique.id) : Promise.resolve([]),
             listBoutiqueHomeVisits(supabase, boutique.id),
+            listBoutiqueAlterationRequests(supabase, boutique.id),
           ]);
 
           const messagesByConversation: Record<string, Awaited<ReturnType<typeof listConversationMessages>>> = {};
@@ -160,6 +164,7 @@ export default async function DashboardPage({
             publicProfile,
             staff,
             staffTableAvailable,
+            alterationRequests,
           };
         }
       }

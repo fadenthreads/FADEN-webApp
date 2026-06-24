@@ -23,6 +23,7 @@ export function SignupForm({ next = "/register-boutique", defaultRole = "custome
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [password, setPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState<"customer" | "boutique_owner">(defaultRole);
   const checks = passwordRequirementChecks(password);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -82,7 +83,7 @@ export function SignupForm({ next = "/register-boutique", defaultRole = "custome
       <p className="mt-2 text-sm text-foreground-muted">{t("signupSubtitle")}</p>
 
       <div className="mt-6">
-        <OAuthButtons next={next} role={defaultRole} />
+        <OAuthButtons next={next} role={selectedRole} />
       </div>
 
       {error && (
@@ -130,7 +131,10 @@ export function SignupForm({ next = "/register-boutique", defaultRole = "custome
         <FormField label={t("joiningAs")}>
           <SelectInput
             name="role"
-            defaultValue={defaultRole}
+            value={selectedRole}
+            onChange={(event) =>
+              setSelectedRole(event.target.value === "boutique_owner" ? "boutique_owner" : "customer")
+            }
             options={[
               { value: "customer", label: t("roleCustomer") },
               { value: "boutique_owner", label: t("roleBoutiqueOwner") },

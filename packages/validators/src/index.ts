@@ -521,6 +521,14 @@ export const alterationRequestSchema = z.object({
 
 export type AlterationRequestInput = z.infer<typeof alterationRequestSchema>;
 
+export const alterationStatusUpdateSchema = z.object({
+  requestId: z.string().uuid(),
+  boutiqueId: z.string().uuid(),
+  status: z.enum(["assigned", "in_progress", "completed", "cancelled"]),
+});
+
+export type AlterationStatusUpdateInput = z.infer<typeof alterationStatusUpdateSchema>;
+
 /** Split newline- or comma-separated free text into trimmed tokens. */
 export function splitList(value?: string): string[] {
   if (!value?.trim()) return [];

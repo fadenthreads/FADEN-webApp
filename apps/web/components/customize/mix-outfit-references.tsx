@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { FormField, TextArea } from "@/components/ui/form-field";
+import { MAX_MEDIA_BYTES, uploadMediaFile } from "@/lib/storage/client-upload";
 
 const MAX_MIX_IMAGES = 4;
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+const MAX_MB = Math.round(MAX_MEDIA_BYTES / (1024 * 1024));
 
 interface MixOutfitReferencesProps {
   notes: string;
@@ -24,7 +26,11 @@ export function MixOutfitReferences({
   onLinksChange,
   onImagesChange,
 }: MixOutfitReferencesProps) {
+  const t = useTranslations("Customize.mixOutfit");
+  const tc = useTranslations("Common");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   async function handleFilesSelected(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -35,17 +41,26 @@ export function MixOutfitReferences({
     const remaining = MAX_MIX_IMAGES - images.length;
     if (remaining <= 0) return;
 
+    setUploadError(null);
+    setUploading(true);
     const nextImages = [...images];
 
-    for (const file of files.slice(0, remaining)) {
-      if (!file.type.startsWith("image/")) continue;
-      if (file.size > MAX_IMAGE_BYTES) continue;
+    try {
+      for (const file of files.slice(0, remaining)) {
+        if (!file.type.startsWith("image/")) continue;
 
-      const dataUrl = await readFileAsDataUrl(file);
-      nextImages.push(dataUrl);
+        try {
+          const uploaded = await uploadMediaFile(file, "customize");
+          nextImages.push(uploaded.url);
+        } catch (err) {
+          setUploadError(err instanceof Error ? err.message : tc("uploadFailed"));
+        }
+      }
+
+      onImagesChange(nextImages.slice(0, MAX_MIX_IMAGES));
+    } finally {
+      setUploading(false);
     }
-
-    onImagesChange(nextImages.slice(0, MAX_MIX_IMAGES));
   }
 
   function removeImage(index: number) {
@@ -54,21 +69,15 @@ export function MixOutfitReferences({
 
   return (
     <div className="space-y-6">
-      <FormField
-        label="Mixing two outfits?"
-        hint="Describe what you want from each reference. Discuss feasibility with the boutique before combining elements from two designs."
-      >
+      <FormField label={t("label")} hint={t("hint")}>
         <TextArea
-          placeholder="From outfit 1 I want the sleeve… from outfit 2 the skirt…"
+          placeholder={t("notesPlaceholder")}
           value={notes}
           onChange={(event) => onNotesChange(event.target.value)}
         />
       </FormField>
 
-      <FormField
-        label="Outfit reference links"
-        hint="Paste one link per line — Pinterest, Instagram, shopping sites, etc."
-      >
+      <FormField label={t("linksLabel")} hint={t("linksHint")}>
         <TextArea
           placeholder="https://…&#10;https://…"
           value={links}
@@ -77,8 +86,8 @@ export function MixOutfitReferences({
       </FormField>
 
       <FormField
-        label="Outfit reference pictures"
-        hint={`Upload up to ${MAX_MIX_IMAGES} images (max 2 MB each).`}
+        label={t("photosLabel")}
+        hint={t("photosHint", { max: MAX_MIX_IMAGES, maxMb: MAX_MB })}
       >
         <input
           ref={fileInputRef}
@@ -87,8 +96,14 @@ export function MixOutfitReferences({
           multiple
           className="faden-field cursor-pointer file:mr-3 file:rounded-full file:border-0 file:bg-gold/15 file:px-3 file:py-1 file:text-xs file:font-medium file:text-gold"
           onChange={handleFilesSelected}
-          disabled={images.length >= MAX_MIX_IMAGES}
+          disabled={images.length >= MAX_MIX_IMAGES || uploading}
         />
+        {uploading && (
+          <p className="mt-2 text-xs text-foreground-muted">{tc("uploading")}</p>
+        )}
+        {uploadError && (
+          <p className="mt-2 text-xs text-red-accent">{uploadError}</p>
+        )}
         {images.length > 0 && (
           <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {images.map((src, index) => (
@@ -110,13 +125,4 @@ export function MixOutfitReferences({
       </FormField>
     </div>
   );
-}
-
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
 }

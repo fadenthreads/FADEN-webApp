@@ -24,12 +24,12 @@ export function OAuthButtons({ next = "/", role = "customer" }: OAuthButtonsProp
     setPending(provider);
     try {
       const supabase = createBrowserClient({ fresh: true });
-      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+      const roleParam = role === "boutique_owner" ? "&role=boutique_owner" : "";
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}${roleParam}`;
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo,
-          queryParams: role === "boutique_owner" ? { role: "boutique_owner" } : undefined,
         },
       });
 

@@ -5,6 +5,7 @@ import { Button } from "@faden/ui";
 import { DressImage } from "@/components/boutique/dress-image";
 import type { DressLengthDetails } from "@/data/boutique-profiles";
 import { DRESS_LENGTH_FIELDS } from "@/lib/boutique/dress-specs";
+import { MAX_MEDIA_BYTES, uploadMediaFile } from "@/lib/storage/client-upload";
 
 export interface PortfolioOutfitTypeOption {
   id: string;
@@ -35,7 +36,7 @@ interface PortfolioDressFormProps {
   onCancel: () => void;
 }
 
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+const MAX_IMAGE_BYTES = MAX_MEDIA_BYTES;
 
 export function PortfolioDressForm({
   editingId,
@@ -74,15 +75,16 @@ export function PortfolioDressForm({
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+    event.target.value = "";
     if (!file) return;
     if (file.size > MAX_IMAGE_BYTES) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        patch({ mediaUrl: reader.result });
-      }
-    };
-    reader.readAsDataURL(file);
+
+    try {
+      const uploaded = await uploadMediaFile(file, "portfolio");
+      patch({ mediaUrl: uploaded.url });
+    } catch {
+      // Parent form surfaces save errors; ignore transient upload failures here.
+    }
   }
 
   return (

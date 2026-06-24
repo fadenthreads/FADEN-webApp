@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@faden/utils";
+import { useTranslations } from "next-intl";
 import { DatePicker } from "@/components/ui/date-picker";
 import { FormField, SelectInput, TextArea, TextInput } from "@/components/ui/form-field";
 import { todayIsoDate } from "@/lib/datetime/format";
@@ -26,19 +27,14 @@ interface StepProps {
 }
 
 export function StepStart({ data, onChange }: StepProps) {
+  const t = useTranslations("Customize.start");
   return (
     <div className="space-y-6">
       {data.flowOrder === "requirements-first" && (
-        <p className="text-sm text-foreground-muted">
-          Continue through the steps to describe your outfit. At the end, we&apos;ll suggest boutiques
-          that match your requirements.
-        </p>
+        <p className="text-sm text-foreground-muted">{t("requirementsHint")}</p>
       )}
       {data.flowOrder === "boutique-first" && (
-        <FormField
-          label="Choose your boutique"
-          hint="Start typing a boutique name — matching studios appear as you type."
-        >
+        <FormField label={t("chooseBoutique")} hint={t("chooseBoutiqueHint")}>
           <BoutiquePickerInput
             slug={data.selectedBoutiqueSlug}
             onSlugChange={(selectedBoutiqueSlug) => onChange({ selectedBoutiqueSlug })}
@@ -50,12 +46,13 @@ export function StepStart({ data, onChange }: StepProps) {
 }
 
 export function StepCategory({ data, onChange }: StepProps) {
+  const t = useTranslations("Customize.category");
   const activeAudience = (data.outfitAudience || "women") as AudienceCategory;
   const outfitTypes = OUTFIT_TYPES_BY_AUDIENCE[activeAudience] ?? OUTFIT_TYPES_BY_AUDIENCE.women;
 
   return (
     <div className="space-y-6">
-      <FormField label="Who is this outfit for?" hint="Select Women, Men, or Kids so the boutique knows who will wear it.">
+      <FormField label={t("whoFor")} hint={t("whoForHint")}>
         <div className="flex flex-wrap gap-2">
           {AUDIENCE_VALUES.map((audience) => (
             <button
@@ -80,10 +77,10 @@ export function StepCategory({ data, onChange }: StepProps) {
           ))}
         </div>
       </FormField>
-      <FormField label="Outfit type">
+      <FormField label={t("outfitType")}>
         <SelectInput
           options={[
-            { value: "", label: "Select type…" },
+            { value: "", label: t("selectType") },
             ...outfitTypes.map((type) => ({ value: type, label: type })),
           ]}
           value={data.outfitType}
@@ -95,28 +92,25 @@ export function StepCategory({ data, onChange }: StepProps) {
           }
         />
       </FormField>
-      <FormField label="Describe your outfit" hint="Type freely if your outfit isn't listed above.">
+      <FormField label={t("describeOutfit")} hint={t("describeOutfitHint")}>
         <TextArea
-          placeholder="e.g. Floor-length lehenga with cape sleeves and minimal embroidery…"
+          placeholder={t("describePlaceholder")}
           value={data.outfitDescription}
           onChange={(e) => onChange({ outfitDescription: e.target.value })}
         />
       </FormField>
-      <FormField
-        label="Occasion"
-        hint="Start typing — suggestions appear, or pick one below."
-      >
+      <FormField label={t("occasion")} hint={t("occasionHint")}>
         <SuggestTextInput
           value={data.occasion}
           onChange={(occasion) => onChange({ occasion })}
           suggestions={OCCASION_SUGGESTIONS}
-          placeholder="Wedding, reception, festival…"
+          placeholder={t("occasionPlaceholder")}
           multi={false}
         />
       </FormField>
       <div>
         <p className="text-xs font-medium uppercase tracking-wide text-foreground-muted">
-          Popular occasions
+          {t("popularOccasions")}
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {OCCASION_SUGGESTIONS.map((occasion) => {
@@ -144,21 +138,19 @@ export function StepCategory({ data, onChange }: StepProps) {
 }
 
 export function StepInspiration({ data, onChange }: StepProps) {
+  const t = useTranslations("Customize.inspiration");
   return (
     <div className="space-y-6">
-      <FormField
-        label="Design inspiration (links / references)"
-        hint="Paste links from Pinterest, Instagram, or other apps — one per line."
-      >
+      <FormField label={t("linksLabel")} hint={t("linksHint")}>
         <TextArea
           placeholder="https://…&#10;https://…"
           value={data.inspirationLinks}
           onChange={(e) => onChange({ inspirationLinks: e.target.value })}
         />
       </FormField>
-      <FormField label="Sketch / change notes" hint="Describe neckline, length, or other alterations.">
+      <FormField label={t("sketchLabel")} hint={t("sketchHint")}>
         <TextArea
-          placeholder="Notes about neckline changes, length adjustments…"
+          placeholder={t("sketchPlaceholder")}
           value={data.sketchNotes}
           onChange={(e) => onChange({ sketchNotes: e.target.value })}
         />
@@ -176,13 +168,14 @@ export function StepInspiration({ data, onChange }: StepProps) {
 }
 
 export function StepFabric({ data, onChange }: StepProps) {
+  const t = useTranslations("Customize.fabric");
   return (
     <div className="space-y-6">
-      <FormField label="Who supplies the fabric?">
+      <FormField label={t("whoSupplies")}>
         <SelectInput
           options={[
-            { value: "boutique", label: "Boutique sources fabric (with FADEN support)" },
-            { value: "customer", label: "I will provide my own material" },
+            { value: "boutique", label: t("boutiqueSources") },
+            { value: "customer", label: t("customerProvides") },
           ]}
           value={data.fabricSource}
           onChange={(e) => onChange({ fabricSource: e.target.value as "customer" | "boutique" })}
@@ -190,41 +183,35 @@ export function StepFabric({ data, onChange }: StepProps) {
       </FormField>
 
       <FormField
-        label={data.fabricSource === "customer" ? "Fabric you are providing" : "Preferred fabric type"}
-        hint="Start typing — suggestions appear for silk, georgette, cotton, and more."
+        label={data.fabricSource === "customer" ? t("fabricProviding") : t("fabricPreferred")}
+        hint={t("fabricHint")}
       >
         <SuggestTextInput
           value={data.fabricTypes}
           onChange={(fabricTypes) => onChange({ fabricTypes })}
           suggestions={FABRIC_KIND_SUGGESTIONS}
-          placeholder="e.g. Silk, Georgette"
+          placeholder={t("fabricPlaceholder")}
         />
       </FormField>
 
       {data.fabricSource === "boutique" && (
         <>
-          <FormField
-            label="Preferred fabric colours"
-            hint="Start typing — colour suggestions appear as you type. Add multiple separated by commas."
-          >
+          <FormField label={t("coloursLabel")} hint={t("coloursHint")}>
             <SuggestTextInput
               value={data.fabricColors}
               onChange={(fabricColors) => onChange({ fabricColors })}
               suggestions={FABRIC_COLOR_SUGGESTIONS}
-              placeholder="e.g. Emerald green, gold accents"
+              placeholder={t("coloursPlaceholder")}
             />
           </FormField>
-          <FormField label="How many colours in the outfit?">
+          <FormField label={t("colourCount")}>
             <TextInput
               placeholder="e.g. 2"
               value={data.colorCount}
               onChange={(e) => onChange({ colorCount: e.target.value })}
             />
           </FormField>
-          <p className="faden-hint rounded-md border border-gold/20 bg-gold/5 p-3">
-            Advance payment: max 40% when boutique supplies material. Otherwise pay only when work
-            is complete and you are satisfied.
-          </p>
+          <p className="faden-hint rounded-md border border-gold/20 bg-gold/5 p-3">{t("advanceNote")}</p>
         </>
       )}
     </div>
@@ -262,12 +249,10 @@ const DESIGN_FIELD_MAP = {
 >;
 
 export function StepDesign({ data, onChange }: StepProps) {
+  const t = useTranslations("Customize.design");
   return (
     <div className="space-y-6">
-      <p className="text-sm text-foreground-muted">
-        Describe each design element with suggestions or your own words, and upload reference photos
-        for every option so the boutique can see exactly what you want.
-      </p>
+      <p className="text-sm text-foreground-muted">{t("intro")}</p>
       {DESIGN_DETAIL_FIELDS.map((field) => {
         const keys = DESIGN_FIELD_MAP[field.id];
         const value = data[keys.valueKey] as string;
@@ -294,22 +279,20 @@ export function StepDesign({ data, onChange }: StepProps) {
 }
 
 export function StepDelivery({ data, onChange }: StepProps) {
+  const t = useTranslations("Customize.delivery");
   return (
     <div className="space-y-6">
-      <FormField
-        label="Delivery date needed by"
-        hint="We advise ordering 1–2 days earlier for alterations or last-minute changes."
-      >
+      <FormField label={t("dateLabel")} hint={t("dateHint")}>
         <DatePicker
           value={data.deliveryDate}
           onChange={(deliveryDate) => onChange({ deliveryDate })}
           min={todayIsoDate()}
-          placeholder="Select delivery date"
+          placeholder={t("datePlaceholder")}
         />
       </FormField>
-      <FormField label="Budget range">
+      <FormField label={t("budgetLabel")}>
         <TextInput
-          placeholder="e.g. ₹15,000 – ₹25,000"
+          placeholder={t("budgetPlaceholder")}
           value={data.budgetRange}
           onChange={(e) => onChange({ budgetRange: e.target.value })}
         />
@@ -326,16 +309,21 @@ const DESIGN_REVIEW_IMAGE_KEYS: Partial<Record<keyof CustomizeFormData, keyof Cu
   specialRequests: "specialRequestImages",
 };
 
-function formatReviewValue(key: string, val: unknown, data: CustomizeFormData): string | null {
+function formatReviewValue(
+  key: string,
+  val: unknown,
+  data: CustomizeFormData,
+  tr: (key: string, values?: Record<string, string | number>) => string,
+): string | null {
   const imageKey = DESIGN_REVIEW_IMAGE_KEYS[key as keyof CustomizeFormData];
   const imageCount = imageKey ? ((data[imageKey] as string[] | undefined)?.length ?? 0) : 0;
 
   if (val == null || val === "") {
-    if (imageCount > 0) return `${imageCount} reference photo(s)`;
+    if (imageCount > 0) return tr("review.referencePhotos", { count: imageCount });
     return null;
   }
   if (Array.isArray(val)) {
-    return val.length > 0 ? `${val.length} reference photo(s)` : null;
+    return val.length > 0 ? tr("review.referencePhotos", { count: val.length }) : null;
   }
   if (key === "selfMeasurements" && typeof val === "object") {
     const summary = formatSelfMeasurementsSummary(data.selfMeasurements, data.measurementUnit);
@@ -353,10 +341,10 @@ function formatReviewValue(key: string, val: unknown, data: CustomizeFormData): 
     return FLOW_ORDER_LABELS[text as CustomizeFormData["flowOrder"]] ?? text;
   }
   if (key === "fabricSource") {
-    return text === "customer" ? "I will provide fabric" : "Boutique supplies fabric";
+    return text === "customer" ? tr("review.provideFabric") : tr("review.boutiqueSuppliesFabric");
   }
   if (key === "selectedBoutiqueSlug" && !text) return null;
-  if (imageCount > 0) return `${text} · ${imageCount} photo(s)`;
+  if (imageCount > 0) return `${text} · ${tr("review.referencePhotos", { count: imageCount })}`;
   return text;
 }
 
@@ -369,6 +357,7 @@ export function StepReview({
   hasPreselectedBoutique?: boolean;
   onGoToStep?: (stepId: CustomizeStepId) => void;
 }) {
+  const t = useTranslations("Customize");
   const warnings = getCustomizeReviewWarnings(data);
   const hiddenKeys = new Set([
     "selfMeasurements",
@@ -392,14 +381,11 @@ export function StepReview({
     <div className="space-y-3">
       {data.portfolioOrderSame && data.portfolioReferenceTitle && (
         <p className="rounded-lg border border-gold/30 bg-gold/10 px-4 py-3 text-sm text-gold">
-          Direct order: replicating &ldquo;{data.portfolioReferenceTitle}&rdquo; with the size and lengths from the
-          outfit page.
+          {t("review.directOrder", { title: data.portfolioReferenceTitle })}
         </p>
       )}
       <p className="text-sm text-foreground-muted">
-        {hasPreselectedBoutique
-          ? "Review your request before sending it to your chosen boutique."
-          : "Review your request, then browse suggested boutiques and pick one before submitting."}
+        {hasPreselectedBoutique ? t("review.withBoutique") : t("review.withoutBoutique")}
       </p>
       {warnings.length > 0 && (
         <ul className="space-y-2">
@@ -417,7 +403,7 @@ export function StepReview({
               >
                 {warning.message}
                 {onGoToStep && (
-                  <span className="mt-1 block text-xs opacity-80">Tap to fix →</span>
+                  <span className="mt-1 block text-xs opacity-80">{t("review.tapToFix")}</span>
                 )}
               </button>
             </li>
@@ -426,7 +412,7 @@ export function StepReview({
       )}
       <dl className="premium-surface divide-y divide-border rounded-xl">
         {sortedRows.map(([key, val]) => {
-          const display = formatReviewValue(key, val, data);
+          const display = formatReviewValue(key, val, data, t);
           if (!display) return null;
           return (
             <div key={key} className="flex justify-between gap-4 px-4 py-3 text-sm">
@@ -437,7 +423,7 @@ export function StepReview({
         })}
         {data.measurementMode === "self" && (
           <div className="flex justify-between gap-4 px-4 py-3 text-sm">
-            <dt className="capitalize text-foreground-muted">Self measurements</dt>
+            <dt className="capitalize text-foreground-muted">{t("review.selfMeasurements")}</dt>
             <dd className="max-w-[60%] text-right font-medium">
               {formatSelfMeasurementsSummary(data.selfMeasurements, data.measurementUnit) || "—"}
             </dd>

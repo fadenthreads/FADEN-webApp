@@ -1,11 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import { getSupabaseEnv, isSupabaseConfigured } from "@faden/database";
+import { applyOAuthSignupRole } from "@/lib/auth/oauth-callback-role";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
+  const role = searchParams.get("role");
 
   if (!code || !isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/login?error=auth_callback`);
@@ -28,10 +30,14 @@ export async function GET(request: Request) {
     },
   });
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
     return NextResponse.redirect(`${origin}/login?error=auth_callback`);
+  }
+
+  if (data.user && role === "boutique_owner") {
+    await applyOAuthSignupRole(data.user.id, "boutique_owner");
   }
 
   return supabaseResponse;

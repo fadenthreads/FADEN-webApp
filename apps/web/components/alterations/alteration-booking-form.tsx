@@ -154,6 +154,7 @@ export function AlterationBookingForm() {
           value={photoUrlsText}
           onChange={setPhotoUrlsText}
           maxImages={6}
+          purpose="alteration"
         />
 
         <FormField label={t("notes")}>

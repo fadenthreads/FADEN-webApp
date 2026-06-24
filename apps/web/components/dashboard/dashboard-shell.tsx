@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { cn } from "@faden/utils";
 import {
   BarChart3,
@@ -15,6 +16,7 @@ import {
   Users,
   Megaphone,
   ClipboardList,
+  Scissors,
   Settings,
   Video,
 } from "lucide-react";
@@ -48,6 +50,8 @@ import type { PaymentSummary } from "@/lib/payment/queries";
 import type { ReviewRecord } from "@/lib/review/queries";
 import type { TailorAppointmentSummary } from "@/lib/appointments/queries";
 import type { HomeMeasurementVisit } from "@/lib/home-visits/queries";
+import { OwnerAlterationsPanel } from "@/components/alterations/owner-alterations-panel";
+import type { AlterationRequestSummary } from "@/lib/alterations/queries";
 import type { OwnerListingSettings } from "@/lib/dashboard/boutique-listings";
 import type {
   OwnerAnalyticsSnapshot,
@@ -56,22 +60,23 @@ import type {
 } from "@/lib/dashboard/owner-insights";
 
 const NAV = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "orders", label: "Orders", icon: Package },
-  { id: "customization", label: "Customization Requests", icon: Palette },
-  { id: "appointments", label: "Fittings & Visits", icon: Video },
-  { id: "customers", label: "Customers", icon: Users },
-  { id: "portfolio", label: "Portfolio", icon: ClipboardList },
-  { id: "listings", label: "Products & Services", icon: Settings },
-  { id: "messages", label: "Messages", icon: MessageSquare },
-  { id: "quotations", label: "Quotations", icon: CreditCard },
-  { id: "reviews", label: "Reviews", icon: Star },
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
-  { id: "payments", label: "Payments", icon: CreditCard },
-  { id: "delivery", label: "Delivery Tracking", icon: Truck },
-  { id: "staff", label: "Staff", icon: Users },
-  { id: "marketing", label: "Marketing", icon: Megaphone },
-  { id: "performance", label: "Performance Score", icon: BarChart3 },
+  { id: "overview", icon: LayoutDashboard },
+  { id: "orders", icon: Package },
+  { id: "customization", icon: Palette },
+  { id: "appointments", icon: Video },
+  { id: "alterations", icon: Scissors },
+  { id: "customers", icon: Users },
+  { id: "portfolio", icon: ClipboardList },
+  { id: "listings", icon: Settings },
+  { id: "messages", icon: MessageSquare },
+  { id: "quotations", icon: CreditCard },
+  { id: "reviews", icon: Star },
+  { id: "analytics", icon: BarChart3 },
+  { id: "payments", icon: CreditCard },
+  { id: "delivery", icon: Truck },
+  { id: "staff", icon: Users },
+  { id: "marketing", icon: Megaphone },
+  { id: "performance", icon: BarChart3 },
 ] as const;
 
 type PanelId = (typeof NAV)[number]["id"];
@@ -110,6 +115,7 @@ export interface DashboardData {
   publicProfile: BoutiqueProfileData | null;
   staff: OwnerStaffMember[];
   staffTableAvailable: boolean;
+  alterationRequests: AlterationRequestSummary[];
 }
 
 function OverviewPanel({
@@ -121,48 +127,50 @@ function OverviewPanel({
   stats: DashboardStats | null;
   listing: OwnerListingSettings | null;
 }) {
-  const statusLabel = boutique?.status?.replace(/_/g, " ") ?? "not registered";
+  const t = useTranslations("Dashboard.overview");
+  const tc = useTranslations("Common");
+  const statusLabel = boutique?.status?.replace(/_/g, " ") ?? t("notRegistered");
   const overviewStats = stats
     ? [
-        { label: "New Requests", value: String(stats.pendingRequests) },
-        { label: "Pending Orders", value: String(stats.pendingOrders) },
-        { label: "Conversations", value: String(stats.messageCount) },
-        { label: "Total Requests", value: String(stats.totalRequests) },
+        { label: t("newRequests"), value: String(stats.pendingRequests) },
+        { label: t("pendingOrders"), value: String(stats.pendingOrders) },
+        { label: t("conversations"), value: String(stats.messageCount) },
+        { label: t("totalRequests"), value: String(stats.totalRequests) },
       ]
     : [
-        { label: "New Requests", value: "—" },
-        { label: "Pending Orders", value: "—" },
-        { label: "Conversations", value: "—" },
-        { label: "Total Requests", value: "—" },
+        { label: t("newRequests"), value: "—" },
+        { label: t("pendingOrders"), value: "—" },
+        { label: t("conversations"), value: "—" },
+        { label: t("totalRequests"), value: "—" },
       ];
 
   return (
     <div className="space-y-6">
       {boutique ? (
         <PremiumCard hover={false} className="border-gold/30">
-          <p className="text-xs font-semibold tracking-[0.2em] text-gold">YOUR BOUTIQUE</p>
+          <p className="text-xs font-semibold tracking-[0.2em] text-gold">{t("yourBoutique")}</p>
           <h3 className="mt-2 font-display text-xl font-semibold">{boutique.name}</h3>
-          <p className="mt-2 capitalize text-sm text-foreground-muted">Status: {statusLabel}</p>
+          <p className="mt-2 capitalize text-sm text-foreground-muted">
+            {tc("status")}: {statusLabel}
+          </p>
           {boutique.status === "verified" && (
             <Link
               href={`/boutique/${boutique.slug}`}
               className="mt-4 inline-block text-sm text-gold hover:text-gold-light"
             >
-              View public profile →
+              {tc("viewPublicProfile")}
             </Link>
           )}
           {boutique.status === "pending_verification" && (
-            <p className="mt-3 text-sm text-foreground-muted">
-              Your studio is in the admin verification queue. You&apos;ll appear on discovery once approved.
-            </p>
+            <p className="mt-3 text-sm text-foreground-muted">{t("pendingVerification")}</p>
           )}
         </PremiumCard>
       ) : (
         <PremiumCard hover={false}>
           <p className="text-sm text-foreground-muted">
-            No boutique linked yet.{" "}
+            {t("noBoutiqueLinked")}{" "}
             <Link href="/register-boutique" className="text-gold hover:text-gold-light">
-              Register your boutique
+              {t("registerBoutique")}
             </Link>
           </p>
         </PremiumCard>
@@ -179,18 +187,18 @@ function OverviewPanel({
         ))}
       </div>
       <PremiumCard hover={false}>
-        <h3 className="font-semibold text-gold">Today&apos;s Snapshot</h3>
+        <h3 className="font-semibold text-gold">{t("todaysSnapshot")}</h3>
         <ul className="mt-4 space-y-2 text-sm text-foreground-muted">
           {stats ? (
             <>
-              <li>• {stats.pendingRequests} new customization request{stats.pendingRequests === 1 ? "" : "s"} awaiting review</li>
-              <li>• {stats.pendingOrders} active order{stats.pendingOrders === 1 ? "" : "s"} in pipeline</li>
-              <li>• {stats.messageCount} customer conversation{stats.messageCount === 1 ? "" : "s"}</li>
+              <li>• {t("awaitingReview", { count: stats.pendingRequests })}</li>
+              <li>• {t("activeOrders", { count: stats.pendingOrders })}</li>
+              <li>• {t("customerConversations", { count: stats.messageCount })}</li>
             </>
           ) : (
             <>
-              <li>• Approve your boutique to start receiving customer requests</li>
-              <li>• Orders and messages appear when customers customize with your studio</li>
+              <li>• {t("approveToStart")}</li>
+              <li>• {t("ordersWhenLive")}</li>
             </>
           )}
         </ul>
@@ -200,6 +208,7 @@ function OverviewPanel({
 }
 
 function StubPanel({ title, items }: { title: string; items: string[] }) {
+  const tc = useTranslations("Common");
   return (
     <PremiumCard hover={false}>
       <h3 className="font-display text-lg font-semibold text-gold">{title}</h3>
@@ -208,39 +217,10 @@ function StubPanel({ title, items }: { title: string; items: string[] }) {
           <li key={item}>• {item}</li>
         ))}
       </ul>
-      <p className="mt-4 text-xs text-foreground-muted/70">Detailed tools — coming soon</p>
+      <p className="mt-4 text-xs text-foreground-muted/70">{tc("comingSoon")}</p>
     </PremiumCard>
   );
 }
-
-const PANEL_STUBS: Record<
-  Exclude<
-    PanelId,
-    | "overview"
-    | "customization"
-    | "appointments"
-    | "orders"
-    | "messages"
-    | "quotations"
-    | "payments"
-    | "delivery"
-    | "reviews"
-    | "portfolio"
-    | "customers"
-    | "listings"
-    | "analytics"
-    | "performance"
-    | "staff"
-  >,
-  React.ReactNode
-> = {
-  marketing: (
-    <StubPanel
-      title="Marketing Tools"
-      items={["Featured listings, promotions, discount campaigns, festival offers, sponsored placement"]}
-    />
-  ),
-};
 
 export function DashboardShell({
   boutique,
@@ -252,6 +232,9 @@ export function DashboardShell({
   initialPanel?: PanelId;
 }) {
   const [active, setActive] = useState<PanelId>(initialPanel ?? "overview");
+  const t = useTranslations("Dashboard");
+  const tn = useTranslations("Dashboard.nav");
+  const te = useTranslations("Dashboard.empty");
 
   const panel =
     active === "overview" ? (
@@ -263,6 +246,15 @@ export function DashboardShell({
         <OwnerAppointmentsPanel appointments={data.appointments} />
         <OwnerHomeVisitsPanel visits={data.homeVisits} />
       </div>
+    ) : active === "alterations" ? (
+      boutique?.id ? (
+        <OwnerAlterationsPanel requests={data.alterationRequests} boutiqueId={boutique.id} />
+      ) : (
+        <PremiumCard hover={false}>
+          <h3 className="font-display text-lg font-semibold text-gold">{te("alterationsTitle")}</h3>
+          <p className="mt-4 text-sm text-foreground-muted">{te("alterationsBody")}</p>
+        </PremiumCard>
+      )
     ) : active === "orders" ? (
       <OrdersPanel orders={data.orders} />
     ) : active === "messages" ? (
@@ -287,10 +279,8 @@ export function DashboardShell({
         <ListingsPanel listing={data.listing} />
       ) : (
         <PremiumCard hover={false}>
-          <h3 className="font-display text-lg font-semibold text-gold">Products & Service Listings</h3>
-          <p className="mt-4 text-sm text-foreground-muted">
-            Listing settings appear once your boutique is verified.
-          </p>
+          <h3 className="font-display text-lg font-semibold text-gold">{te("listingsTitle")}</h3>
+          <p className="mt-4 text-sm text-foreground-muted">{te("listingsBody")}</p>
         </PremiumCard>
       )
     ) : active === "analytics" ? (
@@ -298,10 +288,8 @@ export function DashboardShell({
         <AnalyticsPanel analytics={data.analytics} />
       ) : (
         <PremiumCard hover={false}>
-          <h3 className="font-display text-lg font-semibold text-gold">Analytics</h3>
-          <p className="mt-4 text-sm text-foreground-muted">
-            Analytics appear once your boutique is live and receiving customer activity.
-          </p>
+          <h3 className="font-display text-lg font-semibold text-gold">{te("analyticsTitle")}</h3>
+          <p className="mt-4 text-sm text-foreground-muted">{te("analyticsBody")}</p>
         </PremiumCard>
       )
     ) : active === "performance" ? (
@@ -309,10 +297,8 @@ export function DashboardShell({
         <PerformancePanel performance={data.performance} />
       ) : (
         <PremiumCard hover={false}>
-          <h3 className="font-display text-lg font-semibold text-gold">Performance Score</h3>
-          <p className="mt-4 text-sm text-foreground-muted">
-            Performance metrics build as you fulfill orders and collect reviews.
-          </p>
+          <h3 className="font-display text-lg font-semibold text-gold">{te("performanceTitle")}</h3>
+          <p className="mt-4 text-sm text-foreground-muted">{te("performanceBody")}</p>
         </PremiumCard>
       )
     ) : active === "staff" ? (
@@ -324,22 +310,20 @@ export function DashboardShell({
         />
       ) : (
         <PremiumCard hover={false}>
-          <h3 className="font-display text-lg font-semibold text-gold">Staff Management</h3>
-          <p className="mt-4 text-sm text-foreground-muted">
-            Staff management is available once your boutique is registered and verified.
-          </p>
+          <h3 className="font-display text-lg font-semibold text-gold">{te("staffTitle")}</h3>
+          <p className="mt-4 text-sm text-foreground-muted">{te("staffBody")}</p>
         </PremiumCard>
       )
     ) : (
-      PANEL_STUBS[active]
+      <StubPanel title={t("marketing.title")} items={[t("marketing.items")]} />
     );
 
   return (
     <div className="mx-auto flex max-w-container flex-col gap-6 lg:flex-row lg:gap-8">
       <aside className="premium-surface-3d shrink-0 rounded-xl p-4 lg:w-64">
-        <p className="mb-4 font-display text-sm font-semibold tracking-wide text-gold">BOUTIQUE DASHBOARD</p>
+        <p className="mb-4 font-display text-sm font-semibold tracking-wide text-gold">{t("title")}</p>
         <nav className="flex flex-row flex-wrap gap-1 lg:flex-col">
-          {NAV.map(({ id, label, icon: Icon }) => (
+          {NAV.map(({ id, icon: Icon }) => (
             <button
               key={id}
               type="button"
@@ -350,7 +334,7 @@ export function DashboardShell({
               )}
             >
               <Icon className="h-4 w-4 shrink-0" aria-hidden />
-              {label}
+              {tn(id)}
             </button>
           ))}
         </nav>

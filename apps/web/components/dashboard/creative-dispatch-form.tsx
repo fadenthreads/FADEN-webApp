@@ -2,6 +2,7 @@
 
 import { Button } from "@faden/ui";
 import type { CreativePiece } from "@/data/boutique-profiles";
+import { MAX_MEDIA_BYTES, uploadMediaFile } from "@/lib/storage/client-upload";
 
 export interface CreativeDispatchFormValues {
   title: string;
@@ -28,7 +29,7 @@ export const CREATIVE_GRADIENT_OPTIONS = [
   "from-pink-900/40 via-rose-900/30 to-background-soft",
 ] as const;
 
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+const MAX_IMAGE_BYTES = MAX_MEDIA_BYTES;
 
 interface CreativeDispatchFormProps {
   editingId: string | null;
@@ -65,15 +66,16 @@ export function CreativeDispatchForm({
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+    event.target.value = "";
     if (!file) return;
     if (file.size > MAX_IMAGE_BYTES) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        patch({ mediaUrl: reader.result });
-      }
-    };
-    reader.readAsDataURL(file);
+
+    try {
+      const uploaded = await uploadMediaFile(file, "creative");
+      patch({ mediaUrl: uploaded.url });
+    } catch {
+      // Parent form surfaces save errors; ignore transient upload failures here.
+    }
   }
 
   return (

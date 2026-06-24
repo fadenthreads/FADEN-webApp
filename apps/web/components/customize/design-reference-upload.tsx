@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { X } from "lucide-react";
+import { MAX_MEDIA_BYTES, uploadMediaFile } from "@/lib/storage/client-upload";
 
 export const MAX_DESIGN_REFERENCE_IMAGES = 4;
-export const MAX_DESIGN_IMAGE_BYTES = 2 * 1024 * 1024;
+export const MAX_DESIGN_IMAGE_BYTES = MAX_MEDIA_BYTES;
 
 interface DesignReferenceUploadProps {
   images: string[];
@@ -17,9 +18,11 @@ export function DesignReferenceUpload({
   images,
   onImagesChange,
   label = "Reference photos",
-  hint = `Upload up to ${MAX_DESIGN_REFERENCE_IMAGES} images (max 2 MB each).`,
+  hint = `Upload up to ${MAX_DESIGN_REFERENCE_IMAGES} images (max ${Math.round(MAX_MEDIA_BYTES / (1024 * 1024))} MB each).`,
 }: DesignReferenceUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   async function handleFilesSelected(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -30,17 +33,26 @@ export function DesignReferenceUpload({
     const remaining = MAX_DESIGN_REFERENCE_IMAGES - images.length;
     if (remaining <= 0) return;
 
+    setUploadError(null);
+    setUploading(true);
     const nextImages = [...images];
 
-    for (const file of files.slice(0, remaining)) {
-      if (!file.type.startsWith("image/")) continue;
-      if (file.size > MAX_DESIGN_IMAGE_BYTES) continue;
+    try {
+      for (const file of files.slice(0, remaining)) {
+        if (!file.type.startsWith("image/")) continue;
 
-      const dataUrl = await readFileAsDataUrl(file);
-      nextImages.push(dataUrl);
+        try {
+          const uploaded = await uploadMediaFile(file, "customize");
+          nextImages.push(uploaded.url);
+        } catch (err) {
+          setUploadError(err instanceof Error ? err.message : "Upload failed");
+        }
+      }
+
+      onImagesChange(nextImages.slice(0, MAX_DESIGN_REFERENCE_IMAGES));
+    } finally {
+      setUploading(false);
     }
-
-    onImagesChange(nextImages.slice(0, MAX_DESIGN_REFERENCE_IMAGES));
   }
 
   function removeImage(index: number) {
@@ -58,8 +70,14 @@ export function DesignReferenceUpload({
         multiple
         className="faden-field mt-2 cursor-pointer file:mr-3 file:rounded-full file:border-0 file:bg-gold/15 file:px-3 file:py-1 file:text-xs file:font-medium file:text-gold"
         onChange={handleFilesSelected}
-        disabled={images.length >= MAX_DESIGN_REFERENCE_IMAGES}
+        disabled={images.length >= MAX_DESIGN_REFERENCE_IMAGES || uploading}
       />
+      {uploading && (
+        <p className="mt-2 text-xs text-foreground-muted">Uploading…</p>
+      )}
+      {uploadError && (
+        <p className="mt-2 text-xs text-red-accent">{uploadError}</p>
+      )}
       {images.length > 0 && (
         <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {images.map((src, index) => (
@@ -83,13 +101,4 @@ export function DesignReferenceUpload({
       )}
     </div>
   );
-}
-
-function readFileAsDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
 }

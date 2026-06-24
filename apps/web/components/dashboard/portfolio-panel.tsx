@@ -6,6 +6,7 @@ import { PremiumCard } from "@/components/ui/premium-card";
 import { DressImage } from "@/components/boutique/dress-image";
 import type { BoutiqueDesign, DressLengthDetails } from "@/data/boutique-profiles";
 import { DRESS_LENGTH_FIELDS } from "@/lib/boutique/dress-specs";
+import { MAX_MEDIA_BYTES, uploadMediaFile } from "@/lib/storage/client-upload";
 
 interface PortfolioItem {
   id: string;
@@ -24,7 +25,7 @@ interface OutfitTypeOption {
   label: string;
 }
 
-const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+const MAX_IMAGE_BYTES = MAX_MEDIA_BYTES;
 const EMPTY_LENGTH_DETAILS: DressLengthDetails = {};
 
 function normalizeLengthDetails(value: DressLengthDetails | null | undefined): DressLengthDetails {
@@ -111,19 +112,20 @@ export function PortfolioPanel({ boutiqueSlug }: { boutiqueSlug?: string }) {
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+    event.target.value = "";
     if (!file) return;
     if (file.size > MAX_IMAGE_BYTES) {
-      setError("Image must be under 2 MB.");
+      setError(`Image must be under ${Math.round(MAX_IMAGE_BYTES / (1024 * 1024))} MB.`);
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setMediaUrl(reader.result);
-        setError(null);
-      }
-    };
-    reader.readAsDataURL(file);
+
+    try {
+      const uploaded = await uploadMediaFile(file, "portfolio");
+      setMediaUrl(uploaded.url);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    }
   }
 
   function startEdit(item: PortfolioItem) {

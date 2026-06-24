@@ -129,5 +129,317 @@
     "subtitle": "List your portfolio, services, and trust signals to join India's boutique fashion platform.",
     "signIn": "Sign in",
     "createAccount": "Create boutique account"
+  },
+  "Common": {
+    "back": "Back",
+    "next": "Next",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "submitting": "Submitting…",
+    "uploading": "Uploading…",
+    "uploadFailed": "Upload failed",
+    "customer": "Customer",
+    "boutique": "Boutique",
+    "signIn": "Sign in",
+    "viewPublicProfile": "View public profile →",
+    "viewBoutique": "View boutique →",
+    "comingSoon": "Detailed tools — coming soon",
+    "status": "Status"
+  },
+  "Upload": {
+    "tapToAdd": "Tap to add photos",
+    "fileHint": "JPG, PNG, or short videos · up to {maxImages} files · {maxMb} MB each",
+    "pasteUrls": "Or paste image/video URLs, one per line",
+    "removePhoto": "Remove photo"
+  },
+  "Dashboard": {
+    "title": "BOUTIQUE DASHBOARD",
+    "nav": {
+      "overview": "Overview",
+      "orders": "Orders",
+      "customization": "Customization Requests",
+      "appointments": "Fittings & Visits",
+      "alterations": "Alterations",
+      "customers": "Customers",
+      "portfolio": "Portfolio",
+      "listings": "Products & Services",
+      "messages": "Messages",
+      "quotations": "Quotations",
+      "reviews": "Reviews",
+      "analytics": "Analytics",
+      "payments": "Payments",
+      "delivery": "Delivery Tracking",
+      "staff": "Staff",
+      "marketing": "Marketing",
+      "performance": "Performance Score"
+    },
+    "overview": {
+      "yourBoutique": "YOUR BOUTIQUE",
+      "notRegistered": "not registered",
+      "pendingVerification": "Your studio is in the admin verification queue. You'll appear on discovery once approved.",
+      "noBoutiqueLinked": "No boutique linked yet.",
+      "registerBoutique": "Register your boutique",
+      "newRequests": "New Requests",
+      "pendingOrders": "Pending Orders",
+      "conversations": "Conversations",
+      "totalRequests": "Total Requests",
+      "todaysSnapshot": "Today's Snapshot",
+      "awaitingReview": "{count} new customization request(s) awaiting review",
+      "activeOrders": "{count} active order(s) in pipeline",
+      "customerConversations": "{count} customer conversation(s)",
+      "approveToStart": "Approve your boutique to start receiving customer requests",
+      "ordersWhenLive": "Orders and messages appear when customers customize with your studio"
+    },
+    "empty": {
+      "alterationsTitle": "Alterations",
+      "alterationsBody": "Alteration requests appear once your boutique is registered and verified.",
+      "listingsTitle": "Products & Service Listings",
+      "listingsBody": "Listing settings appear once your boutique is verified.",
+      "analyticsTitle": "Analytics",
+      "analyticsBody": "Analytics appear once your boutique is live and receiving customer activity.",
+      "performanceTitle": "Performance Score",
+      "performanceBody": "Performance metrics build as you fulfill orders and collect reviews.",
+      "staffTitle": "Staff Management",
+      "staffBody": "Staff management is available once your boutique is registered and verified."
+    },
+    "marketing": {
+      "title": "Marketing Tools",
+      "items": "Featured listings, promotions, discount campaigns, festival offers, sponsored placement"
+    }
+  },
+  "Customize": {
+    "steps": {
+      "start": "How to Begin",
+      "category": "Outfit & Occasion",
+      "inspiration": "Inspiration",
+      "fabric": "Fabric & Colour",
+      "measurements": "Measurements",
+      "design": "Design Details",
+      "delivery": "Delivery & Budget",
+      "review": "Review"
+    },
+    "navAria": "Customize outfit steps",
+    "back": "Back",
+    "next": "Next",
+    "submitRequest": "Submit request",
+    "viewSuggestedBoutiques": "View suggested boutiques",
+    "submitFailed": "Submission failed. Please try again.",
+    "selectAudience": "Select who this outfit is for (Women, Men, or Kids).",
+    "selectOutfitType": "Select an outfit type before finding boutiques.",
+    "submittedTitle": "Request Submitted",
+    "submittedBody": "Your boutique will review your request and reply with a quotation.",
+    "reference": "Reference",
+    "submittedAt": "Submitted {date}",
+    "viewInAccount": "View in my account",
+    "goToAccount": "Go to account",
+    "nextSteps": "Next: quotation → payment → production tracking → delivery → review",
+    "start": {
+      "requirementsHint": "Continue through the steps to describe your outfit. At the end, we'll suggest boutiques that match your requirements.",
+      "chooseBoutique": "Choose your boutique",
+      "chooseBoutiqueHint": "Start typing a boutique name — matching studios appear as you type."
+    },
+    "category": {
+      "whoFor": "Who is this outfit for?",
+      "whoForHint": "Select Women, Men, or Kids so the boutique knows who will wear it.",
+      "outfitType": "Outfit type",
+      "selectType": "Select type…",
+      "describeOutfit": "Describe your outfit",
+      "describeOutfitHint": "Type freely if your outfit isn't listed above.",
+      "describePlaceholder": "e.g. Floor-length lehenga with cape sleeves and minimal embroidery…",
+      "occasion": "Occasion",
+      "occasionHint": "Start typing — suggestions appear, or pick one below.",
+      "occasionPlaceholder": "Wedding, reception, festival…",
+      "popularOccasions": "Popular occasions"
+    },
+    "inspiration": {
+      "linksLabel": "Design inspiration (links / references)",
+      "linksHint": "Paste links from Pinterest, Instagram, or other apps — one per line.",
+      "sketchLabel": "Sketch / change notes",
+      "sketchHint": "Describe neckline, length, or other alterations.",
+      "sketchPlaceholder": "Notes about neckline changes, length adjustments…"
+    },
+    "mixOutfit": {
+      "label": "Mixing two outfits?",
+      "hint": "Describe what you want from each reference. Discuss feasibility with the boutique before combining elements from two designs.",
+      "notesPlaceholder": "From outfit 1 I want the sleeve… from outfit 2 the skirt…",
+      "linksLabel": "Outfit reference links",
+      "linksHint": "Paste one link per line — Pinterest, Instagram, shopping sites, etc.",
+      "photosLabel": "Outfit reference pictures",
+      "photosHint": "Upload up to {max} images (max {maxMb} MB each)."
+    },
+    "fabric": {
+      "whoSupplies": "Who supplies the fabric?",
+      "boutiqueSources": "Boutique sources fabric (with FADEN support)",
+      "customerProvides": "I will provide my own material",
+      "fabricProviding": "Fabric you are providing",
+      "fabricPreferred": "Preferred fabric type",
+      "fabricHint": "Start typing — suggestions appear for silk, georgette, cotton, and more.",
+      "fabricPlaceholder": "e.g. Silk, Georgette",
+      "coloursLabel": "Preferred fabric colours",
+      "coloursHint": "Start typing — colour suggestions appear as you type. Add multiple separated by commas.",
+      "coloursPlaceholder": "e.g. Emerald green, gold accents",
+      "colourCount": "How many colours in the outfit?",
+      "advanceNote": "Advance payment: max 40% when boutique supplies material. Otherwise pay only when work is complete and you are satisfied."
+    },
+    "design": {
+      "intro": "Describe each design element with suggestions or your own words, and upload reference photos for every option so the boutique can see exactly what you want."
+    },
+    "delivery": {
+      "dateLabel": "Delivery date needed by",
+      "dateHint": "We advise ordering 1–2 days earlier for alterations or last-minute changes.",
+      "datePlaceholder": "Select delivery date",
+      "budgetLabel": "Budget range",
+      "budgetPlaceholder": "e.g. ₹15,000 – ₹25,000"
+    },
+    "review": {
+      "directOrder": "Direct order: replicating \"{title}\" with the size and lengths from the outfit page.",
+      "withBoutique": "Review your request before sending it to your chosen boutique.",
+      "withoutBoutique": "Review your request, then browse suggested boutiques and pick one before submitting.",
+      "tapToFix": "Tap to fix →",
+      "selfMeasurements": "Self measurements",
+      "provideFabric": "I will provide fabric",
+      "boutiqueSuppliesFabric": "Boutique supplies fabric",
+      "referencePhotos": "{count} reference photo(s)"
+    }
+  },
+  "RegisterBoutiqueForm": {
+    "sections": {
+      "basic": "Basic Details",
+      "portfolio": "Portfolio",
+      "services": "Services Offered",
+      "pricing": "Pricing Information",
+      "delivery": "Delivery Information",
+      "trust": "Trust Signals & Reviews",
+      "availability": "Availability",
+      "communication": "Communication"
+    },
+    "fields": {
+      "boutiqueName": "Boutique name",
+      "boutiqueNamePlaceholder": "Silk & Thread Studio",
+      "ownerName": "Owner name",
+      "ownerNamePlaceholder": "Full name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "addressPlaceholder": "Full address",
+      "mapsUrl": "Google Maps location",
+      "mapsUrlHint": "Paste maps link or coordinates.",
+      "mapsUrlPlaceholder": "https://maps.google.com/…",
+      "yearsInBusiness": "Years in business",
+      "portfolioPhotos": "Completed outfit photos",
+      "portfolioPhotosHint": "Upload portfolio photos or paste URLs — show your best work.",
+      "allClothing": "All kinds of clothing",
+      "allClothingHint": "We customize everything — women's, men's, and kids' wear across all outfit types.",
+      "outfitTypes": "Outfit types you make",
+      "outfitTypesHint": "List women's, men's, and kids' types — e.g. Lehenga, Sherwani, Kids Kurta.",
+      "outfitTypesPlaceholder": "Lehenga, Saree, Sherwani, Kids Lehenga…",
+      "servicesOffered": "Services offered",
+      "servicesPlaceholder": "Stitching only, custom design, alterations…",
+      "pricingInfo": "Pricing information",
+      "pricingHint": "e.g. Blouses start from ₹2,500",
+      "pricingPlaceholder": "Describe your pricing ranges per garment type",
+      "avgDeliveryTime": "Average delivery time",
+      "avgDeliveryPlaceholder": "e.g. 12–18 days",
+      "rushOrders": "Rush orders accepted?",
+      "maxOrders": "Max orders per month",
+      "verificationMedia": "Verification photos & videos",
+      "verificationMediaHint": "Upload workshop, portfolio, or storefront photos. Required — or FADEN will schedule a visit.",
+      "reviewsSummary": "Customer reviews summary",
+      "reviewsPlaceholder": "Written reviews, delivery ratings, quality ranges",
+      "socialLinks": "Social media links",
+      "socialPlaceholder": "Instagram, Facebook…",
+      "completedOrders": "Completed orders (approx.)",
+      "status": "Status",
+      "open": "Open",
+      "closed": "Closed",
+      "workingHours": "Working hours",
+      "workingHoursPlaceholder": "Mon–Sat 10am–7pm",
+      "booking": "Booking",
+      "bookingAppointment": "Appointment booking",
+      "bookingVideo": "Video call booking",
+      "bookingBoth": "Both",
+      "communicationPrefs": "Preferred communication",
+      "communicationPlaceholder": "In-app messaging, consultation booking preferences…",
+      "adminNote": "Note for admin (optional)",
+      "adminNotePlaceholder": "Explain what changed or why you updated your profile…"
+    },
+    "footer": {
+      "modifyVerified": "Submit your changes for admin review.",
+      "modifyUnverified": "Save your updated registration details.",
+      "modifyNoChanges": "Change at least one field to enable submission.",
+      "registerRequired": "Required: basic details, outfit types, and services (check all sections)."
+    },
+    "buttons": {
+      "saveDraft": "Save Draft",
+      "submitRegistration": "Submit Registration",
+      "submitModification": "Submit modification",
+      "saveChanges": "Save changes"
+    },
+    "draftSaved": "Draft saved on this device.",
+    "success": {
+      "registrationTitle": "Registration Received",
+      "registrationBody": "Our team will verify your portfolio and trust signals. You'll receive dashboard access once approved.",
+      "goToDashboard": "Go to Dashboard",
+      "modificationSent": "Modification Request Sent",
+      "detailsUpdated": "Details Updated",
+      "modificationBody": "Our team will review your changes. Your live profile stays unchanged until approved.",
+      "updatedBody": "Your boutique registration has been updated.",
+      "backToAccount": "Back to Account",
+      "pendingTitle": "Modification Pending Review",
+      "pendingBody": "You submitted changes on {date}. Your live profile stays unchanged until an admin approves the request.",
+      "yourNote": "Your note"
+    },
+    "errors": {
+      "boutiqueNotFound": "Boutique not found.",
+      "updateOneField": "Update at least one field before submitting.",
+      "updateFailed": "Update failed",
+      "submissionFailed": "Submission failed",
+      "requestTimeout": "Request timed out. Restart the dev server and try again."
+    }
+  },
+  "AlterationsPanel": {
+    "owner": {
+      "eyebrow": "ALTERATIONS",
+      "title": "Incoming alteration requests",
+      "emptyBody": "When customers book alterations on FADEN, matched requests appear here. Add \"Alterations\" to your services in Products & Services to receive more bookings.",
+      "activeCount": "{active} active · {closed} closed",
+      "active": "Active",
+      "history": "History",
+      "homeServiceOk": "Home service OK",
+      "submitted": "Submitted {date}",
+      "startAlteration": "Start alteration",
+      "markComplete": "Mark complete",
+      "updateFailed": "Update failed",
+      "status": {
+        "requested": "Awaiting boutique assignment",
+        "assigned": "Assigned — ready to start",
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "urgency": {
+        "2": "Within 2 hours",
+        "4": "Within 4 hours",
+        "8": "Same day",
+        "24": "Within 24 hours",
+        "48": "Within 2 days",
+        "hours": "Within {hours} hours"
+      }
+    },
+    "customer": {
+      "emptyTitle": "No alteration requests",
+      "emptyBody": "Book a quick alteration with a nearby boutique — often within 2 hours for urgent requests.",
+      "bookAlteration": "Book an alteration",
+      "requested": "Requested {date}",
+      "urgent": "Urgent (within 2 hours)",
+      "status": {
+        "requested": "Matching a boutique",
+        "assigned": "Boutique assigned",
+        "in_progress": "In progress",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
+    }
   }
 }

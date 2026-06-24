@@ -129,5 +129,317 @@
     "subtitle": "पोर्टफोलियो, सेवाएं और trust signals सूचीबद्ध करें।",
     "signIn": "साइन इन",
     "createAccount": "बुटीक खाता बनाएं"
+  },
+  "Common": {
+    "back": "पीछे",
+    "next": "आगे",
+    "cancel": "रद्द करें",
+    "yes": "हाँ",
+    "no": "नहीं",
+    "submitting": "भेजा जा रहा है…",
+    "uploading": "अपलोड हो रहा है…",
+    "uploadFailed": "अपलोड विफल",
+    "customer": "ग्राहक",
+    "boutique": "बुटीक",
+    "signIn": "साइन इन",
+    "viewPublicProfile": "सार्वजनिक प्रोफ़ाइल देखें →",
+    "viewBoutique": "बुटीक देखें →",
+    "comingSoon": "विस्तृत टूल — जल्द आ रहे हैं",
+    "status": "स्थिति"
+  },
+  "Upload": {
+    "tapToAdd": "फोटो जोड़ने के लिए टैप करें",
+    "fileHint": "JPG, PNG या छोटे वीडियो · {maxImages} फाइलें · {maxMb} MB प्रत्येक",
+    "pasteUrls": "या image/video URL पेस्ट करें, प्रति पंक्ति एक",
+    "removePhoto": "फोटो हटाएं"
+  },
+  "Dashboard": {
+    "title": "बुटीक डैशबोर्ड",
+    "nav": {
+      "overview": "अवलोकन",
+      "orders": "ऑर्डर",
+      "customization": "कस्टमाइज़ेशन अनुरोध",
+      "appointments": "फिटिंग और विज़िट",
+      "alterations": "Alterations",
+      "customers": "ग्राहक",
+      "portfolio": "पोर्टफोलियो",
+      "listings": "उत्पाद और सेवाएं",
+      "messages": "संदेश",
+      "quotations": "कोटेशन",
+      "reviews": "समीक्षाएं",
+      "analytics": "एनालिटिक्स",
+      "payments": "भुगतान",
+      "delivery": "डिलीवरी ट्रैकिंग",
+      "staff": "स्टाफ",
+      "marketing": "मार्केटिंग",
+      "performance": "प्रदर्शन स्कोर"
+    },
+    "overview": {
+      "yourBoutique": "आपका बुटीक",
+      "notRegistered": "पंजीकृत नहीं",
+      "pendingVerification": "आपका स्टूडियो admin verification queue में है। स्वीकृति के बाद discovery पर दिखेगा।",
+      "noBoutiqueLinked": "अभी कोई बुटीक लिंक नहीं है।",
+      "registerBoutique": "अपना बुटीक पंजीकृत करें",
+      "newRequests": "नए अनुरोध",
+      "pendingOrders": "लंबित ऑर्डर",
+      "conversations": "बातचीत",
+      "totalRequests": "कुल अनुरोध",
+      "todaysSnapshot": "आज का सारांश",
+      "awaitingReview": "{count} नए customization अनुरोध review के लिए",
+      "activeOrders": "{count} सक्रिय ऑर्डर pipeline में",
+      "customerConversations": "{count} ग्राहक बातचीत",
+      "approveToStart": "ग्राहक अनुरोध पाने के लिए बुटीक approve करें",
+      "ordersWhenLive": "ग्राहक customize करने पर ऑर्डर और संदेश यहाँ दिखेंगे"
+    },
+    "empty": {
+      "alterationsTitle": "Alterations",
+      "alterationsBody": "बुटीक पंजीकृत और verified होने पर alteration अनुरोध यहाँ दिखेंगे।",
+      "listingsTitle": "उत्पाद और सेवा सूची",
+      "listingsBody": "बुटीक verified होने पर listing settings दिखेंगी।",
+      "analyticsTitle": "एनालिटिक्स",
+      "analyticsBody": "बुटीक live होने और गतिविधि शुरू होने पर analytics दिखेंगे।",
+      "performanceTitle": "प्रदर्शन स्कोर",
+      "performanceBody": "ऑर्डर पूरे करने और reviews इकट्ठा करने पर metrics बनेंगे।",
+      "staffTitle": "स्टाफ प्रबंधन",
+      "staffBody": "बुटीक पंजीकृत और verified होने पर staff management उपलब्ध है।"
+    },
+    "marketing": {
+      "title": "मार्केटिंग टूल",
+      "items": "Featured listings, promotions, discount campaigns, festival offers, sponsored placement"
+    }
+  },
+  "Customize": {
+    "steps": {
+      "start": "कैसे शुरू करें",
+      "category": "पोशाक और अवसर",
+      "inspiration": "प्रेरणा",
+      "fabric": "कपड़ा और रंग",
+      "measurements": "माप",
+      "design": "डिज़ाइन विवरण",
+      "delivery": "डिलीवरी और बजट",
+      "review": "समीक्षा"
+    },
+    "navAria": "Customize outfit चरण",
+    "back": "पीछे",
+    "next": "आगे",
+    "submitRequest": "अनुरोध भेजें",
+    "viewSuggestedBoutiques": "सुझाए गए बुटीक देखें",
+    "submitFailed": "सबमिशन विफल। फिर से प्रयास करें।",
+    "selectAudience": "चुनें यह पोशाक किसके लिए है (महिला, पुरुष या बच्चे)।",
+    "selectOutfitType": "बुटीक खोजने से पहले outfit type चुनें।",
+    "submittedTitle": "अनुरोध भेज दिया गया",
+    "submittedBody": "आपका बुटीक अनुरोध देखकर quotation भेजेगा।",
+    "reference": "संदर्भ",
+    "submittedAt": "भेजा गया {date}",
+    "viewInAccount": "मेरे खाते में देखें",
+    "goToAccount": "खाते पर जाएं",
+    "nextSteps": "अगला: quotation → payment → production → delivery → review",
+    "start": {
+      "requirementsHint": "अपनी पोशाक का विवरण दें। अंत में matching boutiques सुझाए जाएंगे।",
+      "chooseBoutique": "अपना बुटीक चुनें",
+      "chooseBoutiqueHint": "बुटीक का नाम टाइप करें — matching studios दिखेंगे।"
+    },
+    "category": {
+      "whoFor": "यह पोशाक किसके लिए है?",
+      "whoForHint": "महिला, पुरुष या बच्चे चुनें ताकि बुटीक को पता चले।",
+      "outfitType": "Outfit type",
+      "selectType": "प्रकार चुनें…",
+      "describeOutfit": "अपनी पोशाक का वर्णन करें",
+      "describeOutfitHint": "यदि ऊपर सूची में नहीं है तो स्वतंत्र रूप से लिखें।",
+      "describePlaceholder": "जैसे floor-length lehenga, cape sleeves…",
+      "occasion": "अवसर",
+      "occasionHint": "टाइप करें — सुझाव दिखेंगे, या नीचे से चुनें।",
+      "occasionPlaceholder": "Wedding, reception, festival…",
+      "popularOccasions": "लोकप्रिय अवसर"
+    },
+    "inspiration": {
+      "linksLabel": "डिज़ाइन प्रेरणा (लिंक / संदर्भ)",
+      "linksHint": "Pinterest, Instagram आदि से लिंक पेस्ट करें — प्रति पंक्ति एक।",
+      "sketchLabel": "स्केच / बदलाव नोट",
+      "sketchHint": "Neckline, length या अन्य alterations का वर्णन करें।",
+      "sketchPlaceholder": "Neckline, length adjustments…"
+    },
+    "mixOutfit": {
+      "label": "दो outfits मिला रहे हैं?",
+      "hint": "प्रत्येक reference से क्या चाहिए बताएं। दो designs मिलाने से पहले boutique से चर्चा करें।",
+      "notesPlaceholder": "Outfit 1 से sleeve… outfit 2 से skirt…",
+      "linksLabel": "Outfit reference links",
+      "linksHint": "प्रति पंक्ति एक लिंक — Pinterest, Instagram…",
+      "photosLabel": "Outfit reference photos",
+      "photosHint": "{max} images तक (प्रत्येक {maxMb} MB)।"
+    },
+    "fabric": {
+      "whoSupplies": "कपड़ा कौन देगा?",
+      "boutiqueSources": "बुटीक कपड़ा लाएगा (FADEN support के साथ)",
+      "customerProvides": "मैं अपना material दूंगा/दूंगी",
+      "fabricProviding": "आप जो fabric दे रहे हैं",
+      "fabricPreferred": "पसंदीदा fabric type",
+      "fabricHint": "टाइप करें — silk, georgette, cotton सुझाव दिखेंगे।",
+      "fabricPlaceholder": "जैसे Silk, Georgette",
+      "coloursLabel": "पसंदीदा fabric रंग",
+      "coloursHint": "टाइप करें — कई रंग comma से अलग करें।",
+      "coloursPlaceholder": "जैसे Emerald green, gold accents",
+      "colourCount": "Outfit में कितने रंग?",
+      "advanceNote": "Advance payment: boutique material दे तो अधिकतम 40%। वरना काम पूरा और संतुष्ट होने पर भुगतान।"
+    },
+    "design": {
+      "intro": "प्रत्येक design element का वर्णन करें और reference photos अपलोड करें ताकि boutique स्पष्ट देख सके।"
+    },
+    "delivery": {
+      "dateLabel": "Delivery date चाहिए",
+      "dateHint": "Alterations के लिए 1–2 दिन पहले order करने की सलाह।",
+      "datePlaceholder": "Delivery date चुनें",
+      "budgetLabel": "Budget range",
+      "budgetPlaceholder": "जैसे ₹15,000 – ₹25,000"
+    },
+    "review": {
+      "directOrder": "Direct order: \"{title}\" को outfit page के size और lengths के साथ replicate करना।",
+      "withBoutique": "चुने हुए boutique को भेजने से पहले अनुरोध review करें।",
+      "withoutBoutique": "अनुरोध review करें, फिर suggested boutiques देखकर एक चुनें।",
+      "tapToFix": "ठीक करने के लिए टैप करें →",
+      "selfMeasurements": "Self measurements",
+      "provideFabric": "मैं fabric दूंगा/दूंगी",
+      "boutiqueSuppliesFabric": "बुटीक fabric देगा",
+      "referencePhotos": "{count} reference photo(s)"
+    }
+  },
+  "RegisterBoutiqueForm": {
+    "sections": {
+      "basic": "मूल विवरण",
+      "portfolio": "पोर्टफोलियो",
+      "services": "दी जाने वाली सेवाएं",
+      "pricing": "मूल्य जानकारी",
+      "delivery": "डिलीवरी जानकारी",
+      "trust": "Trust Signals और Reviews",
+      "availability": "उपलब्धता",
+      "communication": "संचार"
+    },
+    "fields": {
+      "boutiqueName": "बुटीक का नाम",
+      "boutiqueNamePlaceholder": "Silk & Thread Studio",
+      "ownerName": "मालिक का नाम",
+      "ownerNamePlaceholder": "पूरा नाम",
+      "phone": "फ़ोन",
+      "email": "ईमेल",
+      "address": "पता",
+      "addressPlaceholder": "पूरा पता",
+      "mapsUrl": "Google Maps location",
+      "mapsUrlHint": "Maps link या coordinates पेस्ट करें।",
+      "mapsUrlPlaceholder": "https://maps.google.com/…",
+      "yearsInBusiness": "व्यवसाय के वर्ष",
+      "portfolioPhotos": "पूर्ण outfit photos",
+      "portfolioPhotosHint": "Portfolio photos अपलोड करें या URL पेस्ट करें।",
+      "allClothing": "सभी प्रकार के कपड़े",
+      "allClothingHint": "हम सब customize करते हैं — women, men, kids सभी outfit types।",
+      "outfitTypes": "आप जो outfit types बनाते हैं",
+      "outfitTypesHint": "Women, men, kids types सूचीबद्ध करें — जैसे Lehenga, Sherwani।",
+      "outfitTypesPlaceholder": "Lehenga, Saree, Sherwani, Kids Lehenga…",
+      "servicesOffered": "दी जाने वाली सेवाएं",
+      "servicesPlaceholder": "Stitching, custom design, alterations…",
+      "pricingInfo": "मूल्य जानकारी",
+      "pricingHint": "जैसे Blouses ₹2,500 से",
+      "pricingPlaceholder": "Garment type के अनुसार pricing ranges",
+      "avgDeliveryTime": "औसत delivery time",
+      "avgDeliveryPlaceholder": "जैसे 12–18 days",
+      "rushOrders": "Rush orders स्वीकार?",
+      "maxOrders": "प्रति माह अधिकतम orders",
+      "verificationMedia": "Verification photos और videos",
+      "verificationMediaHint": "Workshop, portfolio या storefront photos। आवश्यक — या FADEN visit schedule करेगा।",
+      "reviewsSummary": "Customer reviews summary",
+      "reviewsPlaceholder": "Written reviews, delivery ratings…",
+      "socialLinks": "Social media links",
+      "socialPlaceholder": "Instagram, Facebook…",
+      "completedOrders": "पूर्ण orders (लगभग)",
+      "status": "स्थिति",
+      "open": "Open",
+      "closed": "Closed",
+      "workingHours": "कार्य समय",
+      "workingHoursPlaceholder": "Mon–Sat 10am–7pm",
+      "booking": "Booking",
+      "bookingAppointment": "Appointment booking",
+      "bookingVideo": "Video call booking",
+      "bookingBoth": "दोनों",
+      "communicationPrefs": "पसंदीदा संचार",
+      "communicationPlaceholder": "In-app messaging, consultation preferences…",
+      "adminNote": "Admin के लिए नोट (वैकल्पिक)",
+      "adminNotePlaceholder": "क्या बदला या क्यों update किया…"
+    },
+    "footer": {
+      "modifyVerified": "Admin review के लिए changes submit करें।",
+      "modifyUnverified": "Updated registration details save करें।",
+      "modifyNoChanges": "Submission enable करने के लिए कम से कम एक field बदलें।",
+      "registerRequired": "आवश्यक: basic details, outfit types, services (सभी sections देखें)।"
+    },
+    "buttons": {
+      "saveDraft": "Draft Save करें",
+      "submitRegistration": "Registration Submit करें",
+      "submitModification": "Modification submit करें",
+      "saveChanges": "Changes save करें"
+    },
+    "draftSaved": "Draft इस device पर save हो गया।",
+    "success": {
+      "registrationTitle": "Registration प्राप्त",
+      "registrationBody": "हम portfolio और trust signals verify करेंगे। Approve होने पर dashboard access मिलेगा।",
+      "goToDashboard": "Dashboard पर जाएं",
+      "modificationSent": "Modification Request भेजा गया",
+      "detailsUpdated": "विवरण Updated",
+      "modificationBody": "हम changes review करेंगे। Admin approve करने तक live profile unchanged रहेगी।",
+      "updatedBody": "आपका boutique registration update हो गया।",
+      "backToAccount": "Account पर वापस",
+      "pendingTitle": "Modification Review के लिए",
+      "pendingBody": "आपने {date} को changes submit किए। Admin approve करने तक live profile unchanged।",
+      "yourNote": "आपका नोट"
+    },
+    "errors": {
+      "boutiqueNotFound": "बुटीक नहीं मिला।",
+      "updateOneField": "Submit करने से पहले कम से कम एक field update करें।",
+      "updateFailed": "Update विफल",
+      "submissionFailed": "Submission विफल",
+      "requestTimeout": "अनुरोध समय समाप्त। Dev server restart करें।"
+    }
+  },
+  "AlterationsPanel": {
+    "owner": {
+      "eyebrow": "ALTERATIONS",
+      "title": "आने वाले alteration अनुरोध",
+      "emptyBody": "ग्राहक FADEN पर alterations book करें तो matched requests यहाँ दिखेंगे। Products & Services में \"Alterations\" जोड़ें।",
+      "activeCount": "{active} active · {closed} closed",
+      "active": "Active",
+      "history": "इतिहास",
+      "homeServiceOk": "Home service OK",
+      "submitted": "Submit {date}",
+      "startAlteration": "Alteration शुरू करें",
+      "markComplete": "Complete mark करें",
+      "updateFailed": "Update विफल",
+      "status": {
+        "requested": "Boutique assignment की प्रतीक्षा",
+        "assigned": "Assigned — शुरू करने के लिए तैयार",
+        "in_progress": "प्रगति में",
+        "completed": "पूर्ण",
+        "cancelled": "रद्द"
+      },
+      "urgency": {
+        "2": "2 घंटे के अंदर",
+        "4": "4 घंटे के अंदर",
+        "8": "आज ही",
+        "24": "24 घंटे के अंदर",
+        "48": "2 दिन के अंदर",
+        "hours": "{hours} घंटे के अंदर"
+      }
+    },
+    "customer": {
+      "emptyTitle": "कोई alteration अनुरोध नहीं",
+      "emptyBody": "नजदीकी boutique से quick alteration book करें — urgent में अक्सर 2 घंटे में।",
+      "bookAlteration": "Alteration book करें",
+      "requested": "अनुरोध {date}",
+      "urgent": "Urgent (2 घंटे के अंदर)",
+      "status": {
+        "requested": "Boutique match हो रहा है",
+        "assigned": "Boutique assigned",
+        "in_progress": "प्रगति में",
+        "completed": "पूर्ण",
+        "cancelled": "रद्द"
+      }
+    }
   }
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@faden/ui";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -32,6 +33,8 @@ import { CustomizeFlowBanner } from "./customize-flow-banner";
 export function CustomizeWizard() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("Customize");
+  const tc = useTranslations("Common");
   const boutiqueParam = searchParams.get("boutique") ?? "";
   const referenceParam = searchParams.get("reference") ?? "";
   const outfitTypeParam = searchParams.get("outfitType") ?? "";
@@ -187,7 +190,7 @@ export function CustomizeWizard() {
       }
 
       if (!res.ok || !payload.ok) {
-        setError(payload.error ?? "Submission failed. Please try again.");
+        setError(payload.error ?? t("submitFailed"));
         return;
       }
 
@@ -196,7 +199,7 @@ export function CustomizeWizard() {
       setSubmitted(true);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Submission failed. Please try again.");
+      setError(err instanceof Error ? err.message : t("submitFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -204,11 +207,11 @@ export function CustomizeWizard() {
 
   function handleContinueToMatches() {
     if (!data.outfitAudience) {
-      setError("Select who this outfit is for (Women, Men, or Kids).");
+      setError(t("selectAudience"));
       return;
     }
     if (!data.outfitType.trim()) {
-      setError("Select an outfit type before finding boutiques.");
+      setError(t("selectOutfitType"));
       return;
     }
     saveCustomizeDraft(data);
@@ -218,25 +221,25 @@ export function CustomizeWizard() {
   if (submitted) {
     return (
       <div className="premium-surface-3d mx-auto max-w-lg rounded-xl p-10 text-center">
-        <h2 className="font-display text-2xl font-semibold text-gold">Request Submitted</h2>
-        <p className="mt-4 text-foreground-muted">
-          Your boutique will review your request and reply with a quotation.
-        </p>
+        <h2 className="font-display text-2xl font-semibold text-gold">{t("submittedTitle")}</h2>
+        <p className="mt-4 text-foreground-muted">{t("submittedBody")}</p>
         {requestId && (
-          <p className="mt-3 text-xs tracking-wide text-foreground-muted/80">Reference: {requestId.slice(0, 8)}…</p>
+          <p className="mt-3 text-xs tracking-wide text-foreground-muted/80">
+            {t("reference")}: {requestId.slice(0, 8)}…
+          </p>
         )}
         {submittedAt && (
-          <p className="mt-2 text-xs text-foreground-muted">Submitted {formatPostedAt(submittedAt)}</p>
+          <p className="mt-2 text-xs text-foreground-muted">
+            {t("submittedAt", { date: formatPostedAt(submittedAt) })}
+          </p>
         )}
         <Button asChild variant="luxury" className="mt-6">
-          <Link href="/account/requests">View in my account</Link>
+          <Link href="/account/requests">{t("viewInAccount")}</Link>
         </Button>
         <Button asChild variant="luxury-outline" className="mt-3">
-          <Link href="/account">Go to account</Link>
+          <Link href="/account">{t("goToAccount")}</Link>
         </Button>
-        <p className="mt-4 text-sm text-foreground-muted">
-          Next: quotation → payment → production tracking → delivery → review
-        </p>
+        <p className="mt-4 text-sm text-foreground-muted">{t("nextSteps")}</p>
       </div>
     );
   }
@@ -245,7 +248,7 @@ export function CustomizeWizard() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <nav className="mb-8 flex flex-wrap gap-2" aria-label="Customize outfit steps">
+      <nav className="mb-8 flex flex-wrap gap-2" aria-label={t("navAria")}>
         {CUSTOMIZE_STEPS.map((s, i) => {
           const isActive = i === stepIndex;
           const isComplete = i < stepIndex;
@@ -267,7 +270,7 @@ export function CustomizeWizard() {
                     : "bg-background-elevated text-foreground-muted hover:bg-background-soft hover:text-foreground"
               }`}
             >
-              {i + 1}. {s.title}
+              {i + 1}. {t(`steps.${s.id}`)}
             </button>
           );
         })}
@@ -278,7 +281,7 @@ export function CustomizeWizard() {
           data={data}
           onChange={stepIndex === 0 ? (flowOrder) => onChange({ flowOrder }) : undefined}
         />
-        <h2 className="font-display text-xl font-semibold text-gold">{step.title}</h2>
+        <h2 className="font-display text-xl font-semibold text-gold">{t(`steps.${step.id}`)}</h2>
         {error && (
           <p className="mt-4 rounded-lg border border-red-accent/40 bg-red-accent/10 px-3 py-2 text-sm text-red-accent">
             {error}
@@ -294,20 +297,20 @@ export function CustomizeWizard() {
             onClick={() => setStepIndex((i) => i - 1)}
           >
             <ChevronLeft className="mr-1 h-4 w-4" aria-hidden />
-            Back
+            {tc("back")}
           </Button>
           {!isLastStep ? (
             <Button type="button" variant="luxury" onClick={() => setStepIndex((i) => i + 1)}>
-              Next
+              {tc("next")}
               <ChevronRight className="ml-1 h-4 w-4" aria-hidden />
             </Button>
           ) : hasBoutique ? (
             <Button type="button" variant="luxury" disabled={submitting} onClick={handleDirectSubmit}>
-              {submitting ? "Submitting…" : "Submit request"}
+              {submitting ? tc("submitting") : t("submitRequest")}
             </Button>
           ) : (
             <Button type="button" variant="luxury" onClick={handleContinueToMatches}>
-              View suggested boutiques
+              {t("viewSuggestedBoutiques")}
               <ChevronRight className="ml-1 h-4 w-4" aria-hidden />
             </Button>
           )}

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@faden/ui";
 import { boutiqueRegistrationSchema, type BoutiqueRegistrationInput } from "@faden/validators";
 import { PremiumCard } from "@/components/ui/premium-card";
@@ -34,17 +35,6 @@ const SECTIONS = [
 ] as const;
 
 type Section = (typeof SECTIONS)[number];
-
-const SECTION_LABELS: Record<Section, string> = {
-  basic: "Basic Details",
-  portfolio: "Portfolio",
-  services: "Services Offered",
-  pricing: "Pricing Information",
-  delivery: "Delivery Information",
-  trust: "Trust Signals & Reviews",
-  availability: "Availability",
-  communication: "Communication",
-};
 
 const defaultForm: BoutiqueRegistrationInput = {
   name: "",
@@ -106,6 +96,9 @@ export function BoutiqueRegistrationForm({
   pendingModification = null,
 }: BoutiqueRegistrationFormProps) {
   const router = useRouter();
+  const t = useTranslations("RegisterBoutiqueForm");
+  const tf = useTranslations("RegisterBoutiqueForm.fields");
+  const tc = useTranslations("Common");
   const isModify = mode === "modify";
   const isVerifiedModify = isModify && boutiqueStatus === "verified";
 
@@ -199,12 +192,12 @@ export function BoutiqueRegistrationForm({
 
     if (isModify) {
       if (!boutiqueId) {
-        setError("Boutique not found.");
+        setError(t("errors.boutiqueNotFound"));
         return;
       }
 
       if (!hasDetailChanges) {
-        setError("Update at least one field before submitting.");
+        setError(t("errors.updateOneField"));
         return;
       }
 
@@ -222,7 +215,7 @@ export function BoutiqueRegistrationForm({
             });
 
         if (!result.ok) {
-          setError(result.error ?? "Update failed");
+          setError(result.error ?? t("errors.updateFailed"));
           setPending(false);
           return;
         }
@@ -230,7 +223,7 @@ export function BoutiqueRegistrationForm({
         setModifySubmitted(true);
         router.refresh();
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Update failed");
+        setError(err instanceof Error ? err.message : t("errors.updateFailed"));
         setPending(false);
       }
       return;
@@ -241,7 +234,7 @@ export function BoutiqueRegistrationForm({
       const { res, payload } = await authFetch("/register-boutique/submit", parsed.data);
 
       if (!res.ok || !payload.ok) {
-        setError(payload.error ?? "Submission failed");
+        setError(payload.error ?? t("errors.submissionFailed"));
         setPending(false);
         return;
       }
@@ -251,10 +244,10 @@ export function BoutiqueRegistrationForm({
     } catch (err) {
       const message =
         err instanceof DOMException && err.name === "AbortError"
-          ? "Request timed out. Restart the dev server and try again."
+          ? t("errors.requestTimeout")
           : err instanceof Error
             ? err.message
-            : "Submission failed";
+            : t("errors.submissionFailed");
       setError(message);
       setPending(false);
     }
@@ -264,15 +257,13 @@ export function BoutiqueRegistrationForm({
     return (
       <PremiumCard className="mx-auto max-w-lg text-center">
         <h2 className="font-display text-2xl font-semibold text-gold">
-          {isVerifiedModify ? "Modification Request Sent" : "Details Updated"}
+          {isVerifiedModify ? t("success.modificationSent") : t("success.detailsUpdated")}
         </h2>
         <p className="mt-4 text-foreground-muted">
-          {isVerifiedModify
-            ? "Our team will review your changes. Your live profile stays unchanged until approved."
-            : "Your boutique registration has been updated."}
+          {isVerifiedModify ? t("success.modificationBody") : t("success.updatedBody")}
         </p>
         <Button asChild variant="luxury" className="mt-6">
-          <Link href="/account">Back to Account</Link>
+          <Link href="/account">{t("success.backToAccount")}</Link>
         </Button>
       </PremiumCard>
     );
@@ -281,13 +272,10 @@ export function BoutiqueRegistrationForm({
   if (submittedSlug) {
     return (
       <PremiumCard className="mx-auto max-w-lg text-center">
-        <h2 className="font-display text-2xl font-semibold text-gold">Registration Received</h2>
-        <p className="mt-4 text-foreground-muted">
-          Our team will verify your portfolio and trust signals. You&apos;ll receive dashboard
-          access once approved.
-        </p>
+        <h2 className="font-display text-2xl font-semibold text-gold">{t("success.registrationTitle")}</h2>
+        <p className="mt-4 text-foreground-muted">{t("success.registrationBody")}</p>
         <Button asChild variant="luxury" className="mt-6">
-          <Link href="/dashboard">Go to Dashboard</Link>
+          <Link href="/dashboard">{t("success.goToDashboard")}</Link>
         </Button>
       </PremiumCard>
     );
@@ -296,18 +284,17 @@ export function BoutiqueRegistrationForm({
   if (isModify && pendingModification) {
     return (
       <PremiumCard className="mx-auto max-w-lg" hover={false}>
-        <h2 className="font-display text-xl font-semibold text-gold">Modification Pending Review</h2>
+        <h2 className="font-display text-xl font-semibold text-gold">{t("success.pendingTitle")}</h2>
         <p className="mt-4 text-sm text-foreground-muted">
-          You submitted changes on {formatPostedAt(pendingModification.submitted_at)}. Your live profile
-          stays unchanged until an admin approves the request.
+          {t("success.pendingBody", { date: formatPostedAt(pendingModification.submitted_at) })}
         </p>
         {pendingModification.owner_notes && (
           <p className="mt-3 text-sm text-foreground-muted">
-            Your note: {pendingModification.owner_notes}
+            {t("success.yourNote")}: {pendingModification.owner_notes}
           </p>
         )}
         <Button asChild variant="luxury" className="mt-6">
-          <Link href="/account">Back to Account</Link>
+          <Link href="/account">{t("success.backToAccount")}</Link>
         </Button>
       </PremiumCard>
     );
@@ -325,13 +312,13 @@ export function BoutiqueRegistrationForm({
               active === s ? "bg-cherry text-gold-light" : "text-foreground-muted hover:text-gold"
             }`}
           >
-            {SECTION_LABELS[s]}
+            {t(`sections.${s}`)}
           </button>
         ))}
       </nav>
 
       <PremiumCard className="min-w-0 flex-1" hover={false}>
-        <h2 className="font-display text-xl font-semibold text-gold">{SECTION_LABELS[active]}</h2>
+        <h2 className="font-display text-xl font-semibold text-gold">{t(`sections.${active}`)}</h2>
 
         {error && (
           <p className="mt-4 rounded-lg border border-red-accent/40 bg-red-accent/10 px-3 py-2 text-sm text-red-accent">
@@ -340,7 +327,7 @@ export function BoutiqueRegistrationForm({
               <>
                 {" "}
                 <Link href="/login?next=/register-boutique" className="underline">
-                  Sign in
+                  {tc("signIn")}
                 </Link>
               </>
             )}
@@ -348,31 +335,31 @@ export function BoutiqueRegistrationForm({
         )}
         {draftSaved && (
           <p className="mt-4 rounded-lg border border-gold/30 bg-gold/10 px-3 py-2 text-sm text-gold-light">
-            Draft saved on this device.
+            {t("draftSaved")}
           </p>
         )}
 
         <div className="mt-6 space-y-5">
           {active === "basic" && (
             <>
-              <FormField label="Boutique name">
+              <FormField label={tf("boutiqueName")}>
                 <TextInput
                   value={form.name}
                   onChange={(e) => updateField("name", e.target.value)}
-                  placeholder="Silk & Thread Studio"
+                  placeholder={tf("boutiqueNamePlaceholder")}
                   required
                 />
               </FormField>
-              <FormField label="Owner name">
+              <FormField label={tf("ownerName")}>
                 <TextInput
                   value={form.ownerName}
                   onChange={(e) => updateField("ownerName", e.target.value)}
-                  placeholder="Full name"
+                  placeholder={tf("ownerNamePlaceholder")}
                   required
                 />
               </FormField>
               <div className="grid gap-5 sm:grid-cols-2">
-                <FormField label="Phone">
+                <FormField label={tf("phone")}>
                   <TextInput
                     type="tel"
                     value={form.phone}
@@ -380,7 +367,7 @@ export function BoutiqueRegistrationForm({
                     required
                   />
                 </FormField>
-                <FormField label="Email">
+                <FormField label={tf("email")}>
                   <TextInput
                     type="email"
                     value={form.email}
@@ -389,22 +376,22 @@ export function BoutiqueRegistrationForm({
                   />
                 </FormField>
               </div>
-              <FormField label="Address">
+              <FormField label={tf("address")}>
                 <TextArea
                   value={form.address}
                   onChange={(e) => updateField("address", e.target.value)}
-                  placeholder="Full address"
+                  placeholder={tf("addressPlaceholder")}
                   required
                 />
               </FormField>
-              <FormField label="Google Maps location" hint="Paste maps link or coordinates.">
+              <FormField label={tf("mapsUrl")} hint={tf("mapsUrlHint")}>
                 <TextInput
                   value={form.mapsUrl}
                   onChange={(e) => updateField("mapsUrl", e.target.value)}
-                  placeholder="https://maps.google.com/…"
+                  placeholder={tf("mapsUrlPlaceholder")}
                 />
               </FormField>
-              <FormField label="Years in business">
+              <FormField label={tf("yearsInBusiness")}>
                 <TextInput
                   type="number"
                   min={0}
@@ -419,10 +406,11 @@ export function BoutiqueRegistrationForm({
           {active === "portfolio" && (
             <>
               <ImageUrlUpload
-                label="Completed outfit photos"
-                hint="Upload portfolio photos or paste URLs — show your best work."
+                label={tf("portfolioPhotos")}
+                hint={tf("portfolioPhotosHint")}
                 value={form.portfolioPhotoUrls ?? ""}
                 onChange={(value) => updateField("portfolioPhotoUrls", value)}
+                purpose="portfolio"
               />
               <AudienceFormField
                 value={form.audiences}
@@ -436,23 +424,18 @@ export function BoutiqueRegistrationForm({
                   className="mt-1"
                 />
                 <span>
-                  <span className="block text-sm font-medium">All kinds of clothing</span>
-                  <span className="mt-1 block text-xs text-foreground-muted">
-                    We customize everything — women&apos;s, men&apos;s, and kids&apos; wear across all outfit types.
-                  </span>
+                  <span className="block text-sm font-medium">{tf("allClothing")}</span>
+                  <span className="mt-1 block text-xs text-foreground-muted">{tf("allClothingHint")}</span>
                 </span>
               </label>
-              <FormField
-                label="Outfit types you make"
-                hint="List women's, men's, and kids' types — e.g. Lehenga, Sherwani, Kids Kurta."
-              >
+              <FormField label={tf("outfitTypes")} hint={tf("outfitTypesHint")}>
                 <TextArea
                   value={form.outfitTypes}
                   onChange={(e) => {
                     setAllKindsOfClothing(false);
                     updateField("outfitTypes", e.target.value);
                   }}
-                  placeholder="Lehenga, Saree, Sherwani, Kids Lehenga…"
+                  placeholder={tf("outfitTypesPlaceholder")}
                   required={!allKindsOfClothing}
                   disabled={allKindsOfClothing}
                 />
@@ -460,44 +443,44 @@ export function BoutiqueRegistrationForm({
             </>
           )}
           {active === "services" && (
-            <FormField label="Services offered">
+            <FormField label={tf("servicesOffered")}>
               <TextArea
                 value={form.servicesOffered}
                 onChange={(e) => updateField("servicesOffered", e.target.value)}
-                placeholder="Stitching only, custom design, alterations…"
+                placeholder={tf("servicesPlaceholder")}
                 required
               />
             </FormField>
           )}
           {active === "pricing" && (
-            <FormField label="Pricing information" hint="e.g. Blouses start from ₹2,500">
+            <FormField label={tf("pricingInfo")} hint={tf("pricingHint")}>
               <TextArea
                 value={form.pricingInfo}
                 onChange={(e) => updateField("pricingInfo", e.target.value)}
-                placeholder="Describe your pricing ranges per garment type"
+                placeholder={tf("pricingPlaceholder")}
               />
             </FormField>
           )}
           {active === "delivery" && (
             <>
-              <FormField label="Average delivery time">
+              <FormField label={tf("avgDeliveryTime")}>
                 <TextInput
                   value={form.avgDeliveryTime}
                   onChange={(e) => updateField("avgDeliveryTime", e.target.value)}
-                  placeholder="e.g. 12–18 days"
+                  placeholder={tf("avgDeliveryPlaceholder")}
                 />
               </FormField>
-              <FormField label="Rush orders accepted?">
+              <FormField label={tf("rushOrders")}>
                 <SelectInput
                   value={form.rushOrdersAccepted}
                   onChange={(e) => updateField("rushOrdersAccepted", e.target.value as "yes" | "no")}
                   options={[
-                    { value: "yes", label: "Yes" },
-                    { value: "no", label: "No" },
+                    { value: "yes", label: tc("yes") },
+                    { value: "no", label: tc("no") },
                   ]}
                 />
               </FormField>
-              <FormField label="Max orders per month">
+              <FormField label={tf("maxOrders")}>
                 <TextInput
                   type="number"
                   value={form.maxOrdersPerMonth ?? ""}
@@ -511,26 +494,27 @@ export function BoutiqueRegistrationForm({
           {active === "trust" && (
             <>
               <ImageUrlUpload
-                label="Verification photos & videos"
-                hint="Upload workshop, portfolio, or storefront photos. Required — or FADEN will schedule a visit."
+                label={tf("verificationMedia")}
+                hint={tf("verificationMediaHint")}
                 value={form.trustMediaUrls ?? ""}
                 onChange={(value) => updateField("trustMediaUrls", value)}
+                purpose="verification"
               />
-              <FormField label="Customer reviews summary">
+              <FormField label={tf("reviewsSummary")}>
                 <TextArea
                   value={form.reviewsSummary}
                   onChange={(e) => updateField("reviewsSummary", e.target.value)}
-                  placeholder="Written reviews, delivery ratings, quality ranges"
+                  placeholder={tf("reviewsPlaceholder")}
                 />
               </FormField>
-              <FormField label="Social media links">
+              <FormField label={tf("socialLinks")}>
                 <TextArea
                   value={form.socialLinks}
                   onChange={(e) => updateField("socialLinks", e.target.value)}
-                  placeholder="Instagram, Facebook…"
+                  placeholder={tf("socialPlaceholder")}
                 />
               </FormField>
-              <FormField label="Completed orders (approx.)">
+              <FormField label={tf("completedOrders")}>
                 <TextInput
                   type="number"
                   value={form.completedOrdersApprox ?? ""}
@@ -543,51 +527,51 @@ export function BoutiqueRegistrationForm({
           )}
           {active === "availability" && (
             <>
-              <FormField label="Status">
+              <FormField label={tf("status")}>
                 <SelectInput
                   value={form.availabilityStatus}
                   onChange={(e) => updateField("availabilityStatus", e.target.value as "open" | "closed")}
                   options={[
-                    { value: "open", label: "Open" },
-                    { value: "closed", label: "Closed" },
+                    { value: "open", label: tf("open") },
+                    { value: "closed", label: tf("closed") },
                   ]}
                 />
               </FormField>
-              <FormField label="Working hours">
+              <FormField label={tf("workingHours")}>
                 <TextInput
                   value={form.workingHours}
                   onChange={(e) => updateField("workingHours", e.target.value)}
-                  placeholder="Mon–Sat 10am–7pm"
+                  placeholder={tf("workingHoursPlaceholder")}
                 />
               </FormField>
-              <FormField label="Booking">
+              <FormField label={tf("booking")}>
                 <SelectInput
                   value={form.bookingMode}
                   onChange={(e) => updateField("bookingMode", e.target.value as BoutiqueRegistrationInput["bookingMode"])}
                   options={[
-                    { value: "appointment", label: "Appointment booking" },
-                    { value: "video", label: "Video call booking" },
-                    { value: "both", label: "Both" },
+                    { value: "appointment", label: tf("bookingAppointment") },
+                    { value: "video", label: tf("bookingVideo") },
+                    { value: "both", label: tf("bookingBoth") },
                   ]}
                 />
               </FormField>
             </>
           )}
           {active === "communication" && (
-            <FormField label="Preferred communication">
+            <FormField label={tf("communicationPrefs")}>
               <TextArea
                 value={form.communicationPrefs}
                 onChange={(e) => updateField("communicationPrefs", e.target.value)}
-                placeholder="In-app messaging, consultation booking preferences…"
+                placeholder={tf("communicationPlaceholder")}
               />
             </FormField>
           )}
           {isVerifiedModify && (
-            <FormField label="Note for admin (optional)">
+            <FormField label={tf("adminNote")}>
               <TextArea
                 value={ownerNotes}
                 onChange={(e) => setOwnerNotes(e.target.value)}
-                placeholder="Explain what changed or why you updated your profile…"
+                placeholder={tf("adminNotePlaceholder")}
                 rows={3}
               />
             </FormField>
@@ -598,24 +582,24 @@ export function BoutiqueRegistrationForm({
             {isModify
               ? hasDetailChanges
                 ? isVerifiedModify
-                  ? "Submit your changes for admin review."
-                  : "Save your updated registration details."
-                : "Change at least one field to enable submission."
-              : "Required: basic details, outfit types, and services (check all sections)."}
+                  ? t("footer.modifyVerified")
+                  : t("footer.modifyUnverified")
+                : t("footer.modifyNoChanges")
+              : t("footer.registerRequired")}
           </p>
           {!isModify && activeIndex > 0 && (
             <Button type="button" variant="luxury-outline" onClick={goToPreviousSection} disabled={pending}>
-              Back
+              {tc("back")}
             </Button>
           )}
           {!isModify && (
             <Button type="button" variant="luxury-outline" onClick={saveDraft} disabled={pending}>
-              Save Draft
+              {t("buttons.saveDraft")}
             </Button>
           )}
           {!isModify && !isLastSection && (
             <Button type="button" variant="luxury" onClick={goToNextSection} disabled={pending}>
-              Next
+              {tc("next")}
             </Button>
           )}
           {(isModify || isLastSection) && (
@@ -626,12 +610,12 @@ export function BoutiqueRegistrationForm({
               disabled={pending || (isModify && !hasDetailChanges)}
             >
               {pending
-                ? "Submitting…"
+                ? tc("submitting")
                 : isModify
                   ? isVerifiedModify
-                    ? "Submit modification"
-                    : "Save changes"
-                  : "Submit Registration"}
+                    ? t("buttons.submitModification")
+                    : t("buttons.saveChanges")
+                  : t("buttons.submitRegistration")}
             </Button>
           )}
         </div>
