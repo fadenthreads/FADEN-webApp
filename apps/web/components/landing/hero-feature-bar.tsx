@@ -23,8 +23,8 @@ export function HeroFeatureBar() {
       aria-label="FADEN values"
       className="relative z-10 mx-4 -mt-2 max-w-container lg:mx-auto"
     >
-      <div className="overflow-hidden rounded-t-2xl bg-gold shadow-md">
-        <div className="grid grid-cols-2 divide-x divide-y divide-navy/15 md:grid-cols-4 md:divide-y-0">
+      <div className="overflow-hidden rounded-t-2xl bg-navy shadow-md">
+        <div className="grid grid-cols-2 divide-x divide-y divide-white/10 md:grid-cols-4 md:divide-y-0">
           {FEATURES.map((feature) => {
             const Icon = feature.icon;
             return (
@@ -34,11 +34,11 @@ export function HeroFeatureBar() {
                 transition={fadeUpTransition}
                 className="flex flex-col items-center px-4 py-5 text-center md:px-5 md:py-7"
               >
-                <Icon className="h-5 w-5 text-navy" strokeWidth={1.25} aria-hidden />
-                <p className="mt-2.5 text-[10px] font-semibold tracking-[0.16em] text-navy md:text-[11px]">
+                <Icon className="h-5 w-5 text-gold" strokeWidth={1.25} aria-hidden />
+                <p className="mt-2.5 text-[10px] font-semibold tracking-[0.16em] text-gold md:text-[11px]">
                   {feature.title.toUpperCase()}
                 </p>
-                <p className="mt-1 text-[11px] leading-relaxed text-navy/75 md:text-xs">
+                <p className="mt-1 text-[11px] leading-relaxed text-white/75 md:text-xs">
                   {feature.description}
                 </p>
               </motion.div>
