@@ -64,7 +64,12 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
       </AnimatePresence>
 
       {phase === "main" && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="faden-home-page min-h-screen"
+        >
           <HeroSection onExploreBoutiques={handleExploreBoutiques} onExploreClothing={handleExploreClothing} />
           <FeaturedPreview audienceCategory={categoryFromUrl} />
           <FeaturedClothing audienceCategory={categoryFromUrl} />

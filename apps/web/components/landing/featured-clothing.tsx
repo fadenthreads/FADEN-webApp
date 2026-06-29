@@ -46,11 +46,11 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
   if (!loading && designs.length === 0) return null;
 
   return (
-    <section id="featured-clothing" aria-labelledby="featured-clothing-heading" className="border-t border-border px-4 py-section-gap lg:px-12">
+    <section id="featured-clothing" aria-labelledby="featured-clothing-heading" className="faden-section-neat border-t px-4 py-section-gap lg:px-12">
       <motion.div variants={staggerContainer} initial={reducedMotion ? false : "hidden"} whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <motion.h2 id="featured-clothing-heading" variants={fadeUp} transition={fadeUpTransition} className="font-display text-2xl font-semibold md:text-3xl">
+            <motion.h2 id="featured-clothing-heading" variants={fadeUp} transition={fadeUpTransition} className="font-display text-2xl font-semibold text-navy md:text-3xl">
               {t("featuredClothing")}
             </motion.h2>
             <motion.p variants={fadeUp} transition={fadeUpTransition} className="mt-2 text-foreground-muted">

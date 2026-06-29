@@ -87,7 +87,7 @@ export function FeaturedPreview({ audienceCategory = null }: FeaturedPreviewProp
   }, [discovery?.customerLocation, audienceCategory]);
 
   return (
-    <section id="featured-boutiques" className="scroll-mt-[180px] border-t border-border px-4 pb-16 pt-8 md:scroll-mt-[120px] lg:px-12">
+    <section id="featured-boutiques" className="faden-section-neat scroll-mt-[180px] border-t px-4 pb-16 pt-10 md:scroll-mt-[120px] lg:px-12">
       <motion.div
         variants={staggerContainer}
         initial={reducedMotion ? false : "hidden"}
@@ -96,7 +96,7 @@ export function FeaturedPreview({ audienceCategory = null }: FeaturedPreviewProp
         className="mx-auto max-w-container"
       >
         <motion.div variants={fadeUp} transition={fadeUpTransition} className="text-center">
-          <h2 className="font-display text-3xl font-semibold md:text-4xl">
+          <h2 className="font-display text-3xl font-semibold text-navy md:text-4xl">
             {audienceLabel ? t("audienceBoutiques", { audience: audienceLabel }) : t("featuredBoutiques")}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-foreground-muted md:text-lg">

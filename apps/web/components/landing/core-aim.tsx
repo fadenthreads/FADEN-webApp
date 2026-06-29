@@ -7,7 +7,7 @@ export function CoreAim() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="border-t border-border bg-background-soft px-4 py-section-gap">
+    <section className="faden-section-neat border-t bg-background-soft/40 px-4 py-section-gap">
       <motion.div
         variants={staggerContainer}
         initial={reducedMotion ? false : "hidden"}
@@ -21,7 +21,7 @@ export function CoreAim() {
         <motion.p
           variants={fadeUp}
           transition={fadeUpTransition}
-          className="mx-auto mt-6 max-w-2xl font-display text-2xl leading-relaxed text-foreground md:text-3xl"
+          className="mx-auto mt-6 max-w-2xl font-display text-2xl leading-relaxed text-navy md:text-3xl"
         >
           To connect customers with trusted boutiques and simplify the entire custom-fashion journey
           from discovery to delivery.

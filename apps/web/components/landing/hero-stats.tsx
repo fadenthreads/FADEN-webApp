@@ -16,30 +16,32 @@ export function HeroStats() {
     <motion.div
       initial={reducedMotion ? false : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 1 }}
-      className="flex flex-wrap gap-8 md:gap-12 lg:justify-end"
+      transition={{ duration: 0.8, delay: 0.6 }}
+      className="rounded-2xl border border-navy/10 bg-background-elevated/80 px-6 py-5 shadow-sm backdrop-blur-sm"
     >
-      {STATS.map((stat, i) => (
-        <motion.div
-          key={stat.label}
-          initial={reducedMotion ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1.1 + i * 0.12 }}
-          className="text-center lg:text-right"
-        >
-          <div className="flex items-center justify-center gap-1 lg:justify-end">
-            <span className="faden-stat-gradient font-display text-3xl font-bold md:text-4xl">
-              {stat.value}
-            </span>
-            {stat.showStar && (
-              <Star className="h-5 w-5 fill-red-accent text-red-accent" aria-hidden />
-            )}
-          </div>
-          <p className="mt-1 text-[11px] font-medium tracking-[0.2em] text-foreground-muted">
-            {stat.label}
-          </p>
-        </motion.div>
-      ))}
+      <div className="flex flex-wrap gap-6 md:gap-8 lg:justify-end">
+        {STATS.map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={reducedMotion ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.7 + i * 0.1 }}
+            className="text-center lg:text-right"
+          >
+            <div className="flex items-center justify-center gap-1 lg:justify-end">
+              <span className="faden-stat-gradient font-display text-2xl font-bold md:text-3xl">
+                {stat.value}
+              </span>
+              {stat.showStar && (
+                <Star className="h-4 w-4 fill-gold text-gold" aria-hidden />
+              )}
+            </div>
+            <p className="mt-0.5 text-[10px] font-medium tracking-[0.18em] text-foreground-muted">
+              {stat.label}
+            </p>
+          </motion.div>
+        ))}
+      </div>
     </motion.div>
   );
 }
