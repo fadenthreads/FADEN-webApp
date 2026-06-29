@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { TaglineReveal } from "./tagline-reveal";
 
 const LETTERS = ["F", "A", "D", "E", "N"] as const;
 
@@ -43,8 +44,8 @@ export function FadenSplashWordmark() {
         >
           FADEN
         </h1>
-        <p className="mt-5 text-[10px] font-medium tracking-[0.42em] text-gold/90 md:text-xs">HERITAGE · TRUST</p>
-        <div className="mt-5 h-px w-28 bg-gradient-to-r from-transparent via-gold/70 to-transparent md:w-36" />
+        <TaglineReveal />
+        <div className="mt-6 h-px w-28 bg-gradient-to-r from-transparent via-gold/70 to-transparent md:mt-8 md:w-36" />
       </div>
     );
   }
@@ -112,15 +113,9 @@ export function FadenSplashWordmark() {
         ))}
       </motion.h1>
 
-      {/* Tagline */}
-      <motion.p
-        className="relative z-10 mt-6 text-[10px] font-medium tracking-[0.42em] text-gold/90 md:mt-8 md:text-xs"
-        initial={{ opacity: 0, y: 10, letterSpacing: "0.55em" }}
-        animate={{ opacity: 1, y: 0, letterSpacing: "0.42em" }}
-        transition={{ duration: 0.85, delay: 0.95, ease: [0.22, 1, 0.36, 1] }}
-      >
-        HERITAGE · TRUST
-      </motion.p>
+      <div className="relative z-10 mt-2 md:mt-3">
+        <TaglineReveal />
+      </div>
 
       {/* Bottom rule */}
       <motion.div

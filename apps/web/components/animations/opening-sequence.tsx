@@ -14,7 +14,7 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const holdMs = reducedMotion ? 1400 : 3600;
+    const holdMs = reducedMotion ? 1600 : 4200;
     const timer = window.setTimeout(() => setVisible(false), holdMs);
     return () => window.clearTimeout(timer);
   }, [reducedMotion]);
