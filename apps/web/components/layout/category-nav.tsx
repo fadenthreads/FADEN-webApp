@@ -96,7 +96,7 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
           ? "rounded-full border px-3 py-2 text-xs font-medium transition-colors"
           : "shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
         isOutfitActive(outfitType)
-          ? "border-gold bg-gold/15 text-navy"
+          ? "border-navy bg-navy text-white"
           : "border-navy/15 bg-background-elevated text-foreground-muted hover:border-navy/30 hover:text-navy",
       )}
     >

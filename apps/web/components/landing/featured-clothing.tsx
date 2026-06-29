@@ -67,8 +67,8 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
               className={cn(
                 "shrink-0 rounded-full border px-5 py-1.5 text-sm font-medium transition-colors",
                 activeTab === id
-                  ? "border-gold bg-gold/15 text-gold"
-                  : "border-border text-foreground-muted hover:border-gold/40 hover:text-gold",
+                  ? "border-navy bg-navy text-white"
+                  : "border-border text-foreground-muted hover:border-navy/30 hover:text-navy",
               )}
             >
               {label}

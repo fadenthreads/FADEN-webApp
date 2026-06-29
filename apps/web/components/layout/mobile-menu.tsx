@@ -57,7 +57,7 @@ function DrawerAuth() {
     <div className="flex flex-col gap-2.5">
       <Link
         href="/login"
-        className="flex h-11 items-center justify-center rounded-full bg-gold text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-gold-light"
+        className="flex h-11 items-center justify-center rounded-full bg-navy text-sm font-semibold text-white shadow-sm transition-colors hover:bg-navy-light"
       >
         Sign In
       </Link>

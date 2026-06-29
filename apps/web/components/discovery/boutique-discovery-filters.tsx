@@ -163,7 +163,7 @@ export function BoutiqueDiscoveryFilters({
             <SlidersHorizontal className="h-4 w-4" aria-hidden />
             Filters
             {activeFilterCount > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[10px] font-bold text-background">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-navy px-1.5 text-[10px] font-bold text-white">
                 {activeFilterCount}
               </span>
             )}

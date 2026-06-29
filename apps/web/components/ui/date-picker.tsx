@@ -155,7 +155,7 @@ export function DatePicker({
                   className={cn(
                     "aspect-square rounded-lg text-sm transition-colors",
                     selectedDay
-                      ? "bg-gold text-background font-semibold"
+                      ? "bg-navy text-white font-semibold"
                       : isToday
                         ? "border border-gold/40 text-gold"
                         : "text-foreground hover:bg-gold/10",

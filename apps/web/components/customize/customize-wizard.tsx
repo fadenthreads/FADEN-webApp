@@ -266,7 +266,7 @@ export function CustomizeWizard() {
               }}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-navy/25 ${
                 isActive
-                  ? "bg-gold text-navy"
+                  ? "bg-navy text-white"
                   : isComplete
                     ? "bg-navy/10 text-navy hover:bg-navy/15"
                     : "bg-background-elevated text-foreground-muted hover:bg-background-soft hover:text-foreground"

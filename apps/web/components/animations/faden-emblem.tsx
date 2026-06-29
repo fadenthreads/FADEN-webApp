@@ -76,9 +76,9 @@ export function FadenEmblem({ size = "lg" }: { size?: "sm" | "md" | "lg" }) {
           textAnchor="middle"
           dominantBaseline="middle"
           fill="url(#emblemGold)"
-          fontSize="10.5"
+          fontSize="12.5"
           fontFamily="Georgia, 'Cormorant Garamond', serif"
-          letterSpacing="0.13em"
+          letterSpacing="0.11em"
           fontWeight="600"
         >
           FADEN
