@@ -173,7 +173,7 @@ body {
 .faden-hero-background {
   background-color: var(--background);
   background-image:
-    linear-gradient(to right, rgba(245, 240, 230, 0.92) 0%, rgba(245, 240, 230, 0.72) 42%, rgba(245, 240, 230, 0.35) 100%),
+    linear-gradient(to right, rgba(245, 240, 230, 0.9) 0%, rgba(245, 240, 230, 0.65) 38%, rgba(245, 240, 230, 0.2) 68%, transparent 100%),
     url("/hero-background.png");
   background-size: cover;
   background-position: center;
