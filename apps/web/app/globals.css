@@ -102,34 +102,22 @@ body {
 }
 
 .faden-wordmark-gradient,
-.faden-logo-gradient {
-  background: linear-gradient(90deg, #b8860b 0%, #c5a059 45%, #0a1a30 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
+.faden-logo-gradient,
 .faden-trust-gradient {
-  background: linear-gradient(90deg, #b8860b 0%, #c5a059 50%, #0a1a30 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--navy);
 }
 
 .faden-stat-gradient {
-  background: linear-gradient(180deg, #0a1a30 0%, #b8860b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--navy);
 }
 
 @keyframes faden-shimmer {
   0%,
   100% {
-    filter: brightness(1);
+    opacity: 1;
   }
   50% {
-    filter: brightness(1.08);
+    opacity: 0.88;
   }
 }
 

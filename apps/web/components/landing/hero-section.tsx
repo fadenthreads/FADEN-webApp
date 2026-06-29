@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Button } from "@faden/ui";
-import { FadenEmblem } from "@/components/animations/faden-emblem";
 import { HeroDecoration } from "./hero-decoration";
 import { HeroFeatureBar } from "./hero-feature-bar";
 import { HeroStats } from "./hero-stats";
@@ -42,20 +41,17 @@ export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSecti
               {t("eyebrow")}
             </motion.p>
 
-            <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <FadenEmblem size="sm" />
-              <div>
-                <motion.h1
-                  id="hero-heading"
-                  className="font-display text-3xl font-bold leading-[1.1] tracking-[0.06em] text-navy md:text-4xl lg:text-[2.75rem]"
-                >
-                  {t("headlinePrefix")}{" "}
-                  <span className="faden-trust-gradient">{t("headlineTrust")}</span>
-                </motion.h1>
-                <p className="font-display mt-2 text-base italic leading-relaxed text-navy/75 md:text-lg">
-                  {t("tagline")}
-                </p>
-              </div>
+            <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-4">
+              <motion.h1
+                id="hero-heading"
+                className="font-display text-3xl font-bold leading-[1.1] tracking-[0.06em] text-navy md:text-4xl lg:text-[2.75rem]"
+              >
+                {t("headlinePrefix")}{" "}
+                <span className="text-navy">{t("headlineTrust")}</span>
+              </motion.h1>
+              <p className="font-display mt-2 text-base italic leading-relaxed text-navy/75 md:text-lg">
+                {t("tagline")}
+              </p>
             </motion.div>
 
             <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-6 border-t border-navy/10 pt-6">

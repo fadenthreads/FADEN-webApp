@@ -107,9 +107,9 @@ export function ProblemsWeSolve() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center font-display text-3xl font-semibold md:text-4xl"
+          className="text-center font-display text-3xl font-semibold text-navy md:text-4xl"
         >
-          Problems FADEN <span className="faden-trust-gradient">Solves</span>
+          Problems FADEN Solves
         </motion.h2>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:gap-8">

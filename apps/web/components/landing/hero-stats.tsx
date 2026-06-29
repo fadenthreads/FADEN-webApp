@@ -29,7 +29,7 @@ export function HeroStats() {
             className="text-center lg:text-right"
           >
             <div className="flex items-center justify-center gap-1 lg:justify-end">
-              <span className="faden-stat-gradient font-display text-2xl font-bold md:text-3xl">
+              <span className="font-display text-2xl font-bold text-navy md:text-3xl">
                 {stat.value}
               </span>
               {stat.showStar && (

@@ -140,7 +140,7 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
 
   return (
     <>
-      <nav aria-label={t("ariaLabel")} className="sticky top-[124px] z-30 border-b border-border bg-background/95 shadow-sm backdrop-blur-sm md:top-[64px]">
+      <nav aria-label={t("ariaLabel")} className="sticky top-[124px] z-30 border-b border-border bg-background shadow-sm md:top-[64px]">
         <div className="mx-auto max-w-container px-4 lg:px-12">
           <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">
             {audienceLinks}

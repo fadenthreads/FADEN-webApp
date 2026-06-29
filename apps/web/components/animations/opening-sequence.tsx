@@ -1,116 +1,51 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { FadenEmblem } from "./faden-emblem";
-import { FadenWordmark } from "./faden-wordmark";
-import { TaglineReveal } from "./tagline-reveal";
-import { SwipeDownPrompt } from "./swipe-down-prompt";
-import { useScrollProgress } from "@/hooks/use-scroll-progress";
-import { openingItem, openingStagger } from "@/lib/motion-presets";
 
 interface OpeningSequenceProps {
   onComplete: () => void;
 }
 
-function isTouchDevice(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(max-width: 768px)").matches || "ontouchstart" in window;
-}
-
+/** Netflix-style logo splash — auto-advances to the next phase. */
 export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollProgress = useScrollProgress(containerRef);
   const reducedMotion = useReducedMotion();
-  const playedRef = useRef(false);
   const [visible, setVisible] = useState(true);
-  const [exiting, setExiting] = useState(false);
-
-  const handleComplete = useCallback(() => {
-    if (exiting) return;
-    setExiting(true);
-    setVisible(false);
-    onComplete();
-  }, [exiting, onComplete]);
 
   useEffect(() => {
-    if (reducedMotion && !playedRef.current) {
-      playedRef.current = true;
-      const timer = setTimeout(handleComplete, 1600);
-      return () => clearTimeout(timer);
-    }
-  }, [reducedMotion, handleComplete]);
-
-  useEffect(() => {
-    if (!reducedMotion && scrollProgress >= 0.55) {
-      handleComplete();
-    }
-  }, [scrollProgress, reducedMotion, handleComplete]);
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    const timer = window.setTimeout(() => {
-      if (isTouchDevice()) handleComplete();
-    }, 4500);
+    const holdMs = reducedMotion ? 1100 : 2600;
+    const timer = window.setTimeout(() => setVisible(false), holdMs);
     return () => window.clearTimeout(timer);
-  }, [reducedMotion, handleComplete]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || e.key === "Enter") handleComplete();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [handleComplete]);
-
-  const content = (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-center px-6 py-16">
-      <motion.div
-        className="flex flex-col items-center"
-        variants={openingStagger}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={openingItem}>
-          <FadenEmblem />
-        </motion.div>
-        <motion.div variants={openingItem}>
-          <FadenWordmark />
-        </motion.div>
-        <motion.div variants={openingItem}>
-          <TaglineReveal />
-        </motion.div>
-        <motion.div variants={openingItem}>
-          <SwipeDownPrompt />
-        </motion.div>
-      </motion.div>
-    </div>
-  );
+  }, [reducedMotion]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onComplete}>
       {visible && (
         <motion.div
-          ref={containerRef}
-          className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-background faden-opening-bg"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-background faden-opening-bg"
+          initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: reducedMotion ? 0.3 : 0.5, ease: [0.22, 1, 0.36, 1] }}
           role="dialog"
-          aria-label="FADEN opening animation. Swipe down to continue."
-          onClick={handleComplete}
+          aria-label="FADEN opening"
+          aria-live="polite"
         >
-          <div className="min-h-[120dvh]" onClick={(event) => event.stopPropagation()}>
-            {reducedMotion ? (
-              content
-            ) : (
-              <motion.div
-                animate={{ opacity: exiting ? 0 : 1 }}
-                transition={{ duration: 0.45 }}
-              >
-                {content}
-              </motion.div>
-            )}
-          </div>
+          <motion.h1
+            className="font-display text-[3.75rem] font-bold tracking-[0.14em] text-navy md:text-[5.5rem] lg:text-[6.5rem]"
+            aria-label="FADEN"
+            initial={{ opacity: 0, scale: 0.82 }}
+            animate={{
+              opacity: reducedMotion ? 1 : [0, 1, 1],
+              scale: reducedMotion ? 1 : [0.82, 1, 1],
+            }}
+            transition={{
+              duration: reducedMotion ? 0.45 : 1.1,
+              times: [0, 0.45, 1],
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            FADEN
+          </motion.h1>
         </motion.div>
       )}
     </AnimatePresence>

@@ -5,7 +5,7 @@ export function Logo() {
   return (
     <Link
       href={homeHref()}
-      className="faden-logo-gradient font-display text-3xl font-bold tracking-[0.14em] md:text-4xl"
+      className="faden-logo-gradient font-display text-3xl font-bold tracking-[0.14em] text-navy md:text-4xl"
     >
       FADEN
     </Link>

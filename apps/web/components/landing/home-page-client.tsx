@@ -58,7 +58,7 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
 
   return (
     <>
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {phase === "opening" && <OpeningSequence key="opening" onComplete={() => setPhase("scissors")} />}
         {phase === "scissors" && <ScissorsLoading key="scissors" onComplete={() => setPhase("main")} />}
       </AnimatePresence>
