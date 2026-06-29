@@ -61,7 +61,7 @@ export const boutiqueRegistrationSchema = z.object({
   pricingInfo: z.string().optional(),
   avgDeliveryTime: z.string().optional(),
   rushOrdersAccepted: z.enum(["yes", "no"]),
-  maxOrdersPerMonth: z.coerce.number().min(0).optional(),
+  maxOrdersPerMonth: z.coerce.number().min(0).max(1000).optional(),
   reviewsSummary: z.string().optional(),
   trustMediaUrls: z.string().optional(),
   socialLinks: z.string().optional(),
@@ -404,7 +404,6 @@ export const verifyPaymentSchema = z.object({
   razorpayOrderId: z.string().optional(),
   razorpayPaymentId: z.string().optional(),
   razorpaySignature: z.string().optional(),
-  mock: z.boolean().optional(),
 });
 
 export type VerifyPaymentInput = z.infer<typeof verifyPaymentSchema>;

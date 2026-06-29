@@ -26,6 +26,7 @@ pnpm dev
 | `pnpm build` | Build all packages and apps |
 | `pnpm lint` | Lint all workspaces |
 | `pnpm typecheck` | Typecheck all workspaces |
+| `pnpm test` | Run unit tests (Vitest) |
 
 Copy `.env.example` to `apps/web/.env.local` and `apps/admin/.env.local` for local development.
 

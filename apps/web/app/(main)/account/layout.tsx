@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { AccountShell } from "@/components/account/account-shell";
 import { loadAccountNavCounts } from "@/lib/account/load-account-nav-counts";
 import { requireAccountUser } from "@/lib/account/require-account-user";
@@ -5,13 +7,8 @@ import { isWebSupabaseConfigured } from "@/lib/supabase/env";
 import type { AccountNavCounts } from "@/lib/account/account-nav";
 
 const EMPTY_COUNTS: AccountNavCounts = {
-  requests: 0,
-  orders: 0,
-  quotations: 0,
-  payments: 0,
-  appointments: 0,
-  messages: 0,
-  reviews: 0,
+  requests: 0, orders: 0, quotations: 0, payments: 0,
+  appointments: 0, messages: 0, reviews: 0,
 };
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {

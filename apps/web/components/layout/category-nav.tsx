@@ -28,10 +28,7 @@ export function CategoryNav({ mobile, onNavigate }: CategoryNavProps) {
 
 function CategoryNavBarFallback() {
   return (
-    <nav
-      aria-label="Category navigation"
-      className="sticky top-[72px] z-30 border-b border-border bg-background shadow-sm"
-    >
+    <nav aria-label="Category navigation" className="sticky top-[124px] z-30 border-b border-border bg-background shadow-sm md:top-[64px]">
       <div className="mx-auto flex h-12 max-w-container items-center px-4 lg:px-12" />
     </nav>
   );
@@ -95,37 +92,35 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
     return (
       <nav aria-label={t("ariaLabel")} className="space-y-4">
         <div className="flex flex-col gap-1">{audienceLinks}</div>
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-            {t("outfitTypes")}
-          </p>
-          <div className="flex flex-wrap gap-2">{outfitLinks}</div>
-        </div>
+        {outfitLinks.length > 0 && (
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+              {t("outfitTypes")}
+            </p>
+            <div className="max-h-40 overflow-y-auto">
+              <div className="flex flex-wrap gap-2">{outfitLinks}</div>
+            </div>
+          </div>
+        )}
       </nav>
     );
   }
 
   return (
-    <nav
-      aria-label={t("ariaLabel")}
-      className="sticky top-[72px] z-30 border-b border-border bg-background shadow-sm"
-    >
+    <nav aria-label={t("ariaLabel")} className="sticky top-[124px] z-30 border-b border-border bg-background shadow-sm md:top-[64px]">
       <div className="mx-auto max-w-container px-4 lg:px-12">
-        <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">{audienceLinks}</div>
+        <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">
+          {audienceLinks}
+          <div className="ml-auto hidden shrink-0 items-center gap-4 pl-4 lg:flex">
+            <Link href="/about" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-gold">About Us</Link>
+            <Link href="/careers" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-gold">Careers</Link>
+            <Link href="/contact" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-gold">Contact Us</Link>
+          </div>
+        </div>
         <div className="scrollbar-none flex items-center gap-2 overflow-x-auto border-t border-border/60 py-2">
           {outfitLinks}
-          <Link
-            href={homeHref({ hash: "featured-boutiques" })}
-            className="shrink-0 text-xs font-medium text-gold hover:underline"
-          >
-            {t("browseAll")}
-          </Link>
-          <Link
-            href="/alterations"
-            className="shrink-0 text-xs font-medium text-gold hover:underline"
-          >
-            {t("alterations")}
-          </Link>
+          <Link href={homeHref({ hash: "featured-boutiques" })} className="shrink-0 text-xs font-medium text-gold hover:underline">{t("browseAll")}</Link>
+          <Link href="/alterations" className="shrink-0 text-xs font-medium text-gold hover:underline">{t("alterations")}</Link>
         </div>
       </div>
     </nav>

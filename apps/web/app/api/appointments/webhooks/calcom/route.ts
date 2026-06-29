@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from "crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { bookFittingAppointmentSchema } from "@faden/validators";
 import { bookFittingAppointment } from "@/lib/appointments/book-appointment";
@@ -8,8 +9,9 @@ import { isWebSupabaseConfigured } from "@/lib/supabase/env";
 /**
  * POST /api/appointments/webhooks/calcom
  *
- * Cal.com webhook (BOOKING_CREATED). Configure in Cal.com → Settings → Developer → Webhooks.
- * Uses service role to resolve customer by email when no session cookie is present.
+ * Signature: Cal.com sends X-Cal-Signature-256 as HMAC-SHA256(rawBody, secret).
+ * Raw body must be read first before JSON parsing so the HMAC is computed
+ * over the exact bytes Cal.com signed.
  */
 export async function POST(request: NextRequest) {
   if (!isWebSupabaseConfigured() || !isAdminClientConfigured()) {
@@ -19,15 +21,24 @@ export async function POST(request: NextRequest) {
   const { calcomWebhookSecret } = getAppointmentIntegrationsEnv();
   const signature = request.headers.get("x-cal-signature-256");
 
+  let rawBody: string;
   let payload: Record<string, unknown>;
   try {
-    payload = (await request.json()) as Record<string, unknown>;
+    rawBody = await request.text();
+    payload = JSON.parse(rawBody) as Record<string, unknown>;
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
-  if (calcomWebhookSecret && signature !== calcomWebhookSecret) {
-    return NextResponse.json({ ok: false, error: "Invalid webhook signature" }, { status: 401 });
+  if (calcomWebhookSecret) {
+    const expected = createHmac("sha256", calcomWebhookSecret).update(rawBody).digest("hex");
+    const sigBuffer = Buffer.from(signature ?? "");
+    const expBuffer = Buffer.from(expected);
+    const signaturesMatch =
+      sigBuffer.length === expBuffer.length && timingSafeEqual(sigBuffer, expBuffer);
+    if (!signaturesMatch) {
+      return NextResponse.json({ ok: false, error: "Invalid webhook signature" }, { status: 401 });
+    }
   }
 
   const trigger = payload.triggerEvent as string | undefined;

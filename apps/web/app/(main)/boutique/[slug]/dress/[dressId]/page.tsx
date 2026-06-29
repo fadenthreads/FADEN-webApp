@@ -1,26 +1,34 @@
 import { notFound } from "next/navigation";
 import { DressDetailView } from "@/components/boutique/dress-detail-view";
-import { resolveBoutiqueProfile } from "@/lib/boutique/queries";
+import { getPortfolioItemById, resolveBoutiqueProfile } from "@/lib/boutique/queries";
 import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
 import { getBoutiqueProfile, getDesignById } from "@/data/boutique-profiles";
 
 export const dynamic = "force-dynamic";
 
-interface DressDetailPageProps {
+export default async function DressDetailPage({
+  params,
+  searchParams,
+}: {
   params: Promise<{ slug: string; dressId: string }>;
   searchParams: Promise<{ outfit?: string }>;
-}
-
-export default async function DressDetailPage({ params, searchParams }: DressDetailPageProps) {
+}) {
   const { slug, dressId } = await params;
   const { outfit } = await searchParams;
 
   let profile = null;
+  let design = null;
+
   if (isWebSupabaseConfigured()) {
     try {
       const supabase = await createClient();
-      profile = await resolveBoutiqueProfile(supabase, slug);
+      const [resolvedProfile, dbDesign] = await Promise.all([
+        resolveBoutiqueProfile(supabase, slug),
+        getPortfolioItemById(supabase, dressId),
+      ]);
+      profile = resolvedProfile;
+      design = dbDesign;
     } catch {
       profile = getBoutiqueProfile(slug) ?? null;
     }
@@ -30,12 +38,13 @@ export default async function DressDetailPage({ params, searchParams }: DressDet
 
   if (!profile) notFound();
 
-  const design = getDesignById(profile, dressId);
+  if (!design) {
+    design = getDesignById(profile, dressId) ?? null;
+  }
+
   if (!design) notFound();
 
-  const backHref = outfit
-    ? `/boutique/${slug}/outfit/${outfit}`
-    : `/boutique/${slug}`;
+  const backHref = outfit ? `/boutique/${slug}/outfit/${outfit}` : `/boutique/${slug}`;
 
   return (
     <>

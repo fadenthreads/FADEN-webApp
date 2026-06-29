@@ -15,10 +15,8 @@ export async function updateSession(request: NextRequest) {
 
   const supabase = createServerClient(url, anonKey, {
     cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+      getAll() { return request.cookies.getAll(); },
+      setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         supabaseResponse = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
@@ -28,9 +26,14 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data, error } = await supabase.auth.getUser();
+    if (error) return supabaseResponse; // Supabase error — allow through
+    user = data.user;
+  } catch {
+    return supabaseResponse; // Supabase unreachable — don't lock admins out
+  }
 
   if (!user) {
     if (!isPublic) {
@@ -41,11 +44,13 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .maybeSingle();
+  let profile: { role?: string } | null = null;
+  try {
+    const { data } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    profile = data;
+  } catch {
+    return supabaseResponse;
+  }
 
   const isAdmin = profile?.role === "admin";
 

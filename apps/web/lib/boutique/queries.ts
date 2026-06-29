@@ -359,6 +359,59 @@ export async function resolveBoutiqueProfile(
   return null;
 }
 
+export async function getPortfolioItemById(
+  supabase: SupabaseClient,
+  itemId: string,
+): Promise<import("@/data/boutique-profiles").BoutiqueDesign | null> {
+  const { data, error } = await supabase
+    .from("boutique_portfolio_items")
+    .select(`
+      id, media_url, media_type, caption, sort_order,
+      title, description, price_hint, size_label, length_details,
+      boutiques ( name, slug, avg_delivery_time, pricing_info )
+    `)
+    .eq("id", itemId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  type BoutiqueJoin = {
+    name: string;
+    slug: string;
+    avg_delivery_time?: string | null;
+    pricing_info?: string | null;
+  };
+  const rawBoutique = data.boutiques as unknown;
+  const boutiqueData: BoutiqueJoin | null = Array.isArray(rawBoutique)
+    ? ((rawBoutique[0] as BoutiqueJoin) ?? null)
+    : (rawBoutique as BoutiqueJoin | null);
+
+  const item: PortfolioItemRow = {
+    id: data.id as string,
+    media_url: (data.media_url as string) ?? "",
+    media_type: (data.media_type as string) ?? "image",
+    caption: data.caption as string | null,
+    sort_order: (data.sort_order as number) ?? 0,
+    title: data.title as string | null,
+    description: data.description as string | null,
+    price_hint: data.price_hint as string | null,
+    size_label: data.size_label as string | null,
+    length_details: data.length_details,
+  };
+
+  const designs = mapPortfolioItemsToDesigns({
+    items: [item],
+    categories: [],
+    reviews: [],
+    boutiqueSlug: boutiqueData?.slug ?? "",
+    defaultRating: 4.5,
+    avgDeliveryTime: boutiqueData?.avg_delivery_time ?? null,
+    pricingInfo: boutiqueData?.pricing_info ?? null,
+  });
+
+  return designs[0] ?? null;
+}
+
 export async function getOwnerBoutique(supabase: SupabaseClient, ownerId: string) {
   const { data, error } = await supabase
     .from("boutiques")

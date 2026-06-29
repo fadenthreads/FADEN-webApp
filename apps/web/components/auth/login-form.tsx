@@ -100,6 +100,11 @@ export function LoginForm({ next = "/", registered = false, authError = null }: 
         </FormField>
         <FormField label={t("password")}>
           <PasswordInput name="password" autoComplete="current-password" required placeholder="••••••••" />
+          <div className="mt-1.5 text-right">
+            <Link href="/forgot-password" className="text-xs text-foreground-muted transition-colors hover:text-gold">
+              Forgot password?
+            </Link>
+          </div>
         </FormField>
         <Button type="submit" variant="luxury" className="w-full" disabled={pending}>
           {pending ? t("signingIn") : t("signIn")}

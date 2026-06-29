@@ -194,19 +194,38 @@ export async function listAllOrdersForAdmin(
 }
 
 export async function getAdminOrderStats(supabase: SupabaseClient): Promise<AdminOrderStats> {
-  const { data, error } = await supabase.from("orders").select("id, status");
+  const countByStatus = (status: string) =>
+    supabase.from("orders").select("*", { count: "exact", head: true }).eq("status", status);
 
-  if (error) throw new Error(error.message);
-
-  const orders = data ?? [];
   const activeStatuses: OrderStatus[] = ["draft", "quoted", "confirmed", "in_progress", "shipped"];
 
+  const [totalRes, deliveredRes, cancelledRes, confirmedRes, ...otherActiveRes] = await Promise.all([
+    supabase.from("orders").select("*", { count: "exact", head: true }),
+    countByStatus("delivered"),
+    countByStatus("cancelled"),
+    countByStatus("confirmed"),
+    ...activeStatuses.filter((status) => status !== "confirmed").map(countByStatus),
+  ]);
+
+  if (totalRes.error) throw new Error(totalRes.error.message);
+  if (deliveredRes.error) throw new Error(deliveredRes.error.message);
+  if (cancelledRes.error) throw new Error(cancelledRes.error.message);
+  if (confirmedRes.error) throw new Error(confirmedRes.error.message);
+
+  const pendingPayment = confirmedRes.count ?? 0;
+  const active =
+    pendingPayment +
+    otherActiveRes.reduce((sum, res) => {
+      if (res.error) throw new Error(res.error.message);
+      return sum + (res.count ?? 0);
+    }, 0);
+
   return {
-    total: orders.length,
-    active: orders.filter((o) => activeStatuses.includes(o.status as OrderStatus)).length,
-    completed: orders.filter((o) => o.status === "delivered").length,
-    cancelled: orders.filter((o) => o.status === "cancelled").length,
-    pendingPayment: orders.filter((o) => o.status === "confirmed").length,
+    total: totalRes.count ?? 0,
+    active,
+    completed: deliveredRes.count ?? 0,
+    cancelled: cancelledRes.count ?? 0,
+    pendingPayment,
   };
 }
 

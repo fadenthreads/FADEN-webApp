@@ -8,40 +8,22 @@ import { ScissorsLoading } from "@/components/animations/scissors-loading";
 import { HeroSection } from "@/components/landing/hero-section";
 import { FeaturedPreview } from "@/components/landing/featured-preview";
 import { FeaturedClothing } from "@/components/landing/featured-clothing";
-import { MobileHomeToolbar } from "@/components/landing/mobile-home-toolbar";
 import { CoreAim } from "@/components/landing/core-aim";
 import { ProblemsWeSolve } from "@/components/landing/problems-we-solve";
 import { VisionStatement } from "@/components/landing/vision-statement";
-import {
-  parseAudienceCategory,
-  type AudienceCategory,
-} from "@/lib/landing/audience-categories";
+import { parseAudienceCategory, type AudienceCategory } from "@/lib/landing/audience-categories";
 
 type LoadPhase = "opening" | "scissors" | "main";
 
-interface HomePageClientProps {
-  skipIntro?: boolean;
-  initialCategory?: AudienceCategory | null;
-}
-
-export function HomePageClient({ skipIntro = false, initialCategory = null }: HomePageClientProps) {
+export function HomePageClient({ skipIntro = false, initialCategory = null }: { skipIntro?: boolean; initialCategory?: AudienceCategory | null }) {
   const searchParams = useSearchParams();
   const categoryFromUrl = parseAudienceCategory(searchParams.get("category")) ?? initialCategory;
+  const [phase, setPhase] = useState<LoadPhase>(() => skipIntro ? "main" : "opening");
 
-  const [phase, setPhase] = useState<LoadPhase>(() => {
-    if (skipIntro) return "main";
-    return "opening";
-  });
-
-  useEffect(() => {
-    if (!skipIntro) {
-      window.scrollTo(0, 0);
-    }
-  }, [skipIntro]);
+  useEffect(() => { if (!skipIntro) window.scrollTo(0, 0); }, [skipIntro]);
 
   useEffect(() => {
     if (phase !== "main") return;
-
     const syncFromHash = () => {
       if (window.location.hash === "#featured-boutiques") {
         requestAnimationFrame(() => {
@@ -49,7 +31,6 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
         });
       }
     };
-
     syncFromHash();
     window.addEventListener("hashchange", syncFromHash);
     return () => window.removeEventListener("hashchange", syncFromHash);
@@ -69,32 +50,15 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: Ho
     });
   }, []);
 
-  const handleOpeningComplete = useCallback(() => {
-    setPhase("scissors");
-  }, []);
-
-  const handleScissorsComplete = useCallback(() => {
-    setPhase("main");
-  }, []);
-
   return (
     <>
       <AnimatePresence>
-        {phase === "opening" && (
-          <OpeningSequence key="opening" onComplete={handleOpeningComplete} />
-        )}
-        {phase === "scissors" && (
-          <ScissorsLoading key="scissors" onComplete={handleScissorsComplete} />
-        )}
+        {phase === "opening" && <OpeningSequence key="opening" onComplete={() => setPhase("scissors")} />}
+        {phase === "scissors" && <ScissorsLoading key="scissors" onComplete={() => setPhase("main")} />}
       </AnimatePresence>
 
       {phase === "main" && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <MobileHomeToolbar />
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
           <HeroSection onExploreBoutiques={handleExploreBoutiques} />
           <FeaturedPreview audienceCategory={categoryFromUrl} />
           <FeaturedClothing audienceCategory={categoryFromUrl} />

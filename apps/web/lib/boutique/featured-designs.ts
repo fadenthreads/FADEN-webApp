@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { getBoutiquesForDiscovery } from "@/data/discovery-filters";
+import type { AudienceCategory } from "@faden/validators";
+import { BOUTIQUE_PROFILES } from "@/data/boutique-profiles";
 import { mapPortfolioItemsToDesigns } from "@/lib/boutique/portfolio";
 import type { PortfolioItemRow } from "@/lib/boutique/portfolio";
 
@@ -7,48 +8,46 @@ export interface FeaturedDesignItem {
   id: string;
   title: string;
   imageUrl: string;
+  gradient?: string;
   price?: string;
   material?: string;
   description?: string;
   boutiqueName: string;
   boutiqueSlug: string;
   mediaType: string;
+  audience?: string;
 }
 
 type BoutiqueRow = {
   id: string;
   name: string;
   slug: string;
+  audience?: string | null;
   boutique_portfolio_items: PortfolioItemRow[] | null;
 };
 
 export async function listFeaturedDesignsFromDb(
   supabase: SupabaseClient,
   limit = 24,
+  audience?: AudienceCategory | null,
 ): Promise<FeaturedDesignItem[]> {
-  const { data, error } = await supabase
+  let query = supabase
     .from("boutiques")
-    .select(
-      `
-      id,
-      name,
-      slug,
+    .select(`
+      id, name, slug, audience,
       boutique_portfolio_items (
-        id,
-        media_url,
-        media_type,
-        caption,
-        sort_order,
-        title,
-        description,
-        price_hint
+        id, media_url, media_type, caption, sort_order, title, description, price_hint
       )
-    `,
-    )
+    `)
     .eq("status", "verified")
     .order("rating", { ascending: false })
     .limit(40);
 
+  if (audience) {
+    query = query.or(`audience.eq.${audience},audience.eq.all`);
+  }
+
+  const { data, error } = await query;
   if (error || !data?.length) return [];
 
   const items: FeaturedDesignItem[] = [];
@@ -74,6 +73,7 @@ export async function listFeaturedDesignsFromDb(
         boutiqueName: row.name,
         boutiqueSlug: row.slug,
         mediaType: design.imageUrl.startsWith("data:video") ? "video" : "image",
+        audience: row.audience ?? undefined,
       });
       if (items.length >= limit) return items;
     }
@@ -82,25 +82,35 @@ export async function listFeaturedDesignsFromDb(
   return items;
 }
 
-export function listFeaturedDesignsFromMock(limit = 24): FeaturedDesignItem[] {
-  const boutiques = getBoutiquesForDiscovery({});
+export function listFeaturedDesignsFromMock(
+  limit = 24,
+  audience?: AudienceCategory | null,
+): FeaturedDesignItem[] {
   const items: FeaturedDesignItem[] = [];
 
-  for (const boutique of boutiques) {
-    for (const media of boutique.media ?? []) {
-      const imageUrl = media.url ?? "";
-      if (!imageUrl) continue;
-      items.push({
-        id: `${boutique.slug}-${items.length}`,
-        title: media.label || `${boutique.name} design`,
-        imageUrl,
-        boutiqueName: boutique.name,
-        boutiqueSlug: boutique.slug,
-        mediaType: media.type ?? "image",
-      });
-      if (items.length >= limit) break;
+  for (const profile of Object.values(BOUTIQUE_PROFILES)) {
+    if (audience) {
+      const boutiqueAudiences = (profile as { audiences?: AudienceCategory[] }).audiences ?? [];
+      if (boutiqueAudiences.length > 0 && !boutiqueAudiences.includes(audience)) continue;
     }
-    if (items.length >= limit) break;
+
+    const designs = profile.portfolioDesigns?.length ? profile.portfolioDesigns : profile.latestDesigns;
+
+    for (const design of designs) {
+      items.push({
+        id: design.id,           // Matches getDesignById IDs exactly (e.g. silk-thread-studio-d0)
+        title: design.title,
+        imageUrl: design.imageUrl ?? "",
+        gradient: design.gradient,
+        price: design.price,
+        material: design.material,
+        description: design.description ?? undefined,
+        boutiqueName: profile.name,
+        boutiqueSlug: profile.slug,
+        mediaType: "image",
+      });
+      if (items.length >= limit) return items;
+    }
   }
 
   return items;
