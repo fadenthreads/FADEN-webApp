@@ -65,34 +65,23 @@ export function FadenEmblem({ size = "lg" }: { size?: "sm" | "md" | "lg" }) {
           );
         })}
 
-        {/* Center button / thread spool */}
+        {/* Center button / thread spool (behind label) */}
         <circle cx="100" cy="100" r="10" fill="#F5F0E6" stroke="url(#emblemGold)" strokeWidth="1.2" />
         <circle cx="100" cy="100" r="4.5" fill="url(#emblemGold)" />
 
-        {/* FADEN split around center */}
+        {/* FADEN — horizontal across wheel center */}
         <text
           x="100"
-          y="88"
+          y="100"
           textAnchor="middle"
+          dominantBaseline="middle"
           fill="url(#emblemGold)"
-          fontSize="13"
+          fontSize="10.5"
           fontFamily="Georgia, 'Cormorant Garamond', serif"
-          letterSpacing="0.28em"
+          letterSpacing="0.13em"
           fontWeight="600"
         >
-          FA
-        </text>
-        <text
-          x="100"
-          y="118"
-          textAnchor="middle"
-          fill="url(#emblemGold)"
-          fontSize="13"
-          fontFamily="Georgia, 'Cormorant Garamond', serif"
-          letterSpacing="0.28em"
-          fontWeight="600"
-        >
-          EN
+          FADEN
         </text>
       </svg>
     </motion.div>

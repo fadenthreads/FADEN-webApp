@@ -264,11 +264,11 @@ export function CustomizeWizard() {
                 setError(null);
                 setStepIndex(i);
               }}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-gold/40 ${
+              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-navy/25 ${
                 isActive
-                  ? "bg-cherry text-gold-light"
+                  ? "bg-gold text-navy"
                   : isComplete
-                    ? "bg-gold/20 text-gold hover:bg-gold/30"
+                    ? "bg-navy/10 text-navy hover:bg-navy/15"
                     : "bg-background-elevated text-foreground-muted hover:bg-background-soft hover:text-foreground"
               }`}
             >

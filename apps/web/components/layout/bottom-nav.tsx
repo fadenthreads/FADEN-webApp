@@ -64,7 +64,7 @@ export function BottomNav() {
               <span className={cn("text-[10px] font-medium leading-none", active ? "text-gold" : "text-foreground-muted")}>
                 {item.label}
               </span>
-              {active && <span className="absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-gold" />}
+              {active && <span className="absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-navy" />}
             </Link>
           );
         })}

@@ -10,25 +10,26 @@
   --navy: #0a1a30;
   --navy-light: #1a2b48;
   --navy-dark: #061220;
-  /* Legacy aliases mapped to navy */
-  --cherry: #0a1a30;
-  --cherry-light: #1a2b48;
-  --cherry-dark: #061220;
+  /* Legacy aliases — primary gold, secondary navy */
+  --cherry: #b8860b;
+  --cherry-light: #c5a059;
+  --cherry-dark: #9a7228;
   --burgundy: #0a1a30;
   --burgundy-light: #1a2b48;
-  --red-accent: #b8860b;
+  --red-accent: #0a1a30;
   --gold: #b8860b;
   --gold-light: #c5a059;
   --gold-dark: #9a7228;
   --foreground: #0a1a30;
   --foreground-muted: #5c6470;
-  --accent-50: rgba(197, 160, 89, 0.08);
-  --accent-100: rgba(197, 160, 89, 0.15);
-  --accent-200: rgba(197, 160, 89, 0.25);
-  --accent-400: #d4b87a;
-  --accent-500: #c5a059;
-  --accent-600: #a68844;
-  --accent-700: #8a7040;
+  /* Accent scale = navy (secondary) */
+  --accent-50: rgba(10, 26, 48, 0.06);
+  --accent-100: rgba(10, 26, 48, 0.1);
+  --accent-200: rgba(10, 26, 48, 0.16);
+  --accent-400: #1a2b48;
+  --accent-500: #0a1a30;
+  --accent-600: #061220;
+  --accent-700: #041018;
   --border: rgba(0, 31, 63, 0.12);
   --border-light: rgba(0, 31, 63, 0.06);
   --shadow-sm: 0 2px 8px rgba(0, 31, 63, 0.08);
@@ -102,21 +103,21 @@ body {
 
 .faden-wordmark-gradient,
 .faden-logo-gradient {
-  background: linear-gradient(90deg, #0a1a30 0%, #1a2b48 45%, #b8860b 100%);
+  background: linear-gradient(90deg, #b8860b 0%, #c5a059 45%, #0a1a30 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .faden-trust-gradient {
-  background: linear-gradient(90deg, #0a1a30 0%, #1a2b48 50%, #b8860b 100%);
+  background: linear-gradient(90deg, #b8860b 0%, #c5a059 50%, #0a1a30 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .faden-stat-gradient {
-  background: linear-gradient(180deg, #b8860b 0%, #0a1a30 100%);
+  background: linear-gradient(180deg, #0a1a30 0%, #b8860b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -217,8 +218,8 @@ body {
 }
 
 .faden-field:focus {
-  border-color: rgba(197, 160, 89, 0.5);
-  box-shadow: 0 0 0 1px rgba(197, 160, 89, 0.3);
+  border-color: rgba(10, 26, 48, 0.35);
+  box-shadow: 0 0 0 1px rgba(10, 26, 48, 0.2);
 }
 
 .faden-label {

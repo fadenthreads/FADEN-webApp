@@ -200,7 +200,7 @@ export function BoutiqueSearchPage({
             <Link
               href={outfitTypeNavHref(query, audience)}
               className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
-                !isClothingView ? "bg-navy text-white" : "text-foreground-muted hover:text-navy"
+                !isClothingView ? "bg-gold text-navy" : "text-foreground-muted hover:text-navy"
               }`}
             >
               Boutiques
@@ -208,7 +208,7 @@ export function BoutiqueSearchPage({
             <Link
               href={clothingSearchHref(query, audience)}
               className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
-                isClothingView ? "bg-navy text-white" : "text-foreground-muted hover:text-navy"
+                isClothingView ? "bg-gold text-navy" : "text-foreground-muted hover:text-navy"
               }`}
             >
               Clothing

@@ -49,8 +49,8 @@ export function LanguageSwitcher({ className, variant = "select" }: LanguageSwit
             className={cn(
               "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors disabled:opacity-60",
               locale === code
-                ? "border-gold bg-gold/15 text-gold"
-                : "border-border text-foreground-muted hover:border-gold/40 hover:text-gold",
+                ? "border-gold bg-gold text-navy"
+                : "border-navy/20 text-foreground-muted hover:border-navy/40 hover:text-navy",
             )}
             aria-pressed={locale === code}
           >

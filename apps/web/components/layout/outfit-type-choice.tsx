@@ -83,7 +83,7 @@ export function OutfitTypeChoice({ outfitType, audience, open, onClose, onNaviga
                 }}
                 className="group flex items-center gap-4 rounded-xl border border-border bg-background-soft p-4 transition-all hover:border-gold/50 hover:shadow-md"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-navy text-gold">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-navy/25 bg-gold text-navy">
                   <Shirt className="h-5 w-5" aria-hidden />
                 </span>
                 <span>
@@ -101,7 +101,7 @@ export function OutfitTypeChoice({ outfitType, audience, open, onClose, onNaviga
                 }}
                 className="group flex items-center gap-4 rounded-xl border border-border bg-background-soft p-4 transition-all hover:border-gold/50 hover:shadow-md"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-navy text-gold">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-navy/25 bg-gold text-navy">
                   <Store className="h-5 w-5" aria-hidden />
                 </span>
                 <span>

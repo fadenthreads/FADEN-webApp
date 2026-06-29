@@ -63,8 +63,17 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
       href={cat.href}
       onClick={onNavigate}
       className={cn(
-        "shrink-0 whitespace-nowrap border-b-2 border-transparent px-3 py-3 text-sm font-medium text-foreground-muted transition-colors hover:border-gold hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
-        isAudienceActive(cat.id) && "border-gold text-navy",
+        mobile
+          ? "flex w-full items-center rounded-lg border-l-4 px-3 py-2.5 text-sm font-medium transition-colors"
+          : "shrink-0 whitespace-nowrap border-b-2 border-transparent px-3 py-3 text-sm font-medium transition-colors hover:border-navy hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy",
+        mobile
+          ? isAudienceActive(cat.id)
+            ? "border-gold bg-gold/12 text-navy"
+            : "border-transparent text-foreground-muted hover:bg-navy/5 hover:text-navy"
+          : cn(
+              "text-foreground-muted hover:border-navy hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy",
+              isAudienceActive(cat.id) && "border-gold text-gold",
+            ),
       )}
     >
       {audienceLabel(cat.id)}
@@ -83,10 +92,12 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
       type="button"
       onClick={() => openOutfitChoice(outfitType)}
       className={cn(
-        "shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+        mobile
+          ? "rounded-full border px-3 py-2 text-xs font-medium transition-colors"
+          : "shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
         isOutfitActive(outfitType)
           ? "border-gold bg-gold/15 text-navy"
-          : "border-border bg-background-elevated text-foreground-muted hover:border-gold/40 hover:text-navy",
+          : "border-navy/15 bg-background-elevated text-foreground-muted hover:border-navy/30 hover:text-navy",
       )}
     >
       {outfitType}
@@ -106,14 +117,17 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
   if (mobile) {
     return (
       <>
-        <nav aria-label={t("ariaLabel")} className="space-y-4">
-          <div className="flex flex-col gap-1">{audienceLinks}</div>
+        <nav aria-label={t("ariaLabel")} className="space-y-5">
+          <div>
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-navy">{t("ariaLabel")}</p>
+            <div className="flex flex-col gap-1">{audienceLinks}</div>
+          </div>
           {outfitLinks.length > 0 && (
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-navy">
                 {t("outfitTypes")}
               </p>
-              <div className="max-h-40 overflow-y-auto">
+              <div className="max-h-48 overflow-y-auto pr-1">
                 <div className="flex flex-wrap gap-2">{outfitLinks}</div>
               </div>
             </div>
