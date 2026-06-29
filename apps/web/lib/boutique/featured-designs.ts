@@ -3,6 +3,48 @@ import type { AudienceCategory } from "@faden/validators";
 import { BOUTIQUE_PROFILES } from "@/data/boutique-profiles";
 import { mapPortfolioItemsToDesigns } from "@/lib/boutique/portfolio";
 import type { PortfolioItemRow } from "@/lib/boutique/portfolio";
+import type { BoutiqueMedia } from "@/data/boutiques";
+
+const CLOTHING_GRADIENTS = [
+  "from-navy/40 via-gold/20 to-background-soft",
+  "from-amber-900/30 via-navy/20 to-background-soft",
+  "from-rose-900/25 via-gold/15 to-background-soft",
+];
+
+function buildDesignGallery(
+  design: { id: string; title: string; imageUrl?: string | null; gradient?: string },
+  related: Array<{ id: string; title: string; imageUrl?: string | null; gradient?: string }>,
+): BoutiqueMedia[] {
+  const gallery: BoutiqueMedia[] = [];
+
+  gallery.push({
+    type: "image",
+    label: design.title,
+    gradient: design.gradient ?? CLOTHING_GRADIENTS[0],
+    url: design.imageUrl || undefined,
+  });
+
+  for (const item of related) {
+    if (item.id === design.id) continue;
+    gallery.push({
+      type: "image",
+      label: item.title,
+      gradient: item.gradient ?? CLOTHING_GRADIENTS[gallery.length % CLOTHING_GRADIENTS.length],
+      url: item.imageUrl || undefined,
+    });
+    if (gallery.length >= 4) break;
+  }
+
+  while (gallery.length < 3) {
+    gallery.push({
+      type: "image",
+      label: `${design.title} detail ${gallery.length}`,
+      gradient: CLOTHING_GRADIENTS[gallery.length % CLOTHING_GRADIENTS.length],
+    });
+  }
+
+  return gallery;
+}
 
 export interface FeaturedDesignItem {
   id: string;
@@ -16,6 +58,7 @@ export interface FeaturedDesignItem {
   boutiqueSlug: string;
   mediaType: string;
   audience?: string;
+  gallery?: import("@/data/boutiques").BoutiqueMedia[];
 }
 
 type BoutiqueRow = {
@@ -63,6 +106,7 @@ export async function listFeaturedDesignsFromDb(
 
     for (const design of designs) {
       if (!design.imageUrl) continue;
+      const related = designs.filter((entry) => entry.id !== design.id);
       items.push({
         id: design.id,
         title: design.title,
@@ -74,6 +118,7 @@ export async function listFeaturedDesignsFromDb(
         boutiqueSlug: row.slug,
         mediaType: design.imageUrl.startsWith("data:video") ? "video" : "image",
         audience: row.audience ?? undefined,
+        gallery: buildDesignGallery(design, related),
       });
       if (items.length >= limit) return items;
     }
@@ -97,6 +142,7 @@ export function listFeaturedDesignsFromMock(
     const designs = profile.portfolioDesigns?.length ? profile.portfolioDesigns : profile.latestDesigns;
 
     for (const design of designs) {
+      const related = designs.filter((entry) => entry.id !== design.id);
       items.push({
         id: design.id,           // Matches getDesignById IDs exactly (e.g. silk-thread-studio-d0)
         title: design.title,
@@ -108,6 +154,7 @@ export function listFeaturedDesignsFromMock(
         boutiqueName: profile.name,
         boutiqueSlug: profile.slug,
         mediaType: "image",
+        gallery: buildDesignGallery(design, related),
       });
       if (items.length >= limit) return items;
     }

@@ -3,27 +3,31 @@
 import Link from "next/link";
 import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import { Store } from "lucide-react";
-import { DressImage } from "@/components/boutique/dress-image";
+import { CardMediaSwiper } from "@/components/discovery/card-media-swiper";
 import type { FeaturedDesignItem } from "@/lib/boutique/featured-designs";
+import type { BoutiqueMedia } from "@/data/boutiques";
 
 const LOOP_REPEATS = 3;
+
+function designToMedia(design: FeaturedDesignItem): BoutiqueMedia[] {
+  if (design.gallery?.length) return design.gallery;
+  return [
+    {
+      type: "image",
+      label: design.title,
+      gradient: design.gradient ?? "from-navy/30 via-gold/20 to-background-soft",
+      url: design.imageUrl || undefined,
+    },
+  ];
+}
 
 function ClothingCard({ design }: { design: FeaturedDesignItem }) {
   return (
     <Link
       href={`/boutique/${design.boutiqueSlug}/dress/${design.id}`}
-      className="group relative block w-[180px] shrink-0 overflow-hidden rounded-xl border border-border bg-background-elevated transition-all hover:border-gold/30 hover:shadow-gold md:w-[200px]"
+      className="group relative block w-[180px] shrink-0 overflow-hidden rounded-xl border border-border bg-background-elevated transition-all hover:border-gold/40 hover:shadow-md md:w-[200px]"
     >
-      <div className="relative aspect-[3/4] overflow-hidden">
-        <DressImage
-          design={{
-            title: design.title,
-            imageUrl: design.imageUrl,
-            gradient: design.gradient ?? "from-burgundy/60 via-rose-900/40 to-background-soft",
-          }}
-          className="transition-transform duration-300 group-hover:scale-105"
-        />
-      </div>
+      <CardMediaSwiper media={designToMedia(design)} aspectClass="aspect-[3/4]" />
       <div className="p-3">
         <p className="truncate font-display text-sm font-semibold leading-tight">{design.title}</p>
         <div className="mt-1 flex items-center gap-1">

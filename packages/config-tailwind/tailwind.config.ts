@@ -10,6 +10,11 @@ const config = {
         "background-elevated": "var(--background-elevated)",
         foreground: "var(--foreground)",
         "foreground-muted": "var(--foreground-muted)",
+        navy: {
+          DEFAULT: "var(--navy)",
+          light: "var(--navy-light)",
+          dark: "var(--navy-dark)",
+        },
         gold: {
           DEFAULT: "var(--gold)",
           light: "var(--gold-light)",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -8,10 +8,9 @@ import { cn } from "@faden/utils";
 import {
   AUDIENCE_CATEGORIES,
   getOutfitNavTypesForCategory,
-  outfitTypeNavHref,
   parseAudienceCategory,
 } from "@/lib/landing/audience-categories";
-import { homeHref } from "@/lib/landing/home-nav";
+import { OutfitTypeChoice } from "@/components/layout/outfit-type-choice";
 
 interface CategoryNavProps {
   mobile?: boolean;
@@ -42,6 +41,7 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
   const searchQuery = pathname === "/search" ? (searchParams.get("q") ?? "") : "";
   const searchAudience = parseAudienceCategory(searchParams.get("audience"));
   const outfitNavTypes = getOutfitNavTypesForCategory(pathname === "/" ? category : searchAudience);
+  const [choiceOutfit, setChoiceOutfit] = useState<string | null>(null);
 
   const audienceLabel = (id: (typeof AUDIENCE_CATEGORIES)[number]["id"]) => {
     if (id === "all") return t("all");
@@ -63,8 +63,8 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
       href={cat.href}
       onClick={onNavigate}
       className={cn(
-        "shrink-0 whitespace-nowrap border-b-2 border-transparent px-3 py-3 text-sm font-medium text-foreground-muted transition-colors hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
-        isAudienceActive(cat.id) && "border-gold text-gold",
+        "shrink-0 whitespace-nowrap border-b-2 border-transparent px-3 py-3 text-sm font-medium text-foreground-muted transition-colors hover:border-gold hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
+        isAudienceActive(cat.id) && "border-gold text-navy",
       )}
     >
       {audienceLabel(cat.id)}
@@ -72,57 +72,78 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
   ));
 
   const activeAudienceForOutfits = pathname === "/" ? category : searchAudience;
+
+  function openOutfitChoice(outfitType: string) {
+    setChoiceOutfit(outfitType);
+  }
+
   const outfitLinks = outfitNavTypes.map((outfitType) => (
-    <Link
+    <button
       key={outfitType}
-      href={outfitTypeNavHref(outfitType, activeAudienceForOutfits)}
-      onClick={onNavigate}
+      type="button"
+      onClick={() => openOutfitChoice(outfitType)}
       className={cn(
         "shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
         isOutfitActive(outfitType)
-          ? "border-gold bg-gold/15 text-gold"
-          : "border-border bg-background-elevated text-foreground-muted hover:border-gold/40 hover:text-gold",
+          ? "border-gold bg-gold/15 text-navy"
+          : "border-border bg-background-elevated text-foreground-muted hover:border-gold/40 hover:text-navy",
       )}
     >
       {outfitType}
-    </Link>
+    </button>
   ));
+
+  const choiceDialog = (
+    <OutfitTypeChoice
+      outfitType={choiceOutfit ?? ""}
+      audience={activeAudienceForOutfits}
+      open={Boolean(choiceOutfit)}
+      onClose={() => setChoiceOutfit(null)}
+      onNavigate={onNavigate}
+    />
+  );
 
   if (mobile) {
     return (
-      <nav aria-label={t("ariaLabel")} className="space-y-4">
-        <div className="flex flex-col gap-1">{audienceLinks}</div>
-        {outfitLinks.length > 0 && (
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
-              {t("outfitTypes")}
-            </p>
-            <div className="max-h-40 overflow-y-auto">
-              <div className="flex flex-wrap gap-2">{outfitLinks}</div>
+      <>
+        <nav aria-label={t("ariaLabel")} className="space-y-4">
+          <div className="flex flex-col gap-1">{audienceLinks}</div>
+          {outfitLinks.length > 0 && (
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">
+                {t("outfitTypes")}
+              </p>
+              <div className="max-h-40 overflow-y-auto">
+                <div className="flex flex-wrap gap-2">{outfitLinks}</div>
+              </div>
             </div>
-          </div>
-        )}
-      </nav>
+          )}
+        </nav>
+        {choiceDialog}
+      </>
     );
   }
 
   return (
-    <nav aria-label={t("ariaLabel")} className="sticky top-[124px] z-30 border-b border-border bg-background shadow-sm md:top-[64px]">
-      <div className="mx-auto max-w-container px-4 lg:px-12">
-        <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">
-          {audienceLinks}
-          <div className="ml-auto hidden shrink-0 items-center gap-4 pl-4 lg:flex">
-            <Link href="/about" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-gold">About Us</Link>
-            <Link href="/careers" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-gold">Careers</Link>
-            <Link href="/contact" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-gold">Contact Us</Link>
+    <>
+      <nav aria-label={t("ariaLabel")} className="sticky top-[124px] z-30 border-b border-border bg-background/95 shadow-sm backdrop-blur-sm md:top-[64px]">
+        <div className="mx-auto max-w-container px-4 lg:px-12">
+          <div className="scrollbar-none flex items-center gap-1 overflow-x-auto">
+            {audienceLinks}
+            <div className="ml-auto hidden shrink-0 items-center gap-4 pl-4 lg:flex">
+              <Link href="/about" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-navy">About Us</Link>
+              <Link href="/careers" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-navy">Careers</Link>
+              <Link href="/contact" className="whitespace-nowrap text-xs font-medium text-foreground-muted transition-colors hover:text-navy">Contact Us</Link>
+            </div>
+          </div>
+          <div className="scrollbar-none flex items-center gap-2 overflow-x-auto border-t border-border/60 py-2">
+            {outfitLinks}
+            <Link href={AUDIENCE_CATEGORIES[0].href} className="shrink-0 text-xs font-medium text-gold hover:underline">{t("browseAll")}</Link>
+            <Link href="/alterations" className="shrink-0 text-xs font-medium text-gold hover:underline">{t("alterations")}</Link>
           </div>
         </div>
-        <div className="scrollbar-none flex items-center gap-2 overflow-x-auto border-t border-border/60 py-2">
-          {outfitLinks}
-          <Link href={homeHref({ hash: "featured-boutiques" })} className="shrink-0 text-xs font-medium text-gold hover:underline">{t("browseAll")}</Link>
-          <Link href="/alterations" className="shrink-0 text-xs font-medium text-gold hover:underline">{t("alterations")}</Link>
-        </div>
-      </div>
-    </nav>
+      </nav>
+      {choiceDialog}
+    </>
   );
 }

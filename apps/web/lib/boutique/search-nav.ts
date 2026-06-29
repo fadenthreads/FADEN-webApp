@@ -7,17 +7,23 @@ export type SearchSort =
 
 export const DEFAULT_SEARCH_SORT: SearchSort = "best-match";
 
+export type SearchView = "boutiques" | "clothing";
+
 export function searchHref(options: {
   q: string;
   audience?: string | null;
   minRating?: number | null;
   sort?: SearchSort | null;
   maxDistanceKm?: number | null;
+  view?: SearchView | null;
 }): string {
   const trimmed = options.q.trim();
   if (!trimmed) return "/search";
 
   const params = new URLSearchParams({ q: trimmed });
+  if (options.view === "clothing") {
+    params.set("view", "clothing");
+  }
   if (options.audience?.trim()) {
     params.set("audience", options.audience.trim());
   }
@@ -32,6 +38,10 @@ export function searchHref(options: {
     params.set("maxDistance", String(options.maxDistanceKm));
   }
   return `/search?${params.toString()}`;
+}
+
+export function parseSearchView(value: string | undefined): SearchView {
+  return value === "clothing" ? "clothing" : "boutiques";
 }
 
 export function parseSearchMinRating(value: string | undefined): number | null {

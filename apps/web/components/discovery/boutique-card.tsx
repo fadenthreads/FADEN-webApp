@@ -43,7 +43,7 @@ export function BoutiqueCard({ boutique, className }: BoutiqueCardProps) {
           </div>
         </div>
         <p className="mt-1.5 flex items-center gap-1 text-sm text-foreground-muted">
-          <MapPin className="h-3.5 w-3.5 shrink-0 text-red-accent" aria-hidden />
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-gold" aria-hidden />
           {boutique.distanceLabel ? `${boutique.distanceLabel} · ${boutique.location}` : boutique.location}
         </p>
         <p className="mt-2 text-xs leading-relaxed text-foreground-muted/90">

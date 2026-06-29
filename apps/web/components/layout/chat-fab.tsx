@@ -12,7 +12,7 @@ export function ChatFab() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-burgundy text-white shadow-lg transition-all hover:scale-105 hover:bg-burgundy-light hover:shadow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+        className="fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] right-5 z-[55] flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-navy text-white shadow-lg transition-all hover:scale-105 hover:bg-navy-light hover:shadow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
         aria-label="Open FADEN support chat"
         aria-expanded={open}
       >

@@ -10,9 +10,10 @@ import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets
 
 interface HeroSectionProps {
   onExploreBoutiques?: () => void;
+  onExploreClothing?: () => void;
 }
 
-export function HeroSection({ onExploreBoutiques }: HeroSectionProps) {
+export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSectionProps) {
   const t = useTranslations("Hero");
   const reducedMotion = useReducedMotion();
 
@@ -50,10 +51,13 @@ export function HeroSection({ onExploreBoutiques }: HeroSectionProps) {
           <motion.div
             variants={fadeUp}
             transition={fadeUpTransition}
-            className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
+            className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
           >
             <Button variant="luxury" size="lg" onClick={onExploreBoutiques}>
               {t("exploreBoutiques")}
+            </Button>
+            <Button variant="luxury-outline" size="lg" onClick={onExploreClothing}>
+              {t("exploreClothing")}
             </Button>
             <Button asChild variant="luxury-outline" size="lg">
               <Link href="/customize">{t("customizeOutfit")}</Link>

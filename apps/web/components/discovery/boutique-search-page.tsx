@@ -1,15 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { BoutiqueGrid } from "@/components/discovery/boutique-grid";
+import { ClothingSearchGrid } from "@/components/discovery/clothing-search-grid";
 import { BoutiqueDiscoveryFilters } from "@/components/discovery/boutique-discovery-filters";
 import { CustomizeOutfitCta } from "@/components/discovery/customize-outfit-cta";
 import type { BoutiqueData } from "@/data/boutiques";
 import { getBoutiquesForDiscovery } from "@/data/discovery-filters";
 import { useDiscoveryOptional } from "@/components/discovery/discovery-context";
 import { buildBoutiqueDiscoveryParams } from "@/lib/boutique/discovery-params";
+import type { FeaturedDesignItem } from "@/lib/boutique/featured-designs";
+import { listFeaturedDesignsFromMock } from "@/lib/boutique/featured-designs";
+import { listClothingByQuerySync } from "@/lib/boutique/clothing-search";
 import {
   getDefaultCustomerLocation,
   getStoredCustomerLocation,
@@ -18,12 +23,13 @@ import {
   parseSearchMaxDistance,
   parseSearchMinRating,
   parseSearchSort,
+  parseSearchView,
   searchHref,
   sortBoutiquesWithDistance,
   type SearchSort,
 } from "@/lib/boutique/search-nav";
 import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
-import { parseAudienceCategory } from "@/lib/landing/audience-categories";
+import { parseAudienceCategory, outfitTypeNavHref, clothingSearchHref } from "@/lib/landing/audience-categories";
 
 interface BoutiqueSearchPageProps {
   initialQuery?: string;
@@ -48,6 +54,8 @@ export function BoutiqueSearchPage({
   const query = searchParams.get("q") ?? initialQuery;
   const audience =
     parseAudienceCategory(searchParams.get("audience") ?? undefined) ?? initialAudience;
+  const view = parseSearchView(searchParams.get("view") ?? undefined);
+  const isClothingView = view === "clothing";
   const minRating = parseSearchMinRating(searchParams.get("minRating") ?? undefined) ?? initialMinRating;
   const maxDistanceKm =
     parseSearchMaxDistance(searchParams.get("maxDistance") ?? undefined) ?? initialMaxDistanceKm;
@@ -66,6 +74,9 @@ export function BoutiqueSearchPage({
       maxDistanceKm,
     }),
   );
+  const [clothing, setClothing] = useState<FeaturedDesignItem[]>(() =>
+    listClothingByQuerySync(query, audience),
+  );
   const [loading, setLoading] = useState(true);
 
   const sortedBoutiques = useMemo(
@@ -76,6 +87,28 @@ export function BoutiqueSearchPage({
   useEffect(() => {
     let mounted = true;
     setLoading(true);
+
+    if (isClothingView) {
+      const params = new URLSearchParams();
+      if (audience) params.set("audience", audience);
+      if (query.trim()) params.set("q", query.trim());
+
+      fetch(`/api/portfolio/featured?${params}`)
+        .then((res) => res.json())
+        .then((data: { designs?: FeaturedDesignItem[] }) => {
+          if (mounted && data.designs) setClothing(data.designs);
+        })
+        .catch(() => {
+          if (mounted) setClothing(listClothingByQuerySync(query, audience));
+        })
+        .finally(() => {
+          if (mounted) setLoading(false);
+        });
+
+      return () => {
+        mounted = false;
+      };
+    }
 
     const location = discovery?.customerLocation ?? getStoredCustomerLocation();
     const params = buildBoutiqueDiscoveryParams({
@@ -101,7 +134,7 @@ export function BoutiqueSearchPage({
     return () => {
       mounted = false;
     };
-  }, [discovery?.customerLocation, query, audience, minRating, maxDistanceKm]);
+  }, [discovery?.customerLocation, query, audience, minRating, maxDistanceKm, isClothingView]);
 
   const updateSearchParams = useCallback(
     (next: { minRating?: number | null; maxDistanceKm?: number | null; sort?: SearchSort }) => {
@@ -109,6 +142,7 @@ export function BoutiqueSearchPage({
         searchHref({
           q: query,
           audience,
+          view: isClothingView ? "clothing" : "boutiques",
           minRating: next.minRating !== undefined ? next.minRating : minRating,
           maxDistanceKm: next.maxDistanceKm !== undefined ? next.maxDistanceKm : maxDistanceKm,
           sort: next.sort !== undefined ? next.sort : sort,
@@ -116,22 +150,26 @@ export function BoutiqueSearchPage({
         { scroll: false },
       );
     },
-    [query, audience, minRating, maxDistanceKm, sort, router],
+    [query, audience, minRating, maxDistanceKm, sort, router, isClothingView],
   );
 
   if (!query.trim()) {
     return (
       <div className="mx-auto max-w-container px-4 py-16 text-center lg:px-12">
-        <h1 className="font-display text-3xl font-semibold">Search boutiques</h1>
+        <h1 className="font-display text-3xl font-semibold">Search</h1>
         <p className="mt-3 text-foreground-muted">
-          Use the search bar above to find boutiques by outfit type, fabric, or name.
+          Use the search bar above to find boutiques or clothing by outfit type, fabric, or name.
         </p>
       </div>
     );
   }
 
+  const alternateHref = isClothingView
+    ? outfitTypeNavHref(query, audience)
+    : clothingSearchHref(query, audience);
+
   return (
-    <section className="px-4 pb-16 pt-8 lg:px-12">
+    <section className="px-4 pb-32 pt-8 lg:px-12">
       <motion.div
         variants={staggerContainer}
         initial={reducedMotion ? false : "hidden"}
@@ -140,33 +178,69 @@ export function BoutiqueSearchPage({
       >
         <motion.div variants={fadeUp} transition={fadeUpTransition} className="text-center">
           <p className="text-xs font-semibold tracking-[0.3em] text-gold">SEARCH</p>
-          <h1 className="mt-2 font-display text-3xl font-semibold md:text-4xl">Search results</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold md:text-4xl">
+            {isClothingView ? "Clothing results" : "Boutique results"}
+          </h1>
           <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-foreground-muted md:text-lg">
-            Boutiques matching “{query.trim()}” near {customerLocation.label}.
+            {isClothingView
+              ? `Outfits matching “${query.trim()}” from verified boutiques.`
+              : `Boutiques matching “${query.trim()}” near ${customerLocation.label}.`}
           </p>
           {!loading && (
             <p className="mt-2 text-xs tracking-wider text-gold/80">
-              {boutiques.length} boutique{boutiques.length === 1 ? "" : "s"} found
+              {isClothingView
+                ? `${clothing.length} outfit${clothing.length === 1 ? "" : "s"} found`
+                : `${boutiques.length} boutique${boutiques.length === 1 ? "" : "s"} found`}
             </p>
           )}
         </motion.div>
 
-        <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-6">
-          <BoutiqueDiscoveryFilters
-            minRating={minRating}
-            maxDistanceKm={maxDistanceKm}
-            sort={sort}
-            onApply={(filters) => updateSearchParams(filters)}
-          />
+        <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-5 flex justify-center">
+          <div className="inline-flex rounded-full border border-border bg-background-elevated p-1">
+            <Link
+              href={outfitTypeNavHref(query, audience)}
+              className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
+                !isClothingView ? "bg-navy text-white" : "text-foreground-muted hover:text-navy"
+              }`}
+            >
+              Boutiques
+            </Link>
+            <Link
+              href={clothingSearchHref(query, audience)}
+              className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
+                isClothingView ? "bg-navy text-white" : "text-foreground-muted hover:text-navy"
+              }`}
+            >
+              Clothing
+            </Link>
+          </div>
         </motion.div>
+
+        {!isClothingView && (
+          <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-6">
+            <BoutiqueDiscoveryFilters
+              minRating={minRating}
+              maxDistanceKm={maxDistanceKm}
+              sort={sort}
+              onApply={(filters) => updateSearchParams(filters)}
+            />
+          </motion.div>
+        )}
 
         <motion.div variants={fadeUp} transition={fadeUpTransition}>
           {loading ? (
-            <p className="mt-10 text-center text-sm text-foreground-muted">Loading boutiques…</p>
+            <p className="mt-10 text-center text-sm text-foreground-muted">
+              {isClothingView ? "Loading outfits…" : "Loading boutiques…"}
+            </p>
+          ) : isClothingView ? (
+            <ClothingSearchGrid designs={clothing.length ? clothing : listFeaturedDesignsFromMock(48, audience).filter((d) => d.title.toLowerCase().includes(query.toLowerCase()))} />
           ) : sortedBoutiques.length === 0 ? (
             <p className="mt-10 text-center text-sm text-foreground-muted">
-              No boutiques match your filters. Try a different search, widen the distance, or change your
-              map location.
+              No boutiques match your filters. Try a different search, widen the distance, or{" "}
+              <Link href={alternateHref} className="text-gold underline">
+                browse clothing
+              </Link>
+              .
             </p>
           ) : (
             <BoutiqueGrid boutiques={sortedBoutiques} />
@@ -176,7 +250,7 @@ export function BoutiqueSearchPage({
         <motion.div
           variants={fadeUp}
           transition={fadeUpTransition}
-          className="mt-10 flex flex-col items-center gap-4"
+          className="mt-10 flex flex-col items-center gap-4 pb-4"
         >
           <CustomizeOutfitCta />
         </motion.div>

@@ -50,6 +50,12 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
     });
   }, []);
 
+  const handleExploreClothing = useCallback(() => {
+    requestAnimationFrame(() => {
+      document.getElementById("featured-clothing")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
+
   return (
     <>
       <AnimatePresence>
@@ -59,7 +65,7 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
 
       {phase === "main" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
-          <HeroSection onExploreBoutiques={handleExploreBoutiques} />
+          <HeroSection onExploreBoutiques={handleExploreBoutiques} onExploreClothing={handleExploreClothing} />
           <FeaturedPreview audienceCategory={categoryFromUrl} />
           <FeaturedClothing audienceCategory={categoryFromUrl} />
           <CoreAim />

@@ -18,10 +18,11 @@ function MobileSearchFallback() {
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background shadow-sm">
-      {/* Main row — logo + actions */}
+    <header className="sticky top-0 z-40 border-b border-border bg-background/95 shadow-sm backdrop-blur-sm">
       <div className="mx-auto flex h-[64px] max-w-container items-center gap-2 px-4 lg:gap-4 lg:px-12">
-        <MobileMenu />
+        <div className="relative z-50 shrink-0 md:hidden">
+          <MobileMenu />
+        </div>
         <Logo />
         <LocationSelector className="hidden md:flex" />
         <Suspense fallback={<SearchBarFallback />}>
@@ -30,7 +31,6 @@ export function Header() {
         <NavActions className="ml-auto flex shrink-0" />
         <LanguageSwitcher className="hidden shrink-0 md:inline-flex" />
       </div>
-      {/* Mobile search row — below logo/actions */}
       <div className="border-t border-border/40 px-4 pb-3 pt-2 md:hidden">
         <Suspense fallback={<MobileSearchFallback />}>
           <SearchBar className="w-full" />

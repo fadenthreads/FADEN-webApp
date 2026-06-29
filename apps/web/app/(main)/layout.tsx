@@ -12,7 +12,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <SavedItemsProvider>
         <Header />
         <CategoryNavWrapper />
-        <main className="pb-24">{children}</main>
+        <main className="pb-[calc(var(--bottom-nav-offset)+env(safe-area-inset-bottom,0px))]">{children}</main>
         <Footer />
         <ChatFab />
         <BottomNav />

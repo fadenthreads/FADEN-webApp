@@ -16,7 +16,11 @@ export const AUDIENCE_CATEGORIES: { id: AudienceCategory | "all"; label: string;
 ];
 
 export function outfitTypeNavHref(outfitType: string, audience?: AudienceCategory | null): string {
-  return searchHref({ q: outfitType, audience: audience ?? undefined });
+  return searchHref({ q: outfitType, audience: audience ?? undefined, view: "boutiques" });
+}
+
+export function clothingSearchHref(outfitType: string, audience?: AudienceCategory | null): string {
+  return searchHref({ q: outfitType, audience: audience ?? undefined, view: "clothing" });
 }
 
 export function getOutfitNavTypesForCategory(

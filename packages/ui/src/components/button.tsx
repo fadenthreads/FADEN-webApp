@@ -16,9 +16,9 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent-50 text-foreground",
         link: "text-gold underline-offset-4 hover:underline",
         luxury:
-          "border border-gold/40 bg-cherry text-gold-light hover:bg-cherry-light hover:shadow-cherry uppercase tracking-widest shadow-md",
+          "border border-gold/40 bg-navy text-white hover:bg-navy-light hover:shadow-cherry uppercase tracking-widest shadow-md",
         "luxury-outline":
-          "border border-gold/50 bg-transparent text-foreground hover:border-gold hover:bg-accent-50 uppercase tracking-widest",
+          "border border-gold/50 bg-transparent text-navy hover:border-gold hover:bg-accent-50 uppercase tracking-widest",
       },
       size: {
         default: "h-11 px-8 py-3.5",

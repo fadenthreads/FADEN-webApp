@@ -157,14 +157,16 @@ export function CustomizeWizard() {
           outfitDescription: orderSameIntent
             ? current.outfitDescription ||
               `Same as portfolio outfit: ${dress.title}${dress.sizeLabel ? ` (${dress.sizeLabel})` : ""}`
-            : current.outfitDescription,
-          fabricTypes: orderSameIntent && dress.material ? dress.material : current.fabricTypes,
-          budgetRange: orderSameIntent && dress.price ? dress.price : current.budgetRange,
+            : current.outfitDescription ||
+              dress.description ||
+              `Based on: ${dress.title}${dress.sizeLabel ? ` (${dress.sizeLabel})` : ""}`,
+          fabricTypes: dress.material ? dress.material : current.fabricTypes,
+          budgetRange: dress.price ? dress.price : current.budgetRange,
           inspirationLinks: current.inspirationLinks || referenceLink,
           sketchNotes: orderSameIntent
             ? orderNotes
             : current.sketchNotes ||
-              `Reference outfit: ${dress.title}${dress.description ? `\n${dress.description}` : ""}`,
+              `Reference outfit: ${dress.title}${dress.description ? `\n${dress.description}` : ""}${dress.material ? `\nFabric: ${dress.material}` : ""}${dress.price ? `\nPrice reference: ${dress.price}` : ""}`,
           mixOutfitImages: dress.imageUrl
             ? Array.from(new Set([...current.mixOutfitImages, dress.imageUrl])).slice(0, 4)
             : current.mixOutfitImages,

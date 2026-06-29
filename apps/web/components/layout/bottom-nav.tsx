@@ -40,7 +40,7 @@ export function BottomNav() {
   const { cart } = useSavedItems();
 
   return (
-    <div className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2">
+    <div className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-40 -translate-x-1/2">
       <nav aria-label="Quick navigation" className="flex items-center rounded-full border border-border bg-background/95 shadow-xl backdrop-blur-md">
         {NAV_ITEMS.map((item) => {
           const active = isActive(pathname, item);
@@ -54,7 +54,7 @@ export function BottomNav() {
               className={cn(
                 "relative flex flex-col items-center gap-1 px-5 py-3 transition-all",
                 "first:rounded-l-full last:rounded-r-full",
-                active ? "text-gold" : "text-foreground-muted hover:text-gold",
+                active ? "text-gold" : "text-foreground-muted hover:text-navy",
               )}
             >
               <div className="relative">
