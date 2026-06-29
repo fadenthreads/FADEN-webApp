@@ -92,7 +92,7 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
       {visible && (
         <motion.div
           ref={containerRef}
-          className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-black"
+          className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain bg-background faden-opening-bg"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           role="dialog"

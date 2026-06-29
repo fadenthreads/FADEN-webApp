@@ -3,24 +3,24 @@
 @tailwind utilities;
 
 :root {
-  /* Modern Heritage — cream, navy, gold */
-  --background: #f5f1e9;
+  /* Modern Heritage — cream, navy, gold (mockup palette) */
+  --background: #f5f0e6;
   --background-soft: #ede8dc;
   --background-elevated: #ffffff;
-  --navy: #001f3f;
-  --navy-light: #003366;
-  --navy-dark: #001428;
+  --navy: #0a1a30;
+  --navy-light: #1a2b48;
+  --navy-dark: #061220;
   /* Legacy aliases mapped to navy */
-  --cherry: #001f3f;
-  --cherry-light: #003366;
-  --cherry-dark: #001428;
-  --burgundy: #001f3f;
-  --burgundy-light: #003366;
-  --red-accent: #c5a059;
-  --gold: #c5a059;
-  --gold-light: #d4b87a;
-  --gold-dark: #a68844;
-  --foreground: #001f3f;
+  --cherry: #0a1a30;
+  --cherry-light: #1a2b48;
+  --cherry-dark: #061220;
+  --burgundy: #0a1a30;
+  --burgundy-light: #1a2b48;
+  --red-accent: #b8860b;
+  --gold: #b8860b;
+  --gold-light: #c5a059;
+  --gold-dark: #9a7228;
+  --foreground: #0a1a30;
   --foreground-muted: #5c6470;
   --accent-50: rgba(197, 160, 89, 0.08);
   --accent-100: rgba(197, 160, 89, 0.15);
@@ -102,21 +102,21 @@ body {
 
 .faden-wordmark-gradient,
 .faden-logo-gradient {
-  background: linear-gradient(90deg, #001f3f 0%, #003366 45%, #c5a059 100%);
+  background: linear-gradient(90deg, #0a1a30 0%, #1a2b48 45%, #b8860b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .faden-trust-gradient {
-  background: linear-gradient(90deg, #001f3f 0%, #003366 50%, #c5a059 100%);
+  background: linear-gradient(90deg, #0a1a30 0%, #1a2b48 50%, #b8860b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .faden-stat-gradient {
-  background: linear-gradient(180deg, #c5a059 0%, #001f3f 100%);
+  background: linear-gradient(180deg, #b8860b 0%, #0a1a30 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -165,9 +165,33 @@ body {
 
 .faden-hero-glow {
   background:
-    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(197, 160, 89, 0.12) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(0, 31, 63, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(184, 134, 11, 0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(10, 26, 48, 0.05) 0%, transparent 50%),
     var(--background);
+}
+
+.faden-hero-backdrop {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(to bottom, rgba(245, 240, 230, 0.4) 0%, rgba(245, 241, 233, 0.82) 50%, var(--background) 100%),
+    url("/hero-boutique.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.faden-home-bg {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 100% 60% at 50% -10%, rgba(184, 134, 11, 0.06) 0%, transparent 55%),
+    linear-gradient(180deg, #faf7f0 0%, #f5f0e6 35%, #f5f0e6 100%);
+}
+
+.faden-opening-bg {
+  background-color: #faf7f0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(184, 134, 11, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #fdfcf8 0%, #f5f0e6 100%);
 }
 
 .faden-page-glow {

@@ -1,7 +1,7 @@
-export function FadenWordmark() {
+export function FadenWordmark({ className }: { className?: string }) {
   return (
     <h1
-      className="faden-wordmark-gradient font-display mt-6 text-[4.5rem] font-bold leading-none tracking-[0.12em] md:mt-8 md:text-[6rem] lg:text-[7.25rem]"
+      className={`font-display mt-5 text-[3.5rem] font-bold leading-none tracking-[0.14em] text-navy md:mt-6 md:text-[5rem] lg:text-[6rem] ${className ?? ""}`}
       aria-label="FADEN"
     >
       FADEN

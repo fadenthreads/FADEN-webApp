@@ -63,13 +63,13 @@ function ProblemBox({
       transition={{ delay, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className={
         isProblem
-          ? "rounded-xl border border-burgundy-light/40 bg-burgundy/20 p-8 md:p-9"
-          : "rounded-xl border border-gold/35 bg-background-elevated p-8 shadow-gold md:p-9"
+          ? "rounded-xl border border-navy/15 bg-navy/5 p-8 md:p-9"
+          : "rounded-xl border border-gold/35 bg-background-elevated p-8 shadow-sm md:p-9"
       }
     >
       <span
         className={`inline-block rounded-full px-3 py-1 text-[10px] font-semibold tracking-[0.2em] ${
-          isProblem ? "bg-burgundy-light/30 text-red-accent" : "bg-gold/10 text-gold"
+          isProblem ? "bg-navy/10 text-navy" : "bg-gold/10 text-gold"
         }`}
       >
         {isProblem ? "PROBLEM" : "SOLUTION"}
@@ -84,7 +84,7 @@ function ProblemBox({
             key={item}
             className={`border-l-2 pl-3 text-[15px] leading-relaxed ${
               isProblem
-                ? "border-red-accent/40 text-foreground-muted"
+                ? "border-navy/20 text-foreground-muted"
                 : "border-gold/50 text-foreground"
             }`}
           >

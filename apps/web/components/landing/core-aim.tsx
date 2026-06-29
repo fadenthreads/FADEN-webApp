@@ -7,7 +7,7 @@ export function CoreAim() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="border-t border-border bg-background-soft px-4 py-section-gap">
+    <section className="border-t border-border/60 bg-background-soft/50 px-4 py-section-gap">
       <motion.div
         variants={staggerContainer}
         initial={reducedMotion ? false : "hidden"}

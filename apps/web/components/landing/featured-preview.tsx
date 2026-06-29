@@ -87,7 +87,7 @@ export function FeaturedPreview({ audienceCategory = null }: FeaturedPreviewProp
   }, [discovery?.customerLocation, audienceCategory]);
 
   return (
-    <section id="featured-boutiques" className="scroll-mt-[180px] border-t border-border px-4 pb-16 pt-8 md:scroll-mt-[120px] lg:px-12">
+    <section id="featured-boutiques" className="scroll-mt-[180px] bg-transparent px-4 pb-16 pt-8 md:scroll-mt-[120px] lg:px-12">
       <motion.div
         variants={staggerContainer}
         initial={reducedMotion ? false : "hidden"}
