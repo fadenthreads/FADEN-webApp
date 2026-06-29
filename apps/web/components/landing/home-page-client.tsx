@@ -6,10 +6,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { OpeningSequence } from "@/components/animations/opening-sequence";
 import { ScissorsLoading } from "@/components/animations/scissors-loading";
 import { HeroSection } from "@/components/landing/hero-section";
-import { CategoryShowcaseCards } from "@/components/landing/category-showcase-cards";
 import { FeaturedPreview } from "@/components/landing/featured-preview";
 import { FeaturedClothing } from "@/components/landing/featured-clothing";
-import { HomeValueProps } from "@/components/landing/home-value-props";
 import { CoreAim } from "@/components/landing/core-aim";
 import { ProblemsWeSolve } from "@/components/landing/problems-we-solve";
 import { VisionStatement } from "@/components/landing/vision-statement";
@@ -66,17 +64,10 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
       </AnimatePresence>
 
       {phase === "main" && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="faden-home-bg min-h-screen"
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
           <HeroSection onExploreBoutiques={handleExploreBoutiques} onExploreClothing={handleExploreClothing} />
-          <CategoryShowcaseCards />
           <FeaturedPreview audienceCategory={categoryFromUrl} />
           <FeaturedClothing audienceCategory={categoryFromUrl} />
-          <HomeValueProps />
           <CoreAim />
           <ProblemsWeSolve />
           <VisionStatement />
