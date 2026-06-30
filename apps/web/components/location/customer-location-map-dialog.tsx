@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { MapPin, Navigation, X } from "lucide-react";
 import { Button } from "@faden/ui";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 import type { CustomerLocation } from "@/lib/location/customer-location-types";
 import { resolveCityCoordinates } from "@/lib/location/city-coordinates";
 import { getDefaultCustomerLocation } from "@/lib/location/customer-location";
@@ -75,6 +76,8 @@ export function CustomerLocationMapDialog({
     setLabel(fallback.label);
   }, [open, fallback.label, fallbackCoords.lat, fallbackCoords.lng]);
 
+  useBodyScrollLock(open);
+
   useEffect(() => {
     if (!open) return;
 
@@ -83,11 +86,7 @@ export function CustomerLocationMapDialog({
     }
 
     document.addEventListener("keydown", handleEscape);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "";
-    };
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [open, onClose]);
 
   const handlePick = useCallback(async (next: { lat: number; lng: number }) => {

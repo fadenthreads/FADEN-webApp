@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { LogOut, Menu, User, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,6 +9,7 @@ import { LocationSelector } from "./location-selector";
 import { CategoryNav } from "./category-nav";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { useUser } from "@/hooks/use-user";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 
 function DrawerAuth() {
   const { user, profile } = useUser();
@@ -73,15 +74,7 @@ function DrawerAuth() {
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
-    };
-  }, [open]);
+  useBodyScrollLock(open);
 
   return (
     <>

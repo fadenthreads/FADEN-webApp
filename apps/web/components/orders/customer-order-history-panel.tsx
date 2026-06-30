@@ -58,7 +58,7 @@ function statusBadgeClass(status: CustomerOrderHistoryItem["status"]): string {
       return "border-violet-500/30 bg-violet-500/10 text-violet-200";
     case "in_progress":
     case "shipped":
-      return "border-gold/30 bg-gold/10 text-gold";
+      return "border-gold/30 bg-navy/10 text-navy font-medium";
     default:
       return "border-border bg-background-elevated text-foreground-muted";
   }
@@ -283,7 +283,7 @@ export function CustomerOrderHistoryPanel({ orders, embedded = false }: Customer
                   className={cn(
                     "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                     active
-                      ? "border-gold bg-gold/15 text-gold"
+                      ? "border-navy bg-navy/10 text-navy font-medium"
                       : "border-border bg-background-soft text-foreground-muted hover:border-gold/40",
                   )}
                 >
@@ -309,7 +309,7 @@ export function CustomerOrderHistoryPanel({ orders, embedded = false }: Customer
                 className={cn(
                   "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
                   active
-                    ? "border-gold bg-gold/15 text-gold"
+                    ? "border-navy bg-navy/10 text-navy font-medium"
                     : "border-border bg-background-soft text-foreground-muted hover:border-gold/40",
                 )}
               >

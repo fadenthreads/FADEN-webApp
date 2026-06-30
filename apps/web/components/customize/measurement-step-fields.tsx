@@ -63,7 +63,7 @@ function AssistantGenderPicker({
               className={cn(
                 "rounded-xl border p-4 text-left transition-colors",
                 active
-                  ? "border-gold bg-gold/10 ring-1 ring-gold/40"
+                  ? "border-navy bg-navy/10 ring-1 ring-navy/30"
                   : "border-border bg-background-elevated hover:border-gold/30",
               )}
             >

@@ -53,7 +53,7 @@ function ActionButton({
         active
           ? kind === "wishlist"
             ? "border-red-accent/50 bg-red-accent/15 text-red-accent"
-            : "border-gold/50 bg-gold/15 text-gold"
+            : "border-gold/50 bg-navy/10 text-navy font-medium"
           : "border-border/80 bg-background/80 text-foreground-muted hover:border-gold/40 hover:text-gold",
       )}
     >

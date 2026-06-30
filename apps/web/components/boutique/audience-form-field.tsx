@@ -37,7 +37,7 @@ export function AudienceFormField({ value, onChange }: AudienceFormFieldProps) {
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                 active
-                  ? "border-gold bg-gold/15 text-gold"
+                  ? "border-navy bg-navy/10 text-navy font-medium"
                   : "border-border bg-background-elevated text-foreground-muted hover:border-gold/40",
               )}
             >

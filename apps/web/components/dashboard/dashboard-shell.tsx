@@ -330,7 +330,7 @@ export function DashboardShell({
               onClick={() => setActive(id)}
               className={cn(
                 "flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors lg:text-sm",
-                active === id ? "bg-cherry text-gold-light" : "text-foreground-muted hover:text-gold"
+                active === id ? "bg-navy text-white" : "text-foreground-muted hover:text-gold"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" aria-hidden />

@@ -257,7 +257,7 @@ export function BoutiqueDetailsSectionNav({ active, onSectionChange }: BoutiqueD
           type="button"
           onClick={() => onSectionChange(section)}
           className={`rounded-lg px-4 py-2 text-left text-sm transition-colors ${
-            active === section ? "bg-cherry text-gold-light" : "text-foreground-muted hover:text-gold"
+            active === section ? "bg-navy text-white" : "text-foreground-muted hover:text-gold"
           }`}
         >
           {BOUTIQUE_SECTION_LABELS[section]}

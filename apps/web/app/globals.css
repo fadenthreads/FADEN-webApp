@@ -55,15 +55,48 @@
 
 html {
   scroll-behavior: smooth;
+  text-size-adjust: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.65;
+  letter-spacing: 0.012em;
+  font-feature-settings: "kern" 1, "liga" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-semibold tracking-tight text-navy;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    @apply transition-colors duration-200;
+  }
 }
 
 ::selection {
@@ -244,4 +277,18 @@ body {
   margin-top: 0.25rem;
   font-size: 0.75rem;
   color: var(--foreground-muted);
+}
+
+@layer components {
+  .faden-option-selected {
+    @apply border-navy bg-navy text-white;
+  }
+
+  .faden-option-selected-soft {
+    @apply border-navy bg-navy/10 font-medium text-navy;
+  }
+
+  .faden-list-selected {
+    @apply bg-navy/10 font-medium text-navy;
+  }
 }

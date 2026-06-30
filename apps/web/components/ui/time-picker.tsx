@@ -79,7 +79,7 @@ export function TimePicker({
                   }}
                   className={cn(
                     "flex w-full px-4 py-2 text-left text-sm transition-colors",
-                    selected ? "bg-gold/15 text-gold" : "hover:bg-background-soft",
+                    selected ? "bg-navy/10 font-medium text-navy" : "hover:bg-background-soft",
                   )}
                 >
                   {formatTimeLabel(slot)}

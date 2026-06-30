@@ -68,7 +68,7 @@ export function StepCategory({ data, onChange }: StepProps) {
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                 activeAudience === audience
-                  ? "border-gold bg-gold/15 text-gold"
+                  ? "border-navy bg-navy/10 text-navy font-medium"
                   : "border-border bg-background-elevated text-foreground-muted hover:border-gold/40 hover:text-gold",
               )}
             >
@@ -123,7 +123,7 @@ export function StepCategory({ data, onChange }: StepProps) {
                 className={cn(
                   "rounded-full border px-3 py-1 text-xs transition-colors",
                   selected
-                    ? "border-gold bg-gold/15 text-gold"
+                    ? "border-navy bg-navy/10 text-navy font-medium"
                     : "border-border bg-background-soft text-foreground-muted hover:border-gold/40 hover:text-foreground",
                 )}
               >

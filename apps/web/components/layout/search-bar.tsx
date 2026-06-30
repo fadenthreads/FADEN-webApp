@@ -205,7 +205,7 @@ export function SearchBar({ className, onFeaturedClick }: SearchBarProps) {
                     onClick={() => applySearch(suggestion.value)}
                     className={cn(
                       "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
-                      index === activeIndex ? "bg-gold/10 text-gold" : "hover:bg-background-soft",
+                      index === activeIndex ? "bg-navy/10 text-navy font-medium" : "hover:bg-background-soft",
                     )}
                   >
                     <SuggestionIcon kind={suggestion.kind} />

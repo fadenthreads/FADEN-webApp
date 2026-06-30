@@ -41,7 +41,7 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-1/2 z-40 -translate-x-1/2">
-      <nav aria-label="Quick navigation" className="flex items-center rounded-full border border-border bg-background/95 shadow-xl backdrop-blur-md">
+      <nav aria-label="Quick navigation" className="flex items-center rounded-full border border-border bg-background shadow-xl">
         {NAV_ITEMS.map((item) => {
           const active = isActive(pathname, item);
           const Icon = item.icon;
@@ -54,14 +54,14 @@ export function BottomNav() {
               className={cn(
                 "relative flex flex-col items-center gap-1 px-5 py-3 transition-all",
                 "first:rounded-l-full last:rounded-r-full",
-                active ? "text-gold" : "text-foreground-muted hover:text-navy",
+                active ? "text-navy" : "text-foreground-muted hover:text-navy",
               )}
             >
               <div className="relative">
                 <Icon className="h-5 w-5" />
                 {item.id === "cart" && <CartBadge count={cart.length} />}
               </div>
-              <span className={cn("text-[10px] font-medium leading-none", active ? "text-gold" : "text-foreground-muted")}>
+              <span className={cn("text-[10px] font-medium leading-none", active ? "text-navy" : "text-foreground-muted")}>
                 {item.label}
               </span>
               {active && <span className="absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-navy" />}

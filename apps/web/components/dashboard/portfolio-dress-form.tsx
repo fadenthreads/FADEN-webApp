@@ -133,7 +133,7 @@ export function PortfolioDressForm({
                 onClick={() => applyOutfitSelection(label)}
                 className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                   selectedOutfitLabel.toLowerCase() === label.toLowerCase()
-                    ? "border-gold bg-gold/15 text-gold"
+                    ? "border-navy bg-navy/10 text-navy font-medium"
                     : "border-border text-foreground-muted hover:border-gold/40 hover:text-gold"
                 }`}
               >

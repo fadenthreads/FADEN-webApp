@@ -42,8 +42,8 @@ export function AccountShell({ children, counts, displayName, email }: AccountSh
                       className={cn(
                         "flex min-w-[140px] items-center gap-3 rounded-xl border px-3 py-2.5 text-sm transition-colors lg:min-w-0 lg:w-full",
                         active
-                          ? "border-gold bg-gold/10 text-gold"
-                          : "border-border bg-background-elevated text-foreground-muted hover:border-gold/30 hover:text-foreground",
+                          ? "border-navy bg-navy/10 text-navy"
+                          : "border-border bg-background-elevated text-foreground-muted hover:border-navy/30 hover:text-foreground",
                       )}
                     >
                       <Icon className="h-4 w-4 shrink-0" aria-hidden />
@@ -52,7 +52,7 @@ export function AccountShell({ children, counts, displayName, email }: AccountSh
                         <span
                           className={cn(
                             "rounded-full px-2 py-0.5 text-[10px] font-semibold",
-                            active ? "bg-gold/20 text-gold" : "bg-foreground/10 text-foreground-muted",
+                            active ? "bg-navy/15 text-navy" : "bg-foreground/10 text-foreground-muted",
                           )}
                         >
                           {count}

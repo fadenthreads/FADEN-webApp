@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@faden/utils";
 import { Button } from "@faden/ui";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 import type { SearchSort } from "@/lib/boutique/search-nav";
 import {
   countActiveDiscoveryFilters,
@@ -58,9 +59,9 @@ function FilterRadioOption({
         name={name}
         checked={checked}
         onChange={onChange}
-        className="h-4 w-4 accent-gold"
+        className="h-4 w-4 accent-navy"
       />
-      <span className={cn("text-sm", checked ? "font-medium text-gold" : "text-foreground-muted")}>
+      <span className={cn("text-sm", checked ? "font-medium text-navy" : "text-foreground-muted")}>
         {label}
       </span>
     </label>
@@ -109,17 +110,15 @@ export function BoutiqueDiscoveryFilters({
     }
   }, [minRating, maxDistanceKm, sort, panelOpen]);
 
+  useBodyScrollLock(panelOpen);
+
   useEffect(() => {
     if (!panelOpen) return;
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") setPanelOpen(false);
     }
     document.addEventListener("keydown", handleEscape);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "";
-    };
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [panelOpen]);
 
   function openPanel() {

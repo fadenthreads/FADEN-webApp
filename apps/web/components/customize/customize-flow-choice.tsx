@@ -28,7 +28,7 @@ export function CustomizeFlowChoice({ flowOrder, onChange, compact = false }: Cu
           const sharedClass = cn(
             "relative rounded-xl border p-4 text-left transition-all",
             selected
-              ? "border-gold bg-gold/15 shadow-[0_0_0_1px_rgba(212,175,55,0.35)] ring-2 ring-gold"
+              ? "border-navy bg-navy/10 text-navy shadow-[0_0_0_1px_rgba(10,26,48,0.12)] ring-2 ring-navy/20"
               : interactive
                 ? "border-border bg-background-elevated opacity-75 hover:border-gold/40 hover:opacity-100"
                 : "border-border/60 bg-background-elevated/50 opacity-50",
@@ -37,7 +37,7 @@ export function CustomizeFlowChoice({ flowOrder, onChange, compact = false }: Cu
           const content = (
             <>
               {selected && (
-                <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-gold text-cherry">
+                <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-navy text-white">
                   <Check className="h-3.5 w-3.5" aria-hidden />
                 </span>
               )}
@@ -45,7 +45,7 @@ export function CustomizeFlowChoice({ flowOrder, onChange, compact = false }: Cu
               <h3
                 className={cn(
                   "font-display text-base font-semibold",
-                  selected ? "text-gold-light" : "text-foreground-muted",
+                  selected ? "text-navy" : "text-foreground-muted",
                 )}
               >
                 {opt.label}

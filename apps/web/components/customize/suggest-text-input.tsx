@@ -120,7 +120,7 @@ export function SuggestTextInput({
                 onClick={() => applySuggestion(suggestion)}
                 className={cn(
                   "flex w-full px-4 py-2 text-left text-sm transition-colors",
-                  index === activeIndex ? "bg-gold/10 text-gold" : "hover:bg-background-soft",
+                  index === activeIndex ? "bg-navy/10 text-navy font-medium" : "hover:bg-background-soft",
                 )}
               >
                 {suggestion}

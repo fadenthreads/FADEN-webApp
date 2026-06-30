@@ -27,7 +27,7 @@ export function BoutiqueAudienceNav({ audiences, active, onSelect }: BoutiqueAud
             className={cn(
               "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
               active === audience
-                ? "border-gold bg-gold/15 text-gold"
+                ? "border-navy bg-navy/10 text-navy font-medium"
                 : "border-border bg-background-elevated text-foreground-muted hover:border-gold/40 hover:text-gold",
             )}
           >

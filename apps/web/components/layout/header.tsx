@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense } from "react";
-import Link from "next/link";
 import { Logo } from "./logo";
 import { LocationSelector } from "./location-selector";
 import { SearchBar } from "./search-bar";
@@ -24,12 +23,6 @@ export function Header() {
         <div className="relative z-50 shrink-0 md:hidden">
           <MobileMenu />
         </div>
-        <Link
-          href="/customize"
-          className="hidden shrink-0 rounded-full border border-gold/40 px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-navy transition-colors hover:border-gold hover:bg-gold/10 sm:inline-flex"
-        >
-          STUDIO EXPERIENCE +
-        </Link>
         <Logo />
         <LocationSelector className="hidden md:flex" />
         <Suspense fallback={<SearchBarFallback />}>

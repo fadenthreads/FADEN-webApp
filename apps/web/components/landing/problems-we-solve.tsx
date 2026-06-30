@@ -69,7 +69,7 @@ function ProblemBox({
     >
       <span
         className={`inline-block rounded-full px-3 py-1 text-[10px] font-semibold tracking-[0.2em] ${
-          isProblem ? "bg-navy/8 text-navy" : "bg-gold/10 text-gold"
+          isProblem ? "bg-navy/8 text-navy" : "bg-navy/10 text-navy"
         }`}
       >
         {isProblem ? "PROBLEM" : "SOLUTION"}

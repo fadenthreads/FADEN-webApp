@@ -309,7 +309,7 @@ export function BoutiqueRegistrationForm({
             type="button"
             onClick={() => setActive(s)}
             className={`rounded-lg px-4 py-2 text-left text-sm transition-colors ${
-              active === s ? "bg-cherry text-gold-light" : "text-foreground-muted hover:text-gold"
+              active === s ? "bg-navy text-white" : "text-foreground-muted hover:text-gold"
             }`}
           >
             {t(`sections.${s}`)}

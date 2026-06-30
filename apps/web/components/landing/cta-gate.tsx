@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@faden/ui";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 import { Store, Sparkles, Shirt } from "lucide-react";
 
 const OPTIONS = [
@@ -34,16 +35,10 @@ interface CTAGateProps {
 export function CTAGate({ onExplore }: CTAGateProps) {
   const reducedMotion = useReducedMotion();
   const scrollRef = useRef<HTMLElement>(null);
+  useBodyScrollLock(true);
 
   useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
     scrollRef.current?.scrollTo(0, 0);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
   }, []);
 
   return (

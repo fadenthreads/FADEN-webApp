@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@faden/utils";
+import { fadenNavRailActive, fadenNavUnderlineActive, fadenPillActive } from "@/lib/ui/selection-styles";
 import {
   AUDIENCE_CATEGORIES,
   getOutfitNavTypesForCategory,
@@ -68,11 +69,11 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
           : "shrink-0 whitespace-nowrap border-b-2 border-transparent px-3 py-3 text-sm font-medium transition-colors hover:border-navy hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy",
         mobile
           ? isAudienceActive(cat.id)
-            ? "border-gold bg-gold/12 text-navy"
+            ? fadenNavRailActive + " border-l-4"
             : "border-transparent text-foreground-muted hover:bg-navy/5 hover:text-navy"
           : cn(
               "text-foreground-muted hover:border-navy hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy",
-              isAudienceActive(cat.id) && "border-gold text-gold",
+              isAudienceActive(cat.id) && fadenNavUnderlineActive,
             ),
       )}
     >
@@ -96,7 +97,7 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
           ? "rounded-full border px-3 py-2 text-xs font-medium transition-colors"
           : "shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
         isOutfitActive(outfitType)
-          ? "border-navy bg-navy text-white"
+          ? fadenPillActive
           : "border-navy/15 bg-background-elevated text-foreground-muted hover:border-navy/30 hover:text-navy",
       )}
     >
