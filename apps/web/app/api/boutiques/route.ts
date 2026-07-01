@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
 import { listVerifiedBoutiquesForDiscovery } from "@/lib/boutique/queries";
-import { getBoutiquesForDiscovery } from "@/data/discovery-filters";
 import { parseAudienceCategory } from "@/lib/landing/audience-categories";
 import { resolveCityCoordinates } from "@/lib/location/city-coordinates";
 
@@ -50,8 +49,8 @@ export async function GET(request: NextRequest) {
 
   if (!isWebSupabaseConfigured()) {
     return NextResponse.json({
-      boutiques: getBoutiquesForDiscovery(filters),
-      source: "mock",
+      boutiques: [],
+      source: "empty",
       customer: customerLat != null && customerLng != null ? { lat: customerLat, lng: customerLng } : null,
     });
   }
@@ -69,7 +68,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         error: message,
-        boutiques: getBoutiquesForDiscovery(filters),
+        boutiques: [],
         customer: customerLat != null && customerLng != null ? { lat: customerLat, lng: customerLng } : null,
       },
       { status: 500 },

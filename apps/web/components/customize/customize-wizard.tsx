@@ -222,9 +222,12 @@ export function CustomizeWizard() {
 
   if (submitted) {
     return (
-      <div className="premium-surface-3d mx-auto max-w-lg rounded-xl p-10 text-center">
-        <h2 className="font-display text-2xl font-semibold text-gold">{t("submittedTitle")}</h2>
-        <p className="mt-4 text-foreground-muted">{t("submittedBody")}</p>
+      <div className="premium-surface-3d mx-auto max-w-lg rounded-2xl p-10 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navy/10 text-2xl">
+          ✅
+        </div>
+        <h2 className="mt-4 font-display text-2xl font-semibold text-navy">{t("submittedTitle")}</h2>
+        <p className="mt-4 text-sm leading-relaxed text-foreground-muted">{t("submittedBody")}</p>
         {requestId && (
           <p className="mt-3 text-xs tracking-wide text-foreground-muted/80">
             {t("reference")}: {requestId.slice(0, 8)}…

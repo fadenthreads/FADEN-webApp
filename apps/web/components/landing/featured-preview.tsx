@@ -6,7 +6,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { InfiniteBoutiqueThread } from "@/components/discovery/infinite-boutique-thread";
 import { CustomizeOutfitCta } from "@/components/discovery/customize-outfit-cta";
 import type { BoutiqueData } from "@/data/boutiques";
-import { getBoutiquesForDiscovery } from "@/data/discovery-filters";
 import { useDiscoveryOptional } from "@/components/discovery/discovery-context";
 import { buildBoutiqueDiscoveryParams } from "@/lib/boutique/discovery-params";
 import {
@@ -39,17 +38,7 @@ export function FeaturedPreview({ audienceCategory = null }: FeaturedPreviewProp
   const discovery = useDiscoveryOptional();
   const customerLocation = discovery?.customerLocation ?? getDefaultCustomerLocation();
 
-  const [boutiques, setBoutiques] = useState<BoutiqueData[]>(() =>
-    pickFeaturedBoutiques(
-      getBoutiquesForDiscovery({
-        locationLabel: customerLocation.label,
-        customerLat: customerLocation.lat,
-        customerLng: customerLocation.lng,
-        audience: audienceCategory ?? undefined,
-      }),
-      { audience: audienceCategory },
-    ),
-  );
+  const [boutiques, setBoutiques] = useState<BoutiqueData[]>([]);
   const [loading, setLoading] = useState(true);
 
   const featuredBoutiques = useMemo(
@@ -87,7 +76,7 @@ export function FeaturedPreview({ audienceCategory = null }: FeaturedPreviewProp
   }, [discovery?.customerLocation, audienceCategory]);
 
   return (
-    <section id="featured-boutiques" className="faden-section-neat scroll-mt-[180px] border-t px-4 pb-16 pt-10 md:scroll-mt-[120px] lg:px-12">
+    <section id="featured-boutiques" className="faden-section-neat scroll-mt-[200px] border-t px-4 pb-20 pt-14 md:scroll-mt-[140px] lg:px-12">
       <motion.div
         variants={staggerContainer}
         initial={reducedMotion ? false : "hidden"}

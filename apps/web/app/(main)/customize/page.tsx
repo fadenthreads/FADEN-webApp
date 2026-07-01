@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { CustomizeWizard } from "@/components/customize/customize-wizard";
+import { CustomizeAuthGate } from "@/components/customize/customize-auth-gate";
 
 export const metadata = {
   title: "Customize Your Outfit — FADEN",
@@ -21,7 +22,9 @@ export default function CustomizePage() {
           </p>
         </header>
         <Suspense fallback={<div className="text-center text-foreground-muted">Loading…</div>}>
-          <CustomizeWizard />
+          <CustomizeAuthGate>
+            <CustomizeWizard />
+          </CustomizeAuthGate>
         </Suspense>
       </div>
     </div>

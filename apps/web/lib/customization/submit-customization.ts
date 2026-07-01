@@ -7,6 +7,7 @@ import {
 import type { ActionResult } from "@faden/types";
 import type { BoutiqueMatch } from "@/lib/boutique/matching";
 import { createOrderForCustomizationRequest } from "@/lib/customization/create-order-for-request";
+import { notifyRequestSubmitted } from "@/lib/customization/customer-notifications";
 
 const MAX_MULTI_BOUTIQUES = 5;
 
@@ -148,6 +149,8 @@ async function insertRequestForBoutique(
   });
 
   if ("error" in created) return { error: created.error } as const;
+
+  await notifyRequestSubmitted(supabase, created.conversationId).catch(() => undefined);
 
   return {
     requestId: request.id,

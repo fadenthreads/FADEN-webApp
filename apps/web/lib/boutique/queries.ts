@@ -2,8 +2,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Boutique } from "@faden/types";
 import type { BoutiqueData } from "@/data/boutiques";
 import type { BoutiqueProfileData, BoutiqueReview } from "@/data/boutique-profiles";
-import { MOCK_BOUTIQUES } from "@/data/boutiques";
-import { getBoutiqueProfile as getMockBoutiqueProfile } from "@/data/boutique-profiles";
 import { slugify } from "@faden/utils";
 import {
   getBoutiqueReviewStats,
@@ -316,13 +314,7 @@ export async function listVerifiedBoutiquesForDiscovery(
     return mapBoutiqueRowToDiscovery(row, rating, stats?.reviewCount);
   });
 
-  const liveSlugs = new Set(live.map((b) => b.slug));
-  const mockFallback = MOCK_BOUTIQUES.filter((b) => !liveSlugs.has(b.slug)).map((boutique) => ({
-    ...boutique,
-    availability: boutique.availability ?? "open",
-  }));
-
-  return filterBoutiquesForDiscovery([...live, ...mockFallback], filters);
+  return filterBoutiquesForDiscovery(live, filters);
 }
 
 export async function getLiveBoutiqueProfileBySlug(
@@ -350,13 +342,8 @@ export async function getLiveBoutiqueProfileBySlug(
 export async function resolveBoutiqueProfile(
   supabase: SupabaseClient,
   slug: string,
-  options?: { allowMock?: boolean },
 ): Promise<BoutiqueProfileData | null> {
-  const allowMock = options?.allowMock ?? true;
-  const live = await getLiveBoutiqueProfileBySlug(supabase, slug);
-  if (live) return live;
-  if (allowMock) return getMockBoutiqueProfile(slug) ?? null;
-  return null;
+  return getLiveBoutiqueProfileBySlug(supabase, slug);
 }
 
 export async function getPortfolioItemById(

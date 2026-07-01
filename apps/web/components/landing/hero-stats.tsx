@@ -1,16 +1,46 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Star } from "lucide-react";
 
-const STATS = [
-  { value: "1,240+", label: "BOUTIQUES" },
-  { value: "48K+", label: "HAPPY CUSTOMERS" },
-  { value: "4.9", label: "AVG RATING", showStar: true },
-];
+const LABELS = [
+  { key: "boutiques", label: "BOUTIQUES", showStar: false },
+  { key: "customers", label: "HAPPY CUSTOMERS", showStar: false },
+  { key: "averageRating", label: "AVG RATING", showStar: true },
+] as const;
+
+type DisplayStats = Record<(typeof LABELS)[number]["key"], string> & {
+  hasAverageRating?: boolean;
+};
+
+const EMPTY_STATS: DisplayStats = {
+  boutiques: "0",
+  customers: "0",
+  averageRating: "—",
+  hasAverageRating: false,
+};
 
 export function HeroStats() {
   const reducedMotion = useReducedMotion();
+  const [stats, setStats] = useState<DisplayStats>(EMPTY_STATS);
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetch("/api/platform/stats")
+      .then((res) => res.json())
+      .then((data: { stats?: DisplayStats }) => {
+        if (mounted && data.stats) setStats(data.stats);
+      })
+      .catch(() => {
+        /* keep empty stats */
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <motion.div
@@ -20,7 +50,7 @@ export function HeroStats() {
       className="rounded-2xl border border-navy/10 bg-background-elevated/80 px-6 py-5 shadow-sm backdrop-blur-sm"
     >
       <div className="flex flex-wrap gap-6 md:gap-8 lg:justify-end">
-        {STATS.map((stat, i) => (
+        {LABELS.map((stat, i) => (
           <motion.div
             key={stat.label}
             initial={reducedMotion ? false : { opacity: 0, y: 16 }}
@@ -30,9 +60,9 @@ export function HeroStats() {
           >
             <div className="flex items-center justify-center gap-1 lg:justify-end">
               <span className="font-display text-2xl font-bold text-navy md:text-3xl">
-                {stat.value}
+                {stats[stat.key]}
               </span>
-              {stat.showStar && (
+              {stat.showStar && stats.hasAverageRating && (
                 <Star className="h-4 w-4 fill-gold text-gold" aria-hidden />
               )}
             </div>

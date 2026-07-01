@@ -5,7 +5,7 @@ import { resolveBoutiqueProfile } from "@/lib/boutique/queries";
 import { findCategoryByOutfitSlug } from "@/lib/boutique/portfolio";
 import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
-import { getBoutiqueProfile, getDesignsByCategory } from "@/data/boutique-profiles";
+import { getDesignsByCategory } from "@/data/boutique-profiles";
 
 export const dynamic = "force-dynamic";
 
@@ -18,14 +18,8 @@ export default async function OutfitGalleryPage({ params }: OutfitGalleryPagePro
 
   let profile = null;
   if (isWebSupabaseConfigured()) {
-    try {
-      const supabase = await createClient();
-      profile = await resolveBoutiqueProfile(supabase, slug);
-    } catch {
-      profile = getBoutiqueProfile(slug) ?? null;
-    }
-  } else {
-    profile = getBoutiqueProfile(slug) ?? null;
+    const supabase = await createClient();
+    profile = await resolveBoutiqueProfile(supabase, slug);
   }
 
   if (!profile) notFound();

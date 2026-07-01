@@ -6,18 +6,21 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { ScrollLockRecovery } from "@/components/layout/scroll-lock-recovery";
 import { DiscoveryProvider } from "@/components/discovery/discovery-context";
 import { SavedItemsProvider } from "@/components/saved-items/saved-items-context";
+import { NotificationsProvider } from "@/components/notifications/notifications-provider";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <DiscoveryProvider>
       <SavedItemsProvider>
-        <ScrollLockRecovery />
-        <Header />
-        <CategoryNavWrapper />
-        <main className="pb-[calc(var(--bottom-nav-offset)+env(safe-area-inset-bottom,0px))]">{children}</main>
-        <Footer />
-        <ChatFab />
-        <BottomNav />
+        <NotificationsProvider>
+          <ScrollLockRecovery />
+          <Header />
+          <CategoryNavWrapper />
+          <main className="pb-[calc(var(--bottom-nav-offset)+env(safe-area-inset-bottom,0px))]">{children}</main>
+          <Footer />
+          <ChatFab />
+          <BottomNav />
+        </NotificationsProvider>
       </SavedItemsProvider>
     </DiscoveryProvider>
   );

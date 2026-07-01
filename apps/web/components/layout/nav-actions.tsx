@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Heart, ShoppingBag } from "lucide-react";
 import { cn } from "@faden/utils";
 import { ProfileMenu } from "./profile-menu";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useSavedItems } from "@/components/saved-items/saved-items-context";
 
 function Badge({ count }: { count: number }) {
@@ -42,6 +43,7 @@ export function NavActions({ className }: NavActionsProps) {
         <ShoppingBag className="h-5 w-5" />
         <Badge count={cart.length} />
       </Link>
+      <NotificationBell />
       <ProfileMenu />
     </div>
   );

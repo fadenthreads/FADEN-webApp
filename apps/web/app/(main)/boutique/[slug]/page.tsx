@@ -4,7 +4,6 @@ import { BoutiqueProfile } from "@/components/boutique/boutique-profile";
 import { resolveBoutiqueProfile } from "@/lib/boutique/queries";
 import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
-import { getBoutiqueProfile } from "@/data/boutique-profiles";
 
 export const dynamic = "force-dynamic";
 
@@ -23,8 +22,6 @@ export default async function BoutiquePage({ params, searchParams }: BoutiquePag
   if (isWebSupabaseConfigured()) {
     const supabase = await createClient();
     profile = await resolveBoutiqueProfile(supabase, slug);
-  } else {
-    profile = getBoutiqueProfile(slug) ?? null;
   }
 
   if (!profile) notFound();

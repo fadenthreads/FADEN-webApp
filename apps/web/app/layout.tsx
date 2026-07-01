@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { LocaleSync } from "@/components/i18n/locale-sync";
@@ -11,11 +11,10 @@ const inter = Inter({
   display: "swap",
   weight: ["400", "500", "600"],
 });
-const cormorant = Cormorant_Garamond({
+const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-playfair",
+  weight: ["500", "600"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -43,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const locale = await getLocale();
   const messages = await getMessages();
   return (
-    <html lang={locale} className={`${inter.variable} ${cormorant.variable}`}>
+    <html lang={locale} className={`${inter.variable} ${poppins.variable}`}>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <NextIntlClientProvider key={locale} locale={locale} messages={messages}>
           <LocaleSync />

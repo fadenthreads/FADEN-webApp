@@ -2,7 +2,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AudienceCategory } from "@faden/validators";
 import {
   listFeaturedDesignsFromDb,
-  listFeaturedDesignsFromMock,
   type FeaturedDesignItem,
 } from "@/lib/boutique/featured-designs";
 
@@ -22,13 +21,11 @@ function matchesOutfitQuery(design: FeaturedDesignItem, query: string): boolean 
 }
 
 export function listClothingByQuerySync(
-  query: string,
-  audience?: AudienceCategory | null,
-  limit = 48,
+  _query: string,
+  _audience?: AudienceCategory | null,
+  _limit = 48,
 ): FeaturedDesignItem[] {
-  return listFeaturedDesignsFromMock(120, audience)
-    .filter((item) => matchesOutfitQuery(item, query))
-    .slice(0, limit);
+  return [];
 }
 
 export async function listClothingByQuery(
@@ -37,9 +34,8 @@ export async function listClothingByQuery(
   audience?: AudienceCategory | null,
   limit = 48,
 ): Promise<FeaturedDesignItem[]> {
-  const items = supabase
-    ? await listFeaturedDesignsFromDb(supabase, 120, audience)
-    : listFeaturedDesignsFromMock(120, audience);
+  if (!supabase) return [];
 
+  const items = await listFeaturedDesignsFromDb(supabase, 120, audience);
   return items.filter((item) => matchesOutfitQuery(item, query)).slice(0, limit);
 }

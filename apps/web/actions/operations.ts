@@ -7,6 +7,7 @@ import {
 } from "@faden/validators";
 import type { ActionResult } from "@faden/types";
 import { createClient } from "@/lib/supabase/server";
+import { notifyRequestAccepted } from "@/lib/customization/customer-notifications";
 
 async function assertAuthenticatedUser() {
   const supabase = await createClient();
@@ -22,6 +23,13 @@ function readOwnerId(boutiques: unknown): string | undefined {
     return (boutiques[0] as { owner_id?: string } | undefined)?.owner_id;
   }
   return (boutiques as { owner_id?: string } | null)?.owner_id;
+}
+
+function readBoutiqueName(boutiques: unknown): string {
+  if (Array.isArray(boutiques)) {
+    return (boutiques[0] as { name?: string } | undefined)?.name ?? "The boutique";
+  }
+  return (boutiques as { name?: string } | null)?.name ?? "The boutique";
 }
 
 async function assertBoutiqueOwnerForConversation(
@@ -91,7 +99,7 @@ export async function updateCustomizationStatus(input: unknown): Promise<ActionR
 
     const { data: request, error: fetchError } = await supabase
       .from("customization_requests")
-      .select("id, boutique_id, boutiques ( owner_id )")
+      .select("id, boutique_id, boutiques ( owner_id, name )")
       .eq("id", parsed.data.requestId)
       .maybeSingle();
 
@@ -107,7 +115,16 @@ export async function updateCustomizationStatus(input: unknown): Promise<ActionR
 
     if (error) return { ok: false, error: error.message };
 
+    if (parsed.data.status === "accepted") {
+      await notifyRequestAccepted(supabase, {
+        requestId: parsed.data.requestId,
+        boutiqueName: readBoutiqueName(request.boutiques),
+      }).catch(() => undefined);
+    }
+
     revalidatePath("/dashboard");
+    revalidatePath("/account");
+    revalidatePath("/account/messages");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Action failed" };

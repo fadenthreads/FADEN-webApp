@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { SuggestedBoutiquesPage } from "@/components/customize/suggested-boutiques-page";
+import { CustomizeAuthGate } from "@/components/customize/customize-auth-gate";
 
 export const metadata = {
   title: "Suggested Boutiques — FADEN",
@@ -19,7 +20,9 @@ export default function CustomizeMatchesPage() {
           </p>
         </header>
         <Suspense fallback={<div className="text-center text-foreground-muted">Loading…</div>}>
-          <SuggestedBoutiquesPage />
+          <CustomizeAuthGate>
+            <SuggestedBoutiquesPage />
+          </CustomizeAuthGate>
         </Suspense>
       </div>
     </div>

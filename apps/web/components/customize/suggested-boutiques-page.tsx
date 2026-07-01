@@ -18,6 +18,11 @@ import type { CustomizeFormData } from "@/data/customize-form";
 import { authFetch } from "@/lib/supabase/client";
 import { getStoredCustomerLocation } from "@/lib/location/customer-location";
 import { useDiscoveryOptional } from "@/components/discovery/discovery-context";
+import {
+  consumePendingCustomizeSubmit,
+  setPendingCustomizeSubmit,
+} from "@/lib/customize/pending-submit";
+import { useUser } from "@/hooks/use-user";
 
 type SubmitMode = "single" | "multi";
 type SortMode = "match" | "rating" | "nearby";
@@ -29,6 +34,7 @@ export function SuggestedBoutiquesPage() {
   const searchParams = useSearchParams();
   const selectedFromUrl = searchParams.get("selected") ?? "";
   const discovery = useDiscoveryOptional();
+  const { user } = useUser();
 
   const [draft, setDraft] = useState<CustomizeFormData | null>(null);
   const [matches, setMatches] = useState<BoutiqueMatch[]>([]);
@@ -166,6 +172,7 @@ export function SuggestedBoutiquesPage() {
           : `/customize/matches?selected=${encodeURIComponent(slugs[0] ?? "")}`;
 
       if (res.status === 401) {
+        setPendingCustomizeSubmit(true);
         router.push(`/login?next=${encodeURIComponent(nextUrl)}`);
         return;
       }
@@ -175,6 +182,7 @@ export function SuggestedBoutiquesPage() {
         return;
       }
 
+      setPendingCustomizeSubmit(false);
       clearCustomizeDraft();
       setSubmittedCount(
         (result as { boutiqueCount?: number }).boutiqueCount ?? slugs.length,
@@ -183,11 +191,62 @@ export function SuggestedBoutiquesPage() {
     });
   }
 
+  useEffect(() => {
+    if (!user || !draft || submitted || pending || loading) return;
+    if (!consumePendingCustomizeSubmit()) return;
+
+    const slugs =
+      submitMode === "multi"
+        ? selectedSlugs
+        : selectedSlug
+          ? [selectedSlug]
+          : [];
+
+    if (!slugs.length) return;
+
+    setSubmitError(null);
+    startTransition(async () => {
+      const payload = {
+        ...draft,
+        selectedBoutiqueSlug: slugs[0] ?? "",
+        selectedBoutiqueSlugs: slugs,
+        previewMatches: matches,
+      };
+
+      const { res, payload: result } = await authFetch("/customize/submit", payload);
+
+      if (res.status === 401) {
+        setPendingCustomizeSubmit(true);
+        router.push(`/login?next=${encodeURIComponent("/customize/matches")}`);
+        return;
+      }
+
+      if (!res.ok || !result.ok) {
+        setSubmitError(result.error ?? "Submission failed. Please try again.");
+        return;
+      }
+
+      setPendingCustomizeSubmit(false);
+      clearCustomizeDraft();
+      setSubmittedCount(
+        (result as { boutiqueCount?: number }).boutiqueCount ?? slugs.length,
+      );
+      setSubmitted(true);
+    });
+  }, [user, draft, submitted, pending, loading, submitMode, selectedSlugs, selectedSlug, matches, router]);
+
   if (submitted) {
     return (
-      <div className="premium-surface-3d mx-auto max-w-lg rounded-xl p-10 text-center">
-        <h2 className="font-display text-2xl font-semibold text-gold">Request Submitted</h2>
-        <p className="mt-4 text-foreground-muted">
+      <div className="premium-surface-3d mx-auto max-w-lg rounded-2xl p-10 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navy/10 text-2xl">
+          ✅
+        </div>
+        <h2 className="mt-4 font-display text-2xl font-semibold text-navy">Request Submitted Successfully</h2>
+        <p className="mt-3 text-sm leading-relaxed text-foreground-muted">
+          Your customization request has been stored and sent to the boutique. You will receive a notification when
+          they respond.
+        </p>
+        <p className="mt-4 text-sm text-foreground-muted">
           {submittedCount > 1
             ? `Your design request was sent to ${submittedCount} boutiques. Compare quotations on your account and choose the one you prefer.`
             : `${selectedMatch?.name ?? "Your boutique"} will review your request and send a quotation.`}

@@ -22,7 +22,7 @@ export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSecti
     <>
       <section
         aria-labelledby="hero-heading"
-        className="faden-hero-studio relative overflow-hidden px-4 pb-8 pt-10 lg:px-12 lg:pb-10 lg:pt-14"
+        className="faden-hero-studio relative overflow-hidden px-4 pb-12 pt-12 lg:px-12 lg:pb-16 lg:pt-16"
       >
         <HeroDecoration />
 

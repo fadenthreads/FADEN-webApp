@@ -9,7 +9,7 @@ interface PremiumCardProps {
 
 export function PremiumCard({ children, className, hover = true }: PremiumCardProps) {
   return (
-    <div className={cn(hover ? "premium-surface-3d" : "premium-surface", "rounded-xl p-6", className)}>
+    <div className={cn(hover ? "premium-surface-3d" : "premium-surface", "rounded-2xl p-6", className)}>
       {children}
     </div>
   );

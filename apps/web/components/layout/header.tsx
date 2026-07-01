@@ -18,7 +18,7 @@ function MobileSearchFallback() {
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background shadow-sm">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/95 shadow-sm backdrop-blur-md">
       <div className="mx-auto flex h-[64px] max-w-container items-center gap-2 px-4 lg:gap-4 lg:px-12">
         <div className="relative z-50 shrink-0 md:hidden">
           <MobileMenu />

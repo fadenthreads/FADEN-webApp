@@ -1,5 +1,5 @@
-import { CategoryNav } from "./category-nav";
+import { DiscoveryFilterBar } from "./discovery-filter-bar";
 
 export function CategoryNavWrapper() {
-  return <CategoryNav />;
+  return <DiscoveryFilterBar />;
 }

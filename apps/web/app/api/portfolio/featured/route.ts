@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
-import { listFeaturedDesignsFromDb, listFeaturedDesignsFromMock } from "@/lib/boutique/featured-designs";
+import { listFeaturedDesignsFromDb } from "@/lib/boutique/featured-designs";
 import { listClothingByQuery } from "@/lib/boutique/clothing-search";
 import type { AudienceCategory } from "@faden/validators";
 
@@ -15,10 +15,7 @@ export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("q")?.trim() ?? "";
 
   if (!isWebSupabaseConfigured()) {
-    const designs = query
-      ? await listClothingByQuery(null, query, audience)
-      : listFeaturedDesignsFromMock(24, audience);
-    return NextResponse.json({ designs, source: "mock" });
+    return NextResponse.json({ designs: [], source: "empty" });
   }
 
   try {
@@ -26,17 +23,11 @@ export async function GET(request: NextRequest) {
     const designs = query
       ? await listClothingByQuery(supabase, query, audience)
       : await listFeaturedDesignsFromDb(supabase, 24, audience);
-    const fallback = query
-      ? await listClothingByQuery(null, query, audience)
-      : listFeaturedDesignsFromMock(24, audience);
     return NextResponse.json({
-      designs: designs.length ? designs : fallback,
-      source: designs.length ? "live" : "mock",
+      designs,
+      source: designs.length ? "live" : "empty",
     });
   } catch {
-    const designs = query
-      ? await listClothingByQuery(null, query, audience)
-      : listFeaturedDesignsFromMock(24, audience);
-    return NextResponse.json({ designs, source: "mock" });
+    return NextResponse.json({ designs: [], source: "empty" });
   }
 }

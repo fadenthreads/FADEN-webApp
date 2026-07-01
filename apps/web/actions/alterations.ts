@@ -7,7 +7,6 @@ import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
 import {
   createAlterationRequest,
-  findMockAlterationBoutique,
   findNearestAlterationBoutique,
   updateAlterationRequestStatus,
 } from "@/lib/alterations/queries";
@@ -34,16 +33,7 @@ export async function submitAlterationRequest(
       : null;
 
   if (!isWebSupabaseConfigured()) {
-    const boutique = findMockAlterationBoutique(customerPoint);
-    return {
-      ok: true,
-      data: {
-        requestId: `mock-${Date.now()}`,
-        boutiqueName: boutique?.name,
-        boutiqueSlug: boutique?.slug,
-        distanceKm: boutique?.distanceKm,
-      },
-    };
+    return { ok: false, error: "Alterations are unavailable until the platform is connected." };
   }
 
   const supabase = await createClient();

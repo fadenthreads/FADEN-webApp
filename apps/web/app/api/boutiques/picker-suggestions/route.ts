@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
 import { listVerifiedBoutiquesForDiscovery } from "@/lib/boutique/queries";
-import { getAllBoutiquesForSuggestions } from "@/data/discovery-filters";
 import {
   buildBoutiquePickerSuggestions,
   findBoutiqueBySlug,
@@ -32,7 +31,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  let boutiques = getAllBoutiquesForSuggestions();
+  let boutiques: Awaited<ReturnType<typeof listVerifiedBoutiquesForDiscovery>> = [];
 
   if (isWebSupabaseConfigured()) {
     try {
@@ -43,7 +42,7 @@ export async function GET(request: NextRequest) {
         customerLng,
       });
     } catch {
-      /* mock fallback */
+      boutiques = [];
     }
   }
 

@@ -180,7 +180,7 @@ export function SearchBar({ className, onFeaturedClick }: SearchBarProps) {
             if (suggestions.length > 0) setOpen(true);
           }}
           onKeyDown={handleKeyDown}
-          placeholder="Search outfit type, boutique, or fabric…"
+          placeholder="Search…"
           className="h-11 w-full rounded-full border border-border bg-background-elevated pl-11 pr-4 text-sm text-foreground placeholder:text-foreground-muted outline-none transition-all focus:border-gold/40 focus:ring-1 focus:ring-gold/30"
           aria-label="Search boutiques"
           aria-autocomplete="list"

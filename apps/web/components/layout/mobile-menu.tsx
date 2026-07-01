@@ -6,8 +6,8 @@ import { LogOut, Menu, User, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Logo } from "./logo";
 import { LocationSelector } from "./location-selector";
-import { CategoryNav } from "./category-nav";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useUser } from "@/hooks/use-user";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 
@@ -131,9 +131,14 @@ export function MobileMenu() {
                     <LanguageSwitcher variant="buttons" className="gap-2" />
                   </div>
 
-                  <div className="border-t border-navy/10 pt-5">
-                    <CategoryNav mobile onNavigate={() => setOpen(false)} />
+                  <div>
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-navy">Browse</p>
+                    <p className="text-sm leading-relaxed text-foreground-muted">
+                      Use Categories and Outfits filters below the search bar to explore boutiques and clothing.
+                    </p>
                   </div>
+
+                  <NotificationBell />
                 </div>
               </div>
 

@@ -9,11 +9,9 @@ import { ClothingSearchGrid } from "@/components/discovery/clothing-search-grid"
 import { BoutiqueDiscoveryFilters } from "@/components/discovery/boutique-discovery-filters";
 import { CustomizeOutfitCta } from "@/components/discovery/customize-outfit-cta";
 import type { BoutiqueData } from "@/data/boutiques";
-import { getBoutiquesForDiscovery } from "@/data/discovery-filters";
 import { useDiscoveryOptional } from "@/components/discovery/discovery-context";
 import { buildBoutiqueDiscoveryParams } from "@/lib/boutique/discovery-params";
 import type { FeaturedDesignItem } from "@/lib/boutique/featured-designs";
-import { listFeaturedDesignsFromMock } from "@/lib/boutique/featured-designs";
 import { listClothingByQuerySync } from "@/lib/boutique/clothing-search";
 import {
   getDefaultCustomerLocation,
@@ -63,17 +61,7 @@ export function BoutiqueSearchPage({
 
   const customerLocation = discovery?.customerLocation ?? getDefaultCustomerLocation();
 
-  const [boutiques, setBoutiques] = useState<BoutiqueData[]>(() =>
-    getBoutiquesForDiscovery({
-      locationLabel: customerLocation.label,
-      query,
-      audience: audience ?? undefined,
-      minRating,
-      customerLat: customerLocation.lat,
-      customerLng: customerLocation.lng,
-      maxDistanceKm,
-    }),
-  );
+  const [boutiques, setBoutiques] = useState<BoutiqueData[]>([]);
   const [clothing, setClothing] = useState<FeaturedDesignItem[]>(() =>
     listClothingByQuerySync(query, audience),
   );
@@ -125,7 +113,7 @@ export function BoutiqueSearchPage({
         if (mounted && data.boutiques) setBoutiques(data.boutiques);
       })
       .catch(() => {
-        /* keep mock fallback */
+        if (mounted) setBoutiques([]);
       })
       .finally(() => {
         if (mounted) setLoading(false);
@@ -233,7 +221,17 @@ export function BoutiqueSearchPage({
               {isClothingView ? "Loading outfits…" : "Loading boutiques…"}
             </p>
           ) : isClothingView ? (
-            <ClothingSearchGrid designs={clothing.length ? clothing : listFeaturedDesignsFromMock(48, audience).filter((d) => d.title.toLowerCase().includes(query.toLowerCase()))} />
+            clothing.length === 0 ? (
+              <p className="mt-10 text-center text-sm text-foreground-muted">
+                No outfits match your search. Try a different term or{" "}
+                <Link href={alternateHref} className="text-gold underline">
+                  browse boutiques
+                </Link>
+                .
+              </p>
+            ) : (
+              <ClothingSearchGrid designs={clothing} />
+            )
           ) : sortedBoutiques.length === 0 ? (
             <p className="mt-10 text-center text-sm text-foreground-muted">
               No boutiques match your filters. Try a different search, widen the distance, or{" "}
