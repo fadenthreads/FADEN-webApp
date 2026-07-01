@@ -43,10 +43,8 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
     return () => { cancelled = true; };
   }, [activeTab]);
 
-  if (!loading && designs.length === 0) return null;
-
   return (
-    <section id="featured-clothing" aria-labelledby="featured-clothing-heading" className="faden-section-neat border-t px-4 py-section-gap lg:px-12">
+    <section id="featured-clothing" aria-labelledby="featured-clothing-heading" className="faden-section-neat scroll-mt-[200px] border-t px-4 py-section-gap md:scroll-mt-[160px] lg:px-12">
       <motion.div variants={staggerContainer} initial={reducedMotion ? false : "hidden"} whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -83,6 +81,10 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
                 <div key={`skeleton-${index}`} className="aspect-[3/4] w-[180px] shrink-0 animate-pulse rounded-xl border border-border bg-background-elevated md:w-[200px]" />
               ))}
             </div>
+          ) : designs.length === 0 ? (
+            <p className="mt-8 text-center text-sm leading-relaxed text-foreground-muted">
+              Featured clothing from verified boutiques will appear here as portfolios are added.
+            </p>
           ) : (
             <InfiniteClothingThread designs={designs} />
           )}

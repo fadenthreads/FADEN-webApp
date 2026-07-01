@@ -11,17 +11,20 @@ import {
   getOutfitNavTypesForCategory,
   parseAudienceCategory,
 } from "@/lib/landing/audience-categories";
+import { homeHref } from "@/lib/landing/home-nav";
 import { OutfitTypeChoice } from "@/components/layout/outfit-type-choice";
 
 interface CategoryNavProps {
   mobile?: boolean;
   onNavigate?: () => void;
+  /** Show only the outfit/clothing quick-browse row (below filter dropdowns). */
+  outfitsRowOnly?: boolean;
 }
 
-export function CategoryNav({ mobile, onNavigate }: CategoryNavProps) {
+export function CategoryNav({ mobile, onNavigate, outfitsRowOnly }: CategoryNavProps) {
   return (
-    <Suspense fallback={mobile ? null : <CategoryNavBarFallback />}>
-      <CategoryNavContent mobile={mobile} onNavigate={onNavigate} />
+    <Suspense fallback={mobile || outfitsRowOnly ? null : <CategoryNavBarFallback />}>
+      <CategoryNavContent mobile={mobile} onNavigate={onNavigate} outfitsRowOnly={outfitsRowOnly} />
     </Suspense>
   );
 }
@@ -34,7 +37,7 @@ function CategoryNavBarFallback() {
   );
 }
 
-function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
+function CategoryNavContent({ mobile, onNavigate, outfitsRowOnly }: CategoryNavProps) {
   const t = useTranslations("CategoryNav");
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -114,6 +117,33 @@ function CategoryNavContent({ mobile, onNavigate }: CategoryNavProps) {
       onNavigate={onNavigate}
     />
   );
+
+  if (outfitsRowOnly && !mobile) {
+    return (
+      <>
+        <div className="border-b border-border/60 bg-background/95">
+          <div className="mx-auto max-w-container px-4 lg:px-12">
+            <div className="scrollbar-none flex items-center gap-2 overflow-x-auto py-2.5">
+              <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.2em] text-navy">
+                {t("outfitTypes")}
+              </span>
+              {outfitLinks}
+              <Link
+                href={`${homeHref({ hash: "featured-clothing" })}`}
+                className="shrink-0 text-xs font-medium text-gold hover:underline"
+              >
+                {t("browseAll")}
+              </Link>
+              <Link href="/alterations" className="shrink-0 text-xs font-medium text-gold hover:underline">
+                {t("alterations")}
+              </Link>
+            </div>
+          </div>
+        </div>
+        {choiceDialog}
+      </>
+    );
+  }
 
   if (mobile) {
     return (
