@@ -87,7 +87,7 @@ export const STATIC_PAGES: Record<StaticPageSlug, StaticPageContent> = {
       {
         heading: "Apply",
         paragraphs: [
-          "Send your résumé, portfolio, or a short note about what you'd like to build with us to careers@faden.in. We'll respond when there's a strong fit.",
+          "Use the application form on this page to share your details and attach your resume. We'll respond when there's a strong fit.",
         ],
       },
     ],

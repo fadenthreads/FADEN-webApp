@@ -12,6 +12,9 @@ interface SavedItemsPageProps {
 }
 
 function itemHref(item: SavedItem): string {
+  if (item.itemType === "material" && item.designId) {
+    return `/#featured-materials`;
+  }
   if (item.itemType === "design" && item.designId) {
     return `/boutique/${item.boutiqueSlug}/dress/${item.designId}`;
   }
@@ -30,14 +33,18 @@ function SavedItemCard({ item, kind }: { item: SavedItem; kind: SavedListKind })
           <img src={item.imageUrl} alt="" className="h-28 w-24 object-cover" />
         ) : (
           <div className="flex h-28 w-24 items-center justify-center bg-gradient-to-br from-burgundy/40 to-background-soft text-xs text-foreground-muted">
-            {item.itemType === "design" ? "Design" : "Boutique"}
+            {item.itemType === "material" ? "Material" : item.itemType === "design" ? "Design" : "Boutique"}
           </div>
         )}
       </Link>
 
       <div className="min-w-0 flex-1">
         <p className="text-xs font-medium uppercase tracking-wide text-gold">
-          {item.itemType === "design" ? item.outfitLabel ?? "Design" : "Boutique"}
+          {item.itemType === "material"
+            ? "Material"
+            : item.itemType === "design"
+              ? item.outfitLabel ?? "Design"
+              : "Boutique"}
         </p>
         <Link href={href} className="mt-1 block font-display text-lg font-semibold hover:text-gold">
           {item.title}
@@ -49,6 +56,18 @@ function SavedItemCard({ item, kind }: { item: SavedItem; kind: SavedListKind })
           <Button asChild variant="luxury-outline" size="sm">
             <Link href={href}>View details</Link>
           </Button>
+          {kind === "cart" && item.itemType === "material" && item.designId && (
+            <>
+              <Button asChild variant="luxury" size="sm">
+                <Link href={`/boutique/${item.boutiqueSlug}`}>Buy material</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/customize?boutique=${encodeURIComponent(item.boutiqueSlug)}`}>
+                  Customize
+                </Link>
+              </Button>
+            </>
+          )}
           {kind === "cart" && item.itemType === "design" && item.designId && (
             <>
               <Button asChild variant="luxury" size="sm">
@@ -146,7 +165,7 @@ export function SavedItemsPage({ kind }: SavedItemsPageProps) {
         <p className="mt-2 text-sm text-foreground-muted">
           {kind === "wishlist"
             ? "Boutiques and designs you saved for later."
-            : "Designs and boutiques ready to order or customize."}
+            : "Designs, materials, and boutiques ready to order or customize."}
         </p>
 
         <div className="mt-8 space-y-4">

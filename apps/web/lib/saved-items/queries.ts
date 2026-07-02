@@ -24,10 +24,16 @@ type Row = {
 function mapRow(row: Row): SavedItem {
   const boutique = Array.isArray(row.boutiques) ? row.boutiques[0] : row.boutiques;
   const designRef = normalizeDesignRef(row.design_ref);
+  const itemType =
+    row.item_type === "material"
+      ? "material"
+      : row.item_type === "design" || designRef
+        ? "design"
+        : "boutique";
   return {
     id: row.id,
     savedAt: row.created_at,
-    itemType: (row.item_type === "design" ? "design" : designRef ? "design" : "boutique") as SavedItem["itemType"],
+    itemType,
     boutiqueSlug: row.boutique_slug ?? boutique?.slug ?? "",
     boutiqueName: boutique?.name ?? row.title ?? "Boutique",
     designId: designRef || undefined,

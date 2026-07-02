@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { Button } from "@faden/ui";
 import { HeroFeatureBar } from "./hero-feature-bar";
 import { HeroStats } from "./hero-stats";
-import { HeroEmblemShowcase } from "./hero-emblem-showcase";
 import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
 
 interface HeroSectionProps {
@@ -30,7 +29,7 @@ export function HeroSection({
         className="faden-hero-studio relative overflow-hidden px-4 pb-14 pt-10 lg:px-12 lg:pb-16 lg:pt-14"
       >
         <motion.div
-          className="relative z-10 mx-auto grid w-full max-w-container gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:items-center lg:gap-12"
+          className="relative z-10 mx-auto flex w-full max-w-container flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-12"
           variants={staggerContainer}
           initial={reducedMotion ? false : "hidden"}
           animate="visible"
@@ -84,14 +83,14 @@ export function HeroSection({
               <Button asChild variant="luxury-outline" size="lg">
                 <Link href="/signup?next=/register-boutique&role=boutique_owner">{t("registerBoutique")}</Link>
               </Button>
+              <Button asChild variant="luxury-outline" size="lg">
+                <Link href="/signup?next=/register-material-business">{t("registerMaterialBusiness")}</Link>
+              </Button>
             </motion.div>
           </div>
 
-          <motion.div variants={fadeUp} transition={fadeUpTransition} className="flex flex-col items-center gap-8">
-            <HeroEmblemShowcase />
-            <div className="w-full max-w-sm">
-              <HeroStats />
-            </div>
+          <motion.div variants={fadeUp} transition={fadeUpTransition} className="w-full lg:max-w-sm lg:self-end">
+            <HeroStats />
           </motion.div>
         </motion.div>
       </section>

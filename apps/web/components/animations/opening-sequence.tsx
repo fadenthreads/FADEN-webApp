@@ -2,19 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { FadenSplashWordmark } from "./faden-splash-wordmark";
+import { HeroEmblemShowcase } from "@/components/landing/hero-emblem-showcase";
 
 interface OpeningSequenceProps {
   onComplete: () => void;
 }
 
-/** Netflix-style logo splash — auto-advances to the next phase. */
+/** First-page splash — animated FADEN wheel, then advances to home. */
 export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
   const reducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const holdMs = reducedMotion ? 1600 : 4200;
+    const holdMs = reducedMotion ? 1800 : 4800;
     const timer = window.setTimeout(() => setVisible(false), holdMs);
     return () => window.clearTimeout(timer);
   }, [reducedMotion]);
@@ -23,7 +23,7 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
     <AnimatePresence onExitComplete={onComplete}>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-background faden-opening-bg"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background faden-opening-bg px-6"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: reducedMotion ? 0.3 : 0.55, ease: [0.22, 1, 0.36, 1] }}
@@ -32,11 +32,15 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
           aria-live="polite"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.94 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: reducedMotion ? 0.35 : 0.6, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reducedMotion ? 0.35 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center"
           >
-            <FadenSplashWordmark />
+            <HeroEmblemShowcase size="splash" />
+            <p className="font-display mt-8 max-w-md text-center text-sm italic leading-relaxed text-navy/70 md:text-base">
+              Threads that connect stories, people &amp; traditions.
+            </p>
           </motion.div>
         </motion.div>
       )}

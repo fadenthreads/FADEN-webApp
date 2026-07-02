@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
@@ -45,18 +46,35 @@ export function FeaturedMaterials() {
         viewport={{ once: true, margin: "-80px" }}
       >
         <div className="mx-auto max-w-container">
-          <motion.h2
-            id="featured-materials-heading"
-            variants={fadeUp}
-            transition={fadeUpTransition}
-            className="font-display text-2xl font-semibold text-navy md:text-3xl"
-          >
-            Featured Materials
-          </motion.h2>
-          <motion.p variants={fadeUp} transition={fadeUpTransition} className="mt-2 max-w-2xl text-foreground-muted">
-            Shop premium fabrics from verified boutiques — tap a swatch to read the full description and customize
-            with your chosen material.
-          </motion.p>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <motion.h2
+                id="featured-materials-heading"
+                variants={fadeUp}
+                transition={fadeUpTransition}
+                className="font-display text-2xl font-semibold text-navy md:text-3xl"
+              >
+                Featured Materials
+              </motion.h2>
+              <motion.p
+                variants={fadeUp}
+                transition={fadeUpTransition}
+                className="mt-2 max-w-2xl text-foreground-muted"
+              >
+                Shop premium fabrics from verified suppliers — add to cart or buy directly, then customize with
+                your chosen material.
+              </motion.p>
+            </div>
+            <motion.p variants={fadeUp} transition={fadeUpTransition} className="text-sm text-foreground-muted">
+              Sell materials?{" "}
+              <Link
+                href="/signup?next=/register-material-business"
+                className="font-medium text-gold hover:text-gold-light"
+              >
+                Register your material business
+              </Link>
+            </motion.p>
+          </div>
 
           <motion.div variants={fadeUp} transition={fadeUpTransition}>
             {loading ? (
@@ -70,7 +88,10 @@ export function FeaturedMaterials() {
               </div>
             ) : materials.length === 0 ? (
               <p className="mt-8 text-center text-sm leading-relaxed text-foreground-muted">
-                Featured materials from verified boutiques will appear here as fabric listings are added.
+                Featured materials from verified suppliers will appear here as fabric listings are added.{" "}
+                <Link href="/register-material-business" className="text-gold hover:text-gold-light">
+                  List your materials
+                </Link>
               </p>
             ) : (
               <InfiniteMaterialsThread materials={materials} />

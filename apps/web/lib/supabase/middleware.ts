@@ -10,7 +10,8 @@ function hasSupabaseAuthCookie(request: NextRequest): boolean {
 }
 
 function isProtectedPath(pathname: string): boolean {
-  const isRegistrationSubmit = pathname === "/register-boutique/submit";
+  const isRegistrationSubmit =
+    pathname === "/register-boutique/submit" || pathname === "/register-material-business/submit";
   const isCustomizationSubmit = pathname === "/customize/submit";
 
   if (isRegistrationSubmit || isCustomizationSubmit) return false;
@@ -18,6 +19,7 @@ function isProtectedPath(pathname: string): boolean {
   return (
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/register-boutique") ||
+    pathname.startsWith("/register-material-business") ||
     pathname.startsWith("/account")
   );
 }

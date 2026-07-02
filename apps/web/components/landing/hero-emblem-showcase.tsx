@@ -3,44 +3,49 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { FadenEmblem } from "@/components/animations/faden-emblem";
 
-export function HeroEmblemShowcase() {
+interface HeroEmblemShowcaseProps {
+  size?: "splash" | "hero";
+}
+
+export function HeroEmblemShowcase({ size = "hero" }: HeroEmblemShowcaseProps) {
   const reducedMotion = useReducedMotion();
+  const emblemSize = size === "splash" ? "lg" : "md";
 
   return (
-    <div className="relative mx-auto flex w-full max-w-sm flex-col items-center justify-center lg:max-w-md">
-      {/* Hanging thread */}
+    <div
+      className={
+        size === "splash"
+          ? "relative mx-auto flex w-full max-w-md flex-col items-center justify-center"
+          : "relative mx-auto flex w-full max-w-sm flex-col items-center justify-center lg:max-w-md"
+      }
+    >
       <div className="relative flex flex-col items-center">
         <motion.div
-          className="h-10 w-px bg-gradient-to-b from-transparent via-gold/70 to-gold/40"
+          className={size === "splash" ? "h-14 w-px bg-gradient-to-b from-transparent via-gold/70 to-gold/40" : "h-10 w-px bg-gradient-to-b from-transparent via-gold/70 to-gold/40"}
           initial={{ scaleY: 0 }}
           animate={{ scaleY: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         />
 
-        <motion.div
-          animate={
-            reducedMotion
-              ? {}
-              : {
-                  rotate: [0, 2.5, 0, -2.5, 0],
-                }
-          }
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "50% -40px" }}
-          className="relative"
-        >
-          {/* Orbital glow rings */}
+        <div className="relative">
           {!reducedMotion && (
             <>
               <motion.div
                 className="pointer-events-none absolute left-1/2 top-1/2 h-[118%] w-[118%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-gold/20"
                 animate={{ rotate: 360, opacity: [0.35, 0.65, 0.35] }}
-                transition={{ rotate: { duration: 24, repeat: Infinity, ease: "linear" }, opacity: { duration: 4, repeat: Infinity } }}
+                transition={{
+                  rotate: { duration: size === "splash" ? 18 : 24, repeat: Infinity, ease: "linear" },
+                  opacity: { duration: 4, repeat: Infinity },
+                }}
               />
               <motion.div
                 className="pointer-events-none absolute left-1/2 top-1/2 h-[138%] w-[138%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-navy/10"
                 animate={{ rotate: -360 }}
-                transition={{ duration: 36, repeat: Infinity, ease: "linear" }}
+                transition={{
+                  duration: size === "splash" ? 22 : 36,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
               />
             </>
           )}
@@ -51,9 +56,9 @@ export function HeroEmblemShowcase() {
               animate={reducedMotion ? {} : { scale: [1, 1.08, 1], opacity: [0.45, 0.75, 0.45] }}
               transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
             />
-            <FadenEmblem size="lg" />
+            <FadenEmblem size={emblemSize} wheelSpeed={size === "splash" ? "splash" : "slow"} />
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -408,6 +408,17 @@ export const verifyPaymentSchema = z.object({
 
 export type VerifyPaymentInput = z.infer<typeof verifyPaymentSchema>;
 
+export const upiConfirmPaymentSchema = z.object({
+  paymentId: z.string().uuid(),
+  utr: z
+    .string()
+    .trim()
+    .min(8, "Enter the UPI transaction reference (UTR)")
+    .max(50, "UTR is too long"),
+});
+
+export type UpiConfirmPaymentInput = z.infer<typeof upiConfirmPaymentSchema>;
+
 export const updateOrderStatusSchema = z.object({
   orderId: z.string().uuid(),
   status: z.enum(["in_progress", "shipped", "delivered"]),
@@ -460,7 +471,7 @@ export const rescheduleFittingAppointmentSchema = z.object({
 export type RescheduleFittingAppointmentInput = z.infer<typeof rescheduleFittingAppointmentSchema>;
 
 export const savedItemSchema = z.object({
-  itemType: z.enum(["boutique", "design"]),
+  itemType: z.enum(["boutique", "design", "material"]),
   boutiqueSlug: z.string().min(1),
   boutiqueName: z.string().min(1),
   designId: z.string().optional(),
@@ -471,6 +482,31 @@ export const savedItemSchema = z.object({
 });
 
 export type SavedItemInput = z.infer<typeof savedItemSchema>;
+
+export const materialBusinessRegistrationSchema = z.object({
+  businessName: z.string().min(2, "Business name is required"),
+  ownerName: z.string().min(2, "Owner name is required"),
+  phone: z.string().min(8, "Valid phone number is required"),
+  email: z.string().email("Valid email is required"),
+  address: z.string().min(5, "Business address is required"),
+  materialCategories: z.string().min(2, "List the materials you sell"),
+  inventorySummary: z.string().min(10, "Describe your inventory and sourcing"),
+  onlineStoreUrl: z.string().url().optional().or(z.literal("")),
+});
+
+export type MaterialBusinessRegistrationInput = z.infer<typeof materialBusinessRegistrationSchema>;
+
+export const careerApplicationSchema = z.object({
+  fullName: z.string().min(2, "Full name is required"),
+  email: normalizedEmailSchema,
+  phone: z.string().optional().or(z.literal("")),
+  roleInterest: z.string().min(2, "Tell us which role interests you"),
+  linkedinUrl: z.string().url().optional().or(z.literal("")),
+  portfolioUrl: z.string().url().optional().or(z.literal("")),
+  coverNote: z.string().max(4000).optional().or(z.literal("")),
+});
+
+export type CareerApplicationInput = z.infer<typeof careerApplicationSchema>;
 
 export const adminOrderStatusSchema = z.object({
   orderId: z.string().uuid(),

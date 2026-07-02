@@ -33,7 +33,7 @@ export default async function AccountPaymentsPage() {
     <div>
       <AccountSectionHeader
         title="Payments"
-        description="Pay securely after accepting a quotation. View your payment history here."
+        description="Pay via UPI after accepting a quotation — scan the QR code, pay the amount due, and enter your transaction reference."
       />
       {error && (
         <PremiumCard className="mb-6 border-amber-500/30 bg-amber-500/5" hover={false}>

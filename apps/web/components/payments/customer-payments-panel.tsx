@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { Button } from "@faden/ui";
 import { PremiumCard } from "@/components/ui/premium-card";
 import { PostedAt } from "@/components/ui/posted-at";
+import { UpiPaymentModal } from "@/components/payments/upi-payment-modal";
 import {
   formatInr,
   paymentStatusLabel,
@@ -12,6 +13,7 @@ import {
   type PaymentSummary,
 } from "@/lib/payment/queries";
 import { paymentPhaseLabel } from "@/lib/payment/split-payment";
+import { isUpiPaymentEnabled } from "@/lib/payment/upi";
 import { orderStatusLabel } from "@/lib/order/status";
 
 interface CustomerPaymentsPanelProps {
@@ -41,6 +43,13 @@ function loadRazorpayScript(): Promise<void> {
   });
 }
 
+interface UpiCheckoutState {
+  paymentId: string;
+  amount: number;
+  phase: PayableOrder["payment_phase"];
+  outfitLabel: string | null;
+}
+
 export function CustomerPaymentsPanel({
   payableOrders,
   payments,
@@ -51,32 +60,60 @@ export function CustomerPaymentsPanel({
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+  const [upiCheckout, setUpiCheckout] = useState<UpiCheckoutState | null>(null);
 
-  async function handlePay(order: PayableOrder) {
+  const upiEnabled = isUpiPaymentEnabled();
+
+  async function createPaymentOrder(order: PayableOrder) {
+    const createRes = await fetch("/api/payments/create-order", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId: order.id, phase: order.payment_phase }),
+    });
+    const createPayload = (await createRes.json()) as {
+      ok?: boolean;
+      error?: string;
+      paymentId?: string;
+      amount?: number;
+      mock?: boolean;
+      keyId?: string;
+      razorpayOrderId?: string | null;
+      phase?: PayableOrder["payment_phase"];
+    };
+
+    if (!createRes.ok || !createPayload.ok || !createPayload.paymentId) {
+      throw new Error(createPayload.error ?? "Could not start payment");
+    }
+
+    return createPayload;
+  }
+
+  async function handlePayWithUpi(order: PayableOrder) {
     setError(null);
     setPayingOrderId(order.id);
 
     try {
-      const createRes = await fetch("/api/payments/create-order", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: order.id, phase: order.payment_phase }),
+      const createPayload = await createPaymentOrder(order);
+      setUpiCheckout({
+        paymentId: createPayload.paymentId!,
+        amount: createPayload.amount ?? order.due_amount,
+        phase: createPayload.phase ?? order.payment_phase,
+        outfitLabel: order.outfit_type,
       });
-      const createPayload = (await createRes.json()) as {
-        ok?: boolean;
-        error?: string;
-        paymentId?: string;
-        amount?: number;
-        mock?: boolean;
-        keyId?: string;
-        razorpayOrderId?: string | null;
-      };
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Payment failed");
+    } finally {
+      setPayingOrderId(null);
+    }
+  }
 
-      if (!createRes.ok || !createPayload.ok || !createPayload.paymentId) {
-        setError(createPayload.error ?? "Could not start payment");
-        return;
-      }
+  async function handlePayWithRazorpay(order: PayableOrder) {
+    setError(null);
+    setPayingOrderId(order.id);
+
+    try {
+      const createPayload = await createPaymentOrder(order);
 
       if (createPayload.mock) {
         startTransition(async () => {
@@ -98,7 +135,7 @@ export function CustomerPaymentsPanel({
 
       await loadRazorpayScript();
 
-      const paymentId = createPayload.paymentId;
+      const paymentId = createPayload.paymentId!;
       const amount = createPayload.amount ?? 0;
 
       await new Promise<void>((resolve, reject) => {
@@ -174,9 +211,11 @@ export function CustomerPaymentsPanel({
         <PremiumCard hover={false}>
           <h3 className="font-display text-lg font-semibold text-gold">Payments</h3>
           <p className="mt-2 text-sm text-foreground-muted">
-            {razorpayEnabled
-              ? "Pay up to 40% advance after accepting a quotation. The remaining balance is due before delivery."
-              : "Development mode — use simulated payment (configure Razorpay keys for live checkout)."}
+            {upiEnabled
+              ? "Pay via UPI (Google Pay, PhonePe, or any UPI app). Scan the QR code, pay the amount shown, then enter your transaction reference."
+              : razorpayEnabled
+                ? "Pay up to 40% advance after accepting a quotation. The remaining balance is due before delivery."
+                : "Configure UPI or Razorpay for live payments."}
           </p>
           {error && (
             <p className="mt-3 rounded-lg border border-red-accent/40 bg-red-accent/10 px-3 py-2 text-sm text-red-accent">
@@ -224,23 +263,44 @@ export function CustomerPaymentsPanel({
                 </p>
               )}
               <PostedAt value={order.created_at} prefix="Quoted" className="mt-3 text-xs text-foreground-muted/70" />
-              <Button
-                type="button"
-                variant="luxury"
-                className="mt-4"
-                disabled={pending || payingOrderId === order.id}
-                onClick={() => handlePay(order)}
-              >
-                {payingOrderId === order.id
-                  ? "Processing…"
-                  : order.payment_phase === "deposit"
-                    ? razorpayEnabled
-                      ? "Pay advance"
-                      : "Simulate advance payment"
-                    : razorpayEnabled
-                      ? "Pay balance"
-                      : "Simulate balance payment"}
-              </Button>
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                {upiEnabled && (
+                  <Button
+                    type="button"
+                    variant="luxury"
+                    className="sm:flex-1"
+                    disabled={pending || payingOrderId === order.id}
+                    onClick={() => void handlePayWithUpi(order)}
+                  >
+                    {payingOrderId === order.id
+                      ? "Loading…"
+                      : order.payment_phase === "deposit"
+                        ? "Pay advance with UPI"
+                        : "Pay balance with UPI"}
+                  </Button>
+                )}
+                {razorpayEnabled && (
+                  <Button
+                    type="button"
+                    variant={upiEnabled ? "luxury-outline" : "luxury"}
+                    className="sm:flex-1"
+                    disabled={pending || payingOrderId === order.id}
+                    onClick={() => void handlePayWithRazorpay(order)}
+                  >
+                    Pay with card / Razorpay
+                  </Button>
+                )}
+                {!upiEnabled && !razorpayEnabled && (
+                  <Button
+                    type="button"
+                    variant="luxury"
+                    disabled={pending || payingOrderId === order.id}
+                    onClick={() => void handlePayWithRazorpay(order)}
+                  >
+                    {payingOrderId === order.id ? "Processing…" : "Simulate payment"}
+                  </Button>
+                )}
+              </div>
             </PremiumCard>
           ))}
         </div>
@@ -276,6 +336,18 @@ export function CustomerPaymentsPanel({
             </PremiumCard>
           ))}
         </div>
+      )}
+
+      {upiCheckout && (
+        <UpiPaymentModal
+          open
+          amount={upiCheckout.amount}
+          paymentId={upiCheckout.paymentId}
+          phase={upiCheckout.phase}
+          outfitLabel={upiCheckout.outfitLabel}
+          onClose={() => setUpiCheckout(null)}
+          onConfirmed={() => router.refresh()}
+        />
       )}
     </div>
   );

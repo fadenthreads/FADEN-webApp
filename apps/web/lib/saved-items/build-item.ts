@@ -32,3 +32,23 @@ export function savedDesignItem(
     outfitLabel: design.outfitLabel,
   };
 }
+
+export function savedMaterialItem(material: {
+  id: string;
+  name: string;
+  boutiqueSlug: string;
+  boutiqueName: string;
+  priceHint?: string;
+  imageUrl?: string | null;
+}): SavedItemInput {
+  return {
+    itemType: "material",
+    boutiqueSlug: material.boutiqueSlug,
+    boutiqueName: material.boutiqueName,
+    designId: material.id,
+    title: material.name,
+    imageUrl: material.imageUrl ?? undefined,
+    priceHint: material.priceHint,
+    outfitLabel: "Material",
+  };
+}

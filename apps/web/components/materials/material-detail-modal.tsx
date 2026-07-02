@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Clock, Store, X } from "lucide-react";
 import { Button } from "@faden/ui";
 import type { FeaturedMaterialItem } from "@/lib/materials/featured-materials";
+import { MaterialPurchaseActions } from "@/components/materials/material-purchase-actions";
 
 interface MaterialDetailModalProps {
   material: FeaturedMaterialItem | null;
@@ -77,19 +78,18 @@ export function MaterialDetailModal({ material, open, onClose }: MaterialDetailM
               <dt className="text-foreground-muted">Availability</dt>
               <dd className="flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5 text-gold" aria-hidden />
-                Swatches on request
+                Ready to order online
               </dd>
             </div>
           </dl>
 
-          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-            <Button asChild variant="luxury" className="flex-1">
-              <Link href={`/customize?boutique=${encodeURIComponent(material.boutiqueSlug)}`}>
-                Customize with this material
-              </Link>
-            </Button>
-            <Button asChild variant="luxury-outline" className="flex-1">
-              <Link href={`/boutique/${material.boutiqueSlug}`}>View boutique</Link>
+          <div className="mt-6">
+            <MaterialPurchaseActions material={material} onAction={onClose} />
+          </div>
+
+          <div className="mt-3">
+            <Button asChild variant="luxury-outline" className="w-full">
+              <Link href={`/boutique/${material.boutiqueSlug}`}>View supplier boutique</Link>
             </Button>
           </div>
         </div>
