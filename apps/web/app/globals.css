@@ -74,14 +74,15 @@ body {
   h3,
   h4 {
     @apply font-display font-semibold tracking-tight text-navy;
+    letter-spacing: -0.015em;
   }
 
   h1 {
-    @apply text-3xl leading-tight md:text-4xl;
+    @apply text-3xl leading-[1.08] md:text-4xl;
   }
 
   h2 {
-    @apply text-2xl leading-snug md:text-3xl;
+    @apply text-2xl leading-[1.12] md:text-3xl;
   }
 
   h3 {
@@ -89,12 +90,12 @@ body {
   }
 
   p {
-    @apply leading-relaxed;
+    @apply leading-[1.75];
   }
 
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]) {
-    @apply transition-all duration-200;
+    @apply font-medium transition-all duration-200;
   }
 }
 

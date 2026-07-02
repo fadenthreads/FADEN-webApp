@@ -43,8 +43,8 @@ const config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "var(--font-inter)", "system-ui", "sans-serif"],
-        logo: ["var(--font-logo)", "Georgia", "serif"],
+        display: ["var(--font-display)", "var(--font-logo)", "Georgia", "serif"],
+        logo: ["var(--font-logo)", "var(--font-display)", "Georgia", "serif"],
       },
       borderRadius: {
         sm: "var(--radius-sm)",

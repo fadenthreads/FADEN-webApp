@@ -8,8 +8,7 @@ import { ScissorsLoading } from "@/components/animations/scissors-loading";
 import { HeroSection } from "@/components/landing/hero-section";
 import { FeaturedPreview } from "@/components/landing/featured-preview";
 import { FeaturedClothing } from "@/components/landing/featured-clothing";
-import { CoreAim } from "@/components/landing/core-aim";
-import { ProblemsWeSolve } from "@/components/landing/problems-we-solve";
+import { FeaturedMaterials } from "@/components/landing/featured-materials";
 import { VisionStatement } from "@/components/landing/vision-statement";
 import { parseAudienceCategory, type AudienceCategory } from "@/lib/landing/audience-categories";
 
@@ -25,9 +24,14 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
   useEffect(() => {
     if (phase !== "main") return;
     const syncFromHash = () => {
-      if (window.location.hash === "#featured-boutiques") {
+      const hash = window.location.hash.replace("#", "");
+      const targetId =
+        hash === "featured-boutiques" || hash === "featured-clothing" || hash === "featured-materials"
+          ? hash
+          : null;
+      if (targetId) {
         requestAnimationFrame(() => {
-          document.getElementById("featured-boutiques")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       }
     };
@@ -56,6 +60,12 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
     });
   }, []);
 
+  const handleExploreMaterials = useCallback(() => {
+    requestAnimationFrame(() => {
+      document.getElementById("featured-materials")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
+
   return (
     <>
       <AnimatePresence mode="wait">
@@ -70,11 +80,14 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="faden-home-page min-h-screen"
         >
-          <HeroSection onExploreBoutiques={handleExploreBoutiques} onExploreClothing={handleExploreClothing} />
+          <HeroSection
+            onExploreBoutiques={handleExploreBoutiques}
+            onExploreClothing={handleExploreClothing}
+            onExploreMaterials={handleExploreMaterials}
+          />
           <FeaturedPreview audienceCategory={categoryFromUrl} />
           <FeaturedClothing audienceCategory={categoryFromUrl} />
-          <CoreAim />
-          <ProblemsWeSolve />
+          <FeaturedMaterials />
           <VisionStatement />
         </motion.div>
       )}

@@ -25,7 +25,7 @@ function ClothingCard({ design }: { design: FeaturedDesignItem }) {
   return (
     <Link
       href={`/boutique/${design.boutiqueSlug}/dress/${design.id}`}
-      className="group relative block w-[180px] shrink-0 overflow-hidden rounded-xl border border-border bg-background-elevated transition-all hover:border-gold/40 hover:shadow-md md:w-[200px]"
+      className="group relative block w-[180px] shrink-0 overflow-hidden rounded-2xl border border-border/60 bg-background-elevated shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-navy/20 hover:shadow-md md:w-[200px]"
     >
       <CardMediaSwiper media={designToMedia(design)} aspectClass="aspect-[3/4]" />
       <div className="p-3">

@@ -4,17 +4,22 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Button } from "@faden/ui";
-import { HeroDecoration } from "./hero-decoration";
 import { HeroFeatureBar } from "./hero-feature-bar";
 import { HeroStats } from "./hero-stats";
+import { HeroEmblemShowcase } from "./hero-emblem-showcase";
 import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
 
 interface HeroSectionProps {
   onExploreBoutiques?: () => void;
   onExploreClothing?: () => void;
+  onExploreMaterials?: () => void;
 }
 
-export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSectionProps) {
+export function HeroSection({
+  onExploreBoutiques,
+  onExploreClothing,
+  onExploreMaterials,
+}: HeroSectionProps) {
   const t = useTranslations("Hero");
   const reducedMotion = useReducedMotion();
 
@@ -22,12 +27,10 @@ export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSecti
     <>
       <section
         aria-labelledby="hero-heading"
-        className="faden-hero-studio relative overflow-hidden px-4 pb-12 pt-12 lg:px-12 lg:pb-16 lg:pt-16"
+        className="faden-hero-studio relative overflow-hidden px-4 pb-14 pt-10 lg:px-12 lg:pb-16 lg:pt-14"
       >
-        <HeroDecoration />
-
         <motion.div
-          className="relative z-10 mx-auto flex w-full max-w-container flex-col lg:flex-row lg:items-end lg:justify-between lg:gap-12"
+          className="relative z-10 mx-auto grid w-full max-w-container gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] lg:items-center lg:gap-12"
           variants={staggerContainer}
           initial={reducedMotion ? false : "hidden"}
           animate="visible"
@@ -36,27 +39,27 @@ export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSecti
             <motion.p
               variants={fadeUp}
               transition={fadeUpTransition}
-              className="text-[10px] font-semibold tracking-[0.28em] text-gold md:text-xs"
+              className="text-[10px] font-semibold tracking-[0.32em] text-gold md:text-xs"
             >
               {t("eyebrow")}
             </motion.p>
 
-            <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-4">
+            <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-5">
               <motion.h1
                 id="hero-heading"
-                className="font-display text-3xl font-bold leading-[1.1] tracking-[0.06em] text-navy md:text-4xl lg:text-[2.75rem]"
+                className="font-display text-[2rem] font-semibold leading-[1.08] tracking-tight text-navy md:text-4xl lg:text-[2.85rem]"
               >
                 {t("headlinePrefix")}{" "}
                 <span className="text-navy">{t("headlineTrust")}</span>
               </motion.h1>
-              <p className="font-display mt-2 text-base italic leading-relaxed text-navy/75 md:text-lg">
+              <p className="font-display mt-3 text-base italic leading-relaxed text-navy/70 md:text-lg">
                 {t("tagline")}
               </p>
             </motion.div>
 
-            <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-6 border-t border-navy/10 pt-6">
-              <h2 className="text-[10px] font-semibold tracking-[0.28em] text-gold">{t("whyFaden")}</h2>
-              <p className="mt-2 max-w-lg text-sm leading-relaxed text-foreground-muted md:text-base">
+            <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-7 border-t border-navy/10 pt-6">
+              <h2 className="text-[10px] font-semibold tracking-[0.32em] text-gold">{t("whyFaden")}</h2>
+              <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-foreground-muted md:text-base">
                 {t("subtitle")}
               </p>
             </motion.div>
@@ -64,7 +67,7 @@ export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSecti
             <motion.div
               variants={fadeUp}
               transition={fadeUpTransition}
-              className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center"
+              className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center"
             >
               <Button variant="luxury" size="lg" onClick={onExploreBoutiques}>
                 {t("exploreBoutiques")}
@@ -72,20 +75,23 @@ export function HeroSection({ onExploreBoutiques, onExploreClothing }: HeroSecti
               <Button variant="luxury-outline" size="lg" onClick={onExploreClothing}>
                 {t("exploreClothing")}
               </Button>
+              <Button variant="luxury-outline" size="lg" onClick={onExploreMaterials}>
+                {t("exploreMaterials")}
+              </Button>
               <Button asChild variant="luxury-outline" size="lg">
                 <Link href="/customize">{t("customizeOutfit")}</Link>
               </Button>
               <Button asChild variant="luxury-outline" size="lg">
                 <Link href="/signup?next=/register-boutique&role=boutique_owner">{t("registerBoutique")}</Link>
               </Button>
-              <Button asChild variant="luxury-outline" size="lg">
-                <Link href="/alterations">{t("alterations")}</Link>
-              </Button>
             </motion.div>
           </div>
 
-          <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-8 lg:mt-0 lg:self-end">
-            <HeroStats />
+          <motion.div variants={fadeUp} transition={fadeUpTransition} className="flex flex-col items-center gap-8">
+            <HeroEmblemShowcase />
+            <div className="w-full max-w-sm">
+              <HeroStats />
+            </div>
           </motion.div>
         </motion.div>
       </section>

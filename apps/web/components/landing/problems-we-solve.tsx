@@ -63,8 +63,8 @@ function ProblemBox({
       transition={{ delay, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className={
         isProblem
-          ? "rounded-xl border border-navy/12 bg-navy/[0.03] p-8 md:p-9"
-          : "rounded-xl border border-gold/35 bg-background-elevated p-8 shadow-gold md:p-9"
+          ? "rounded-2xl border border-navy/12 bg-navy/[0.03] p-8 md:p-9"
+          : "rounded-2xl border border-gold/35 bg-background-elevated p-8 shadow-sm md:p-9"
       }
     >
       <span
