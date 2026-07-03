@@ -9,27 +9,46 @@ interface ScissorsLoadingProps {
   standalone?: boolean;
 }
 
-function ScissorsCutAnimation({ compact = false }: { compact?: boolean }) {
+function ScissorsCutAnimation({
+  compact = false,
+  fullWidth = false,
+}: {
+  compact?: boolean;
+  fullWidth?: boolean;
+}) {
   const reducedMotion = useReducedMotion();
   const travelDuration = reducedMotion ? 1.1 : 1.85;
   const snipDuration = reducedMotion ? 0.18 : 0.22;
 
+  const containerClass = fullWidth
+    ? "relative w-[min(92vw,56rem)]"
+    : compact
+      ? "relative w-full max-w-[220px] px-6"
+      : "relative w-full max-w-md px-6";
+
+  const startLeft = fullWidth ? "0%" : "8%";
+  const endLeft = fullWidth ? "100%" : "92%";
+  const threadHalf = fullWidth ? "50%" : "42%";
+  const threadSideInset = fullWidth ? "0" : "1.5rem";
+
   return (
-    <div
-      className={`relative w-full ${compact ? "max-w-[220px]" : "max-w-md"} px-6`}
-      aria-hidden
-    >
+    <div className={containerClass} aria-hidden>
       {/* Thread — left segment */}
       <motion.div
-        className="absolute left-6 top-1/2 h-px origin-right bg-gold"
-        initial={{ width: "42%", opacity: 1 }}
-        animate={{ width: "42%", opacity: 1 }}
+        className="absolute top-1/2 h-px origin-right bg-gold"
+        style={{ left: threadSideInset, width: threadHalf }}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
       />
 
       {/* Thread — right segment (falls after cut) */}
       <motion.div
-        className="absolute right-6 top-1/2 h-px origin-left bg-gold"
-        style={{ width: "42%" }}
+        className="absolute top-1/2 h-px origin-left bg-gold"
+        style={{
+          left: fullWidth ? "50%" : undefined,
+          right: fullWidth ? undefined : threadSideInset,
+          width: threadHalf,
+        }}
         initial={{ opacity: 1, y: 0, rotate: 0 }}
         animate={
           reducedMotion
@@ -39,11 +58,11 @@ function ScissorsCutAnimation({ compact = false }: { compact?: boolean }) {
         transition={{ duration: travelDuration, times: [0, 0.72, 1], ease: "easeInOut" }}
       />
 
-      {/* Scissors travel along the thread */}
+      {/* Scissors travel the full thread */}
       <motion.div
         className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
-        initial={{ left: "8%" }}
-        animate={{ left: "92%" }}
+        initial={{ left: startLeft }}
+        animate={{ left: endLeft }}
         transition={{ duration: travelDuration, ease: "easeInOut" }}
       >
         <motion.svg
@@ -131,8 +150,8 @@ export function ScissorsLoading({ onComplete, standalone = false }: ScissorsLoad
       aria-label="Loading"
       aria-live="polite"
     >
-      <div className="flex flex-col items-center">
-        <ScissorsCutAnimation />
+      <div className="flex w-full flex-col items-center px-4">
+        <ScissorsCutAnimation fullWidth />
         {!standalone && (
           <motion.p
             initial={{ opacity: 0 }}

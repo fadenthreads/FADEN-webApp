@@ -9,6 +9,7 @@ import {
 import type { ActionResult } from "@faden/types";
 import { createClient } from "@/lib/supabase/server";
 import { isWebSupabaseConfigured } from "@/lib/supabase/env";
+import { sendBoutiqueModificationAdminEmail } from "@/lib/email/admin-boutique-notifications";
 
 const MODIFICATION_TABLE_MIGRATION =
   "packages/database/src/schema/008_boutique_modification_requests.sql";
@@ -101,7 +102,7 @@ export async function submitBoutiqueModification(
 
   const { data: boutique, error: boutiqueError } = await supabase
     .from("boutiques")
-    .select("id, status, owner_id")
+    .select("id, status, owner_id, name, slug")
     .eq("id", boutiqueId)
     .maybeSingle();
 
@@ -149,6 +150,24 @@ export async function submitBoutiqueModification(
   if (insertError || !request) {
     return { ok: false, error: modificationTableError(insertError?.message) };
   }
+
+  const { data: ownerProfile } = await supabase
+    .from("profiles")
+    .select("email, full_name")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  void sendBoutiqueModificationAdminEmail({
+    requestId: request.id,
+    boutiqueId: boutique.id,
+    boutiqueName: boutique.name as string,
+    boutiqueSlug: boutique.slug as string,
+    ownerName: (ownerProfile?.full_name as string | null) ?? parsed.data.details.ownerName ?? "Boutique owner",
+    ownerEmail: (ownerProfile?.email as string | null) ?? null,
+    ownerNotes: ownerNotes?.trim() || null,
+  }).catch((error) => {
+    console.warn("[email] boutique modification admin notify error:", error);
+  });
 
   revalidatePath("/account");
   revalidatePath("/register-boutique");

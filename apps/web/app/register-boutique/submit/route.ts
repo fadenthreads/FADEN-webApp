@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { boutiqueRegistrationSchema } from "@faden/validators";
 import { registerBoutiqueForUser } from "@/lib/boutique/register-boutique";
+import { sendBoutiqueRegistrationAdminEmail } from "@/lib/email/admin-boutique-notifications";
 import { getBoutiqueRegistrationWriteClient } from "@/lib/boutique/registration-client";
 import { getOwnerBoutique } from "@/lib/boutique/queries";
 import { getWebSupabaseEnv, isWebSupabaseConfigured } from "@/lib/supabase/env";
@@ -75,6 +76,16 @@ export async function POST(request: NextRequest) {
   if (!result.ok) {
     return errorResponse(formatSupabaseKeyError(result.error ?? "Submission failed"), 400);
   }
+
+  void sendBoutiqueRegistrationAdminEmail({
+    boutiqueName: parsed.data.name,
+    boutiqueSlug: result.data?.slug ?? "",
+    boutiqueId: result.data?.boutiqueId ?? "",
+    ownerUserId: user.id,
+    details: parsed.data,
+  }).catch((error) => {
+    console.warn("[email] boutique registration admin notify error:", error);
+  });
 
   revalidatePath("/dashboard");
   revalidatePath("/register-boutique");
