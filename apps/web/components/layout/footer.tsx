@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { FadenLogoMark } from "@/components/layout/faden-logo-mark";
+import { homeHref } from "@/lib/landing/home-nav";
 import { FADEN_CONTACT } from "@/lib/content/faden-contact";
 
 const FOOTER_SECTIONS = [
@@ -38,7 +38,9 @@ export async function Footer() {
       <div className="mx-auto max-w-container px-4 py-16 lg:px-12">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
-            <FadenLogoMark height={56} />
+            <Link href={homeHref()} className="faden-logo-gradient font-display text-2xl font-bold tracking-[0.14em]">
+              FADEN
+            </Link>
             <p className="mt-2 font-display text-sm italic text-foreground-muted">{t("tagline")}</p>
             <div className="mt-4 space-y-1.5 text-sm text-foreground-muted">
               <p>

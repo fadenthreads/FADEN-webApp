@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { HeroEmblemShowcase } from "@/components/landing/hero-emblem-showcase";
+import { FadenLogoMark } from "@/components/layout/faden-logo-mark";
 
 interface OpeningSequenceProps {
   onComplete: () => void;
 }
 
-/** First-page splash — animated FADEN wheel, then advances to home. */
+/** First-page splash — FADEN brand mark, then advances to home. */
 export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
   const reducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(true);
@@ -37,8 +37,8 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
             transition={{ duration: reducedMotion ? 0.35 : 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center"
           >
-            <HeroEmblemShowcase size="splash" />
-            <p className="font-display mt-8 max-w-md text-center text-sm italic leading-relaxed text-navy/70 md:text-base">
+            <FadenLogoMark height={200} priority linked={false} />
+            <p className="font-display mt-6 max-w-md text-center text-sm italic leading-relaxed text-navy/70 md:text-base">
               Threads that connect stories, people &amp; traditions.
             </p>
           </motion.div>
