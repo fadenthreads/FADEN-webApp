@@ -1,25 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { FadenLandingAnimatedLogo } from "@/components/animations/faden-landing-animated-logo";
+import Image from "next/image";
 
 interface OpeningSequenceProps {
   onComplete: () => void;
 }
 
-/** First-page landing — premium SVG draw + logo reveal, then advances to home. */
+/** First-page splash — FADEN brand mark, then advances to home. */
 export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
   const reducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(true);
 
-  const dismiss = useCallback(() => {
-    window.setTimeout(() => setVisible(false), reducedMotion ? 300 : 900);
-  }, [reducedMotion]);
-
   useEffect(() => {
-    const fallbackMs = reducedMotion ? 2200 : 9000;
-    const timer = window.setTimeout(() => setVisible(false), fallbackMs);
+    const holdMs = reducedMotion ? 1800 : 4800;
+    const timer = window.setTimeout(() => setVisible(false), holdMs);
     return () => window.clearTimeout(timer);
   }, [reducedMotion]);
 
@@ -27,7 +23,7 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
     <AnimatePresence onExitComplete={onComplete}>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#faf8f4] px-4 faden-opening-bg"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white px-6"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: reducedMotion ? 0.3 : 0.55, ease: [0.22, 1, 0.36, 1] }}
@@ -36,12 +32,19 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
           aria-live="polite"
         >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="flex w-full max-w-lg flex-col items-center justify-center"
+            initial={reducedMotion ? false : { opacity: 0, scale: 0.9, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: reducedMotion ? 0.35 : 1.0, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center"
           >
-            <FadenLandingAnimatedLogo onSequenceComplete={dismiss} />
+            <Image
+              src="/faden-logo.png"
+              alt="FADEN — It All Starts With a Thread"
+              width={760}
+              height={1060}
+              priority
+              className="h-[min(72vh,640px)] w-auto object-contain"
+            />
           </motion.div>
         </motion.div>
       )}

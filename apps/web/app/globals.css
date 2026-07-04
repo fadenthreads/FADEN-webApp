@@ -171,6 +171,14 @@ body {
     linear-gradient(160deg, #fdfcf9 0%, #faf8f4 50%, #f3f0ea 100%);
 }
 
+/* Hero page with brand mark — pure white to match logo background */
+.faden-hero-brand {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(197, 160, 89, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(22, 29, 110, 0.03) 0%, transparent 60%);
+}
+
 .faden-home-page {
   background: linear-gradient(180deg, #fdfcf9 0%, #faf8f4 40%, #faf8f4 100%);
 }
