@@ -1,21 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { FadenLogoMark } from "@/components/layout/faden-logo-mark";
+import { FadenAnimatedLogo } from "@/components/brand/faden-animated-logo";
 
 interface OpeningSequenceProps {
   onComplete: () => void;
 }
 
-/** First-page splash — FADEN brand mark, then advances to home. */
+/** First-page splash — animated FADEN brand draw, then advances to home. */
 export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
   const reducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(true);
+  const [animationDone, setAnimationDone] = useState(false);
+
+  const handleAnimationComplete = useCallback(() => {
+    setAnimationDone(true);
+    window.setTimeout(() => setVisible(false), reducedMotion ? 400 : 900);
+  }, [reducedMotion]);
 
   useEffect(() => {
-    const holdMs = reducedMotion ? 1800 : 4800;
-    const timer = window.setTimeout(() => setVisible(false), holdMs);
+    const fallbackMs = reducedMotion ? 2400 : 9500;
+    const timer = window.setTimeout(() => setVisible(false), fallbackMs);
     return () => window.clearTimeout(timer);
   }, [reducedMotion]);
 
@@ -32,15 +38,25 @@ export function OpeningSequence({ onComplete }: OpeningSequenceProps) {
           aria-live="polite"
         >
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reducedMotion ? 0.35 : 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: reducedMotion ? 0.35 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="flex w-full flex-col items-center"
           >
-            <FadenLogoMark height={200} priority linked={false} />
-            <p className="font-display mt-6 max-w-md text-center text-sm italic leading-relaxed text-navy/70 md:text-base">
-              Threads that connect stories, people &amp; traditions.
-            </p>
+            <FadenAnimatedLogo
+              fillViewport
+              className="flex w-full justify-center"
+              onAnimationComplete={handleAnimationComplete}
+            />
+            {animationDone && !reducedMotion && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="font-display mt-4 text-xs tracking-[0.35em] text-navy/50"
+              >
+                CUTTING IN
+              </motion.p>
+            )}
           </motion.div>
         </motion.div>
       )}

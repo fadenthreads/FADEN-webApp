@@ -81,6 +81,7 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
           className="faden-home-page min-h-screen"
         >
           <HeroSection
+            skipLogoAnimation={!skipIntro}
             onExploreBoutiques={handleExploreBoutiques}
             onExploreClothing={handleExploreClothing}
             onExploreMaterials={handleExploreMaterials}
