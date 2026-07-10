@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Shirt, Store, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { AudienceCategory } from "@faden/validators";
+import { cn } from "@faden/utils";
 import { clothingSearchHref, outfitTypeNavHref } from "@/lib/landing/audience-categories";
 
 interface OutfitTypeChoiceProps {
@@ -17,6 +19,11 @@ interface OutfitTypeChoiceProps {
 
 export function OutfitTypeChoice({ outfitType, audience, open, onClose, onNavigate }: OutfitTypeChoiceProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -30,7 +37,9 @@ export function OutfitTypeChoice({ outfitType, audience, open, onClose, onNaviga
   const boutiqueHref = outfitTypeNavHref(outfitType, audience);
   const clothingHref = clothingSearchHref(outfitType, audience);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -39,7 +48,7 @@ export function OutfitTypeChoice({ outfitType, audience, open, onClose, onNaviga
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] bg-navy/40 backdrop-blur-[2px]"
+            className="fixed inset-0 z-[100] bg-navy/45 backdrop-blur-[2px]"
             aria-label="Close outfit type options"
             onClick={onClose}
           />
@@ -48,12 +57,19 @@ export function OutfitTypeChoice({ outfitType, audience, open, onClose, onNaviga
             role="dialog"
             aria-modal="true"
             aria-labelledby="outfit-choice-title"
-            initial={{ opacity: 0, y: 16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ type: "spring", damping: 26, stiffness: 320 }}
-            className="fixed left-1/2 top-1/2 z-[71] w-[min(92vw,360px)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-gold/30 bg-background-elevated p-6 shadow-lg"
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 320 }}
+            className={cn(
+              "fixed z-[101] border border-gold/30 bg-background-elevated shadow-2xl",
+              "inset-x-0 bottom-0 max-h-[min(85dvh,520px)] overflow-y-auto rounded-t-2xl p-6",
+              "pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))]",
+              "md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:max-h-[90vh] md:w-[min(92vw,360px)] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-2xl md:pb-6",
+            )}
           >
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-navy/15 md:hidden" aria-hidden />
+
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Explore</p>
@@ -115,6 +131,7 @@ export function OutfitTypeChoice({ outfitType, audience, open, onClose, onNaviga
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

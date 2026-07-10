@@ -1,5 +1,5 @@
-import { ScissorsRouteLoading } from "@/components/animations/scissors-loading";
+import { SimpleRouteLoading } from "@/components/animations/simple-splash";
 
 export default function Loading() {
-  return <ScissorsRouteLoading />;
+  return <SimpleRouteLoading />;
 }

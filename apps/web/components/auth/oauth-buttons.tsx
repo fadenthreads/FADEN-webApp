@@ -9,6 +9,17 @@ interface OAuthButtonsProps {
   role?: "customer" | "boutique_owner";
 }
 
+function formatOAuthError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("provider is not enabled") || lower.includes("unsupported provider")) {
+    return "Google sign-in is not enabled yet. See docs/GOOGLE-OAUTH-SETUP.md in the repo to connect Google Cloud + Supabase (free).";
+  }
+  if (lower.includes("redirect")) {
+    return "OAuth redirect mismatch. Add http://localhost:3000/auth/callback to Supabase redirect URLs.";
+  }
+  return message;
+}
+
 export function OAuthButtons({ next = "/", role = "customer" }: OAuthButtonsProps) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<"google" | "apple" | null>(null);
@@ -17,7 +28,7 @@ export function OAuthButtons({ next = "/", role = "customer" }: OAuthButtonsProp
     setError(null);
 
     if (!isBrowserSupabaseConfigured()) {
-      setError("Supabase is not configured.");
+      setError("Supabase is not configured. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to apps/web/.env.local.");
       return;
     }
 
@@ -30,15 +41,22 @@ export function OAuthButtons({ next = "/", role = "customer" }: OAuthButtonsProp
         provider,
         options: {
           redirectTo,
+          ...(provider === "google"
+            ? {
+                queryParams: {
+                  prompt: "select_account",
+                },
+              }
+            : {}),
         },
       });
 
       if (oauthError) {
-        setError(oauthError.message);
+        setError(formatOAuthError(oauthError.message));
         setPending(null);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign in failed");
+      setError(err instanceof Error ? formatOAuthError(err.message) : "Sign in failed");
       setPending(null);
     }
   }

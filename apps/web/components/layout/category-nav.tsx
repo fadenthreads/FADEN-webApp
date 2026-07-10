@@ -88,6 +88,7 @@ function CategoryNavContent({ mobile, onNavigate, outfitsRowOnly }: CategoryNavP
 
   function openOutfitChoice(outfitType: string) {
     setChoiceOutfit(outfitType);
+    if (mobile) onNavigate?.();
   }
 
   const outfitLinks = outfitNavTypes.map((outfitType) => (
@@ -158,9 +159,7 @@ function CategoryNavContent({ mobile, onNavigate, outfitsRowOnly }: CategoryNavP
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-navy">
                 {t("outfitTypes")}
               </p>
-              <div className="max-h-48 overflow-y-auto pr-1">
-                <div className="flex flex-wrap gap-2">{outfitLinks}</div>
-              </div>
+              <div className="flex flex-wrap gap-2">{outfitLinks}</div>
             </div>
           )}
         </nav>

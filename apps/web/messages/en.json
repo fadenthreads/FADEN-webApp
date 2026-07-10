@@ -52,15 +52,15 @@
     "exploreClothing": "Explore Clothing",
     "exploreMaterials": "Explore Materials",
     "shopCollection": "Shop Collection",
-    "eyebrow": "IT ALL STARTS WITH A THREAD +",
-    "tagline": "Threads that connect stories, people & traditions.",
+    "eyebrow": "FADEN",
+    "tagline": "Where fashion struggles are reduced to near zero.",
     "customizeOutfit": "Customize Outfit",
     "registerBoutique": "Register Boutique",
     "registerMaterialBusiness": "Register Material Business",
     "alterations": "Alterations"
   },
   "Footer": {
-    "tagline": "It All Starts With a Thread",
+    "tagline": "Where fashion struggles are reduced to near zero.",
     "copyright": "© {year} FADEN. All rights reserved.",
     "sections": {
       "company": "Company",

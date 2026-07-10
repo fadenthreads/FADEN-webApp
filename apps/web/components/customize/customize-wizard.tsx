@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -60,17 +60,24 @@ export function CustomizeWizard() {
   const [error, setError] = useState<string | null>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
   const [submittedAt, setSubmittedAt] = useState<string | null>(null);
+  const wizardTopRef = useRef<HTMLDivElement>(null);
 
   const step = CUSTOMIZE_STEPS[stepIndex];
   const onChange = (patch: Partial<CustomizeFormData>) => setData((d) => ({ ...d, ...patch }));
   const hasBoutique = Boolean(data.selectedBoutiqueSlug?.trim() || boutiqueParam);
 
+  function goToStepIndex(nextIndex: number) {
+    setError(null);
+    setStepIndex(nextIndex);
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      wizardTopRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+    });
+  }
+
   function goToStep(stepId: CustomizeStepId) {
     const index = CUSTOMIZE_STEPS.findIndex((s) => s.id === stepId);
-    if (index >= 0) {
-      setError(null);
-      setStepIndex(index);
-    }
+    if (index >= 0) goToStepIndex(index);
   }
 
   function renderStepContent(stepId: CustomizeStepId) {
@@ -252,7 +259,7 @@ export function CustomizeWizard() {
   const isLastStep = stepIndex === CUSTOMIZE_STEPS.length - 1;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div ref={wizardTopRef} className="mx-auto max-w-3xl scroll-mt-24">
       <nav className="mb-8 flex flex-wrap gap-2" aria-label={t("navAria")}>
         {CUSTOMIZE_STEPS.map((s, i) => {
           const isActive = i === stepIndex;
@@ -263,10 +270,7 @@ export function CustomizeWizard() {
               key={s.id}
               type="button"
               aria-current={isActive ? "step" : undefined}
-              onClick={() => {
-                setError(null);
-                setStepIndex(i);
-              }}
+              onClick={() => goToStepIndex(i)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors hover:ring-1 hover:ring-navy/25 ${
                 isActive
                   ? "bg-navy text-white"
@@ -299,13 +303,13 @@ export function CustomizeWizard() {
             type="button"
             variant="luxury-outline"
             disabled={stepIndex === 0}
-            onClick={() => setStepIndex((i) => i - 1)}
+            onClick={() => goToStepIndex(stepIndex - 1)}
           >
             <ChevronLeft className="mr-1 h-4 w-4" aria-hidden />
             {tc("back")}
           </Button>
           {!isLastStep ? (
-            <Button type="button" variant="luxury" onClick={() => setStepIndex((i) => i + 1)}>
+            <Button type="button" variant="luxury" onClick={() => goToStepIndex(stepIndex + 1)}>
               {tc("next")}
               <ChevronRight className="ml-1 h-4 w-4" aria-hidden />
             </Button>

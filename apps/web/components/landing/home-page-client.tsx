@@ -3,27 +3,63 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { OpeningSequence } from "@/components/animations/opening-sequence";
-import { ScissorsLoading } from "@/components/animations/scissors-loading";
+import { SimpleSplash } from "@/components/animations/simple-splash";
 import { HeroSection } from "@/components/landing/hero-section";
 import { FeaturedPreview } from "@/components/landing/featured-preview";
 import { FeaturedClothing } from "@/components/landing/featured-clothing";
 import { FeaturedMaterials } from "@/components/landing/featured-materials";
 import { VisionStatement } from "@/components/landing/vision-statement";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 import { parseAudienceCategory, type AudienceCategory } from "@/lib/landing/audience-categories";
 
-type LoadPhase = "opening" | "scissors" | "main";
+type LoadPhase = "splash" | "main";
 
 export function HomePageClient({ skipIntro = false, initialCategory = null }: { skipIntro?: boolean; initialCategory?: AudienceCategory | null }) {
   const searchParams = useSearchParams();
   const categoryFromUrl = parseAudienceCategory(searchParams.get("category")) ?? initialCategory;
-  const [phase, setPhase] = useState<LoadPhase>(() => skipIntro ? "main" : "opening");
+  const [phase, setPhase] = useState<LoadPhase>(() => (skipIntro ? "main" : "splash"));
 
-  useEffect(() => { if (!skipIntro) window.scrollTo(0, 0); }, [skipIntro]);
+  useBodyScrollLock(phase === "splash");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "main") {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      return;
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+    const hash = window.location.hash.replace("#", "");
+    const targetId =
+      hash === "featured-boutiques" || hash === "featured-clothing" || hash === "featured-materials"
+        ? hash
+        : null;
+
+    if (targetId) {
+      requestAnimationFrame(() => {
+        document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      return;
+    }
+
+    if (categoryFromUrl && skipIntro) {
+      requestAnimationFrame(() => {
+        document.getElementById("featured-boutiques")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, [phase, categoryFromUrl, skipIntro]);
 
   useEffect(() => {
     if (phase !== "main") return;
-    const syncFromHash = () => {
+
+    function syncFromHash() {
       const hash = window.location.hash.replace("#", "");
       const targetId =
         hash === "featured-boutiques" || hash === "featured-clothing" || hash === "featured-materials"
@@ -34,19 +70,11 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
           document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       }
-    };
-    syncFromHash();
+    }
+
     window.addEventListener("hashchange", syncFromHash);
     return () => window.removeEventListener("hashchange", syncFromHash);
   }, [phase]);
-
-  useEffect(() => {
-    if (categoryFromUrl && phase === "main") {
-      requestAnimationFrame(() => {
-        document.getElementById("featured-boutiques")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    }
-  }, [categoryFromUrl, phase]);
 
   const handleExploreBoutiques = useCallback(() => {
     requestAnimationFrame(() => {
@@ -69,8 +97,7 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
   return (
     <>
       <AnimatePresence mode="wait">
-        {phase === "opening" && <OpeningSequence key="opening" onComplete={() => setPhase("scissors")} />}
-        {phase === "scissors" && <ScissorsLoading key="scissors" onComplete={() => setPhase("main")} />}
+        {phase === "splash" && <SimpleSplash key="splash" onComplete={() => setPhase("main")} />}
       </AnimatePresence>
 
       {phase === "main" && (

@@ -166,9 +166,9 @@ body {
 .faden-hero-studio {
   background-color: #faf8f4;
   background-image:
-    radial-gradient(ellipse 50% 65% at 88% 30%, rgba(184, 134, 11, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 45% at 12% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 50%),
-    linear-gradient(160deg, #fdfcf9 0%, #faf8f4 50%, #f3f0ea 100%);
+    radial-gradient(ellipse 55% 70% at 92% 18%, rgba(184, 134, 11, 0.05) 0%, transparent 58%),
+    radial-gradient(ellipse 45% 50% at 8% 12%, rgba(255, 255, 255, 0.95) 0%, transparent 52%),
+    linear-gradient(165deg, #fdfcf9 0%, #faf8f4 48%, #f5f2ec 100%);
 }
 
 .faden-home-page {
