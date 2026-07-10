@@ -183,7 +183,8 @@ body {
 }
 
 .faden-home-page {
-  background: linear-gradient(180deg, #fdfcf9 0%, #faf8f4 40%, #faf8f4 100%);
+  background: #faf8f4;
+  background-image: linear-gradient(180deg, #fdfcf9 0%, #faf8f4 40%, #faf8f4 100%);
 }
 
 .faden-section-neat {
