@@ -244,13 +244,13 @@ function DiscoveryFilterBarContent() {
         }
       >
         <div className="relative mb-4">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground-muted" aria-hidden />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground-muted" />
           <input
             type="search"
             value={outfitQuery}
             onChange={(event) => setOutfitQuery(event.target.value)}
             placeholder="Search outfits…"
-            className="faden-field h-11 w-full pl-11 pr-4"
+            className="faden-field h-11 pl-10"
           />
         </div>
         <ul className="space-y-1">
