@@ -7,7 +7,7 @@ export function VisionStatement() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section className="border-t border-border px-4 py-section-gap">
+    <section className="border-t border-border px-4 py-10 md:py-section-gap">
       <motion.div
         variants={staggerContainer}
         initial={reducedMotion ? false : "hidden"}

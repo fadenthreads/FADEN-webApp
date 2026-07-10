@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import L from "leaflet";
+import { cn } from "@faden/utils";
 import "leaflet/dist/leaflet.css";
 
 interface CustomerLocationMapInnerProps {
   lat: number;
   lng: number;
   active?: boolean;
+  className?: string;
   onPick: (coords: { lat: number; lng: number }) => void;
 }
 
@@ -17,6 +19,7 @@ export function CustomerLocationMapInner({
   lat,
   lng,
   active = true,
+  className,
   onPick,
 }: CustomerLocationMapInnerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -95,7 +98,12 @@ export function CustomerLocationMapInner({
   return (
     <div
       ref={containerRef}
-      className="relative isolate z-[1] h-[min(50dvh,420px)] min-h-[280px] w-full touch-manipulation rounded-xl border border-border bg-background-soft [&_.leaflet-container]:!z-[1] [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full [&_.leaflet-container]:rounded-xl [&_.leaflet-pane]:!z-[1] [&_.leaflet-top]:!z-[2]"
+      className={cn(
+        "relative isolate z-[1] min-h-[240px] w-full touch-manipulation rounded-xl border border-border bg-background-soft",
+        "[&_.leaflet-container]:!z-[1] [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full [&_.leaflet-container]:rounded-xl",
+        "[&_.leaflet-pane]:!z-[1] [&_.leaflet-top]:!z-[2]",
+        className ?? "h-[min(50dvh,420px)]",
+      )}
       style={{ WebkitTapHighlightColor: "transparent" }}
     />
   );

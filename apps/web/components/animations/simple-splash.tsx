@@ -8,13 +8,13 @@ interface SimpleSplashProps {
   onComplete: () => void;
 }
 
-/** Minimal brand splash — logo fade, then home. */
+/** Brand splash — full logo artwork, then home. */
 export function SimpleSplash({ onComplete }: SimpleSplashProps) {
   const reducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const holdMs = reducedMotion ? 600 : 1400;
+    const holdMs = reducedMotion ? 800 : 2000;
     const timer = window.setTimeout(() => setVisible(false), holdMs);
     return () => window.clearTimeout(timer);
   }, [reducedMotion]);
@@ -23,40 +23,28 @@ export function SimpleSplash({ onComplete }: SimpleSplashProps) {
     <AnimatePresence onExitComplete={onComplete}>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#faf8f4] px-6"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#faf8f4] px-4 py-6"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: reducedMotion ? 0.25 : 0.4, ease: "easeOut" }}
+          transition={{ duration: reducedMotion ? 0.25 : 0.45, ease: "easeOut" }}
           role="status"
           aria-label="Loading FADEN"
           aria-live="polite"
         >
           <motion.div
-            initial={reducedMotion ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center gap-6"
+            initial={reducedMotion ? false : { opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="flex h-full w-full max-w-md items-center justify-center"
           >
             <Image
-              src="/faden-logo.png"
-              alt="FADEN"
-              width={280}
-              height={390}
+              src="/faden-splash.png"
+              alt="FADEN — Fashion struggles reduced to near zero"
+              width={800}
+              height={1200}
               priority
-              className="h-auto w-[min(42vw,180px)] object-contain"
+              className="h-auto max-h-[min(92dvh,820px)] w-full max-w-[min(88vw,420px)] object-contain"
             />
-            {!reducedMotion && (
-              <div className="flex items-center gap-1.5" aria-hidden>
-                {[0, 1, 2].map((i) => (
-                  <motion.span
-                    key={i}
-                    className="h-1.5 w-1.5 rounded-full bg-gold/70"
-                    animate={{ opacity: [0.35, 1, 0.35] }}
-                    transition={{ duration: 1, repeat: Infinity, delay: i * 0.18 }}
-                  />
-                ))}
-              </div>
-            )}
           </motion.div>
         </motion.div>
       )}

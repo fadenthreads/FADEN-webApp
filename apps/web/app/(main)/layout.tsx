@@ -16,7 +16,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <ScrollLockRecovery />
           <Header />
           <CategoryNavWrapper />
-          <main className="pb-[calc(var(--bottom-nav-offset)+env(safe-area-inset-bottom,0px))]">{children}</main>
+          <main className="overflow-x-clip pb-[calc(var(--bottom-nav-offset)+env(safe-area-inset-bottom,0px))]">{children}</main>
           <Footer />
           <ChatFab />
           <BottomNav />

@@ -37,7 +37,7 @@ export function FeaturedMaterials() {
     <section
       id="featured-materials"
       aria-labelledby="featured-materials-heading"
-      className="faden-section-neat scroll-mt-[200px] border-t px-4 py-section-gap md:scroll-mt-[160px] lg:px-12"
+      className="faden-section-neat scroll-mt-[200px] border-t px-4 py-10 md:scroll-mt-[160px] md:py-section-gap lg:px-12"
     >
       <motion.div
         variants={staggerContainer}

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { MapPin, Navigation, X } from "lucide-react";
 import { Button } from "@faden/ui";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
@@ -17,7 +18,7 @@ const CustomerLocationMapInner = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[min(50dvh,420px)] min-h-[280px] items-center justify-center rounded-xl border border-border bg-background-elevated text-sm text-foreground-muted">
+      <div className="flex h-full min-h-[220px] items-center justify-center rounded-xl border border-border bg-background-elevated text-sm text-foreground-muted">
         Loading map…
       </div>
     ),
@@ -69,6 +70,11 @@ export function CustomerLocationMapDialog({
   const [coords, setCoords] = useState(fallbackCoords);
   const [label, setLabel] = useState(fallback.label);
   const [locating, setLocating] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -113,25 +119,25 @@ export function CustomerLocationMapDialog({
     );
   }, []);
 
-  if (!open) return null;
+  if (!mounted || !open) return null;
 
-  return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/70 sm:items-center sm:p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[110] flex flex-col bg-black/70 sm:items-center sm:justify-center sm:p-4">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="customer-location-map-title"
-        className="flex max-h-[100dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-border bg-background shadow-2xl sm:max-h-[92dvh] sm:rounded-2xl"
+        className="flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-background shadow-2xl sm:h-auto sm:max-h-[min(92dvh,720px)] sm:max-w-lg sm:rounded-2xl sm:border sm:border-border"
       >
-        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
-          <div className="flex min-w-0 items-start gap-3">
+        <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-3 sm:px-5 sm:py-4">
+          <div className="flex min-w-0 items-start gap-2.5">
             <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold" aria-hidden />
             <div className="min-w-0">
-              <h2 id="customer-location-map-title" className="font-display text-lg font-semibold sm:text-xl">
+              <h2 id="customer-location-map-title" className="font-display text-base font-semibold sm:text-xl">
                 Your location
               </h2>
-              <p className="mt-1 text-sm text-foreground-muted">
-                Tap the map or drag the pin. We use this for distance and nearby sorting.
+              <p className="mt-0.5 text-xs text-foreground-muted sm:text-sm">
+                Tap the map or drag the pin for nearby boutiques.
               </p>
             </div>
           </div>
@@ -145,14 +151,17 @@ export function CustomerLocationMapDialog({
           </button>
         </div>
 
-        <div className="min-h-0 shrink-0 px-4 py-4 sm:px-5">
-          <CustomerLocationMapInner
-            key={`map-${open ? "open" : "closed"}`}
-            active={open}
-            lat={coords.lat}
-            lng={coords.lng}
-            onPick={handlePick}
-          />
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-3 sm:px-5">
+          <div className="min-h-[240px] flex-1">
+            <CustomerLocationMapInner
+              key={`map-${open ? "open" : "closed"}`}
+              active={open}
+              lat={coords.lat}
+              lng={coords.lng}
+              onPick={handlePick}
+              className="h-full min-h-[240px]"
+            />
+          </div>
           <p className="mt-3 text-sm text-foreground">
             <span className="text-foreground-muted">Selected: </span>
             {label}
@@ -169,13 +178,14 @@ export function CustomerLocationMapDialog({
           </Button>
         </div>
 
-        <div className="flex shrink-0 flex-wrap justify-end gap-2 border-t border-border px-4 py-4 sm:px-5">
-          <Button type="button" variant="luxury-outline" onClick={onClose}>
+        <div className="flex shrink-0 gap-2 border-t border-border px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:px-5 sm:py-4">
+          <Button type="button" variant="luxury-outline" className="flex-1" onClick={onClose}>
             Cancel
           </Button>
           <Button
             type="button"
             variant="luxury"
+            className="flex-1"
             onClick={() =>
               onConfirm({
                 label,
@@ -189,6 +199,7 @@ export function CustomerLocationMapDialog({
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

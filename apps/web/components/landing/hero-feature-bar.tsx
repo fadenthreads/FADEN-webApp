@@ -21,7 +21,7 @@ export function HeroFeatureBar() {
       whileInView="visible"
       viewport={{ once: true, margin: "-20px" }}
       aria-label="FADEN values"
-      className="relative z-10 mx-4 -mt-2 max-w-container lg:mx-auto"
+      className="relative z-10 mx-4 mt-0 max-w-container lg:mx-auto"
     >
       <div className="overflow-hidden rounded-t-2xl bg-navy shadow-md">
         <div className="grid grid-cols-2 divide-x divide-y divide-white/10 md:grid-cols-4 md:divide-y-0">
@@ -32,7 +32,7 @@ export function HeroFeatureBar() {
                 key={feature.title}
                 variants={fadeUp}
                 transition={fadeUpTransition}
-                className="flex flex-col items-center px-4 py-5 text-center md:px-5 md:py-7"
+                className="flex flex-col items-center px-3 py-4 text-center md:px-5 md:py-6"
               >
                 <Icon className="h-5 w-5 text-gold" strokeWidth={1.25} aria-hidden />
                 <p className="mt-2.5 text-[10px] font-semibold tracking-[0.16em] text-gold md:text-[11px]">

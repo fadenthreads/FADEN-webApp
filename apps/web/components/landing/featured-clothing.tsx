@@ -44,7 +44,7 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
   }, [activeTab]);
 
   return (
-    <section id="featured-clothing" aria-labelledby="featured-clothing-heading" className="faden-section-neat scroll-mt-[200px] border-t px-4 py-section-gap md:scroll-mt-[160px] lg:px-12">
+    <section id="featured-clothing" aria-labelledby="featured-clothing-heading" className="faden-section-neat scroll-mt-[200px] border-t px-4 py-10 md:scroll-mt-[160px] md:py-section-gap lg:px-12">
       <motion.div variants={staggerContainer} initial={reducedMotion ? false : "hidden"} whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
