@@ -8,7 +8,9 @@ import { HeroSection } from "@/components/landing/hero-section";
 import { FeaturedPreview } from "@/components/landing/featured-preview";
 import { FeaturedClothing } from "@/components/landing/featured-clothing";
 import { FeaturedMaterials } from "@/components/landing/featured-materials";
+import { SampleBoutiqueShowcase } from "@/components/landing/sample-boutique-showcase";
 import { VisionStatement } from "@/components/landing/vision-statement";
+import { FirstVisitGuide } from "@/components/onboarding/first-visit-guide";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 import { parseAudienceCategory, type AudienceCategory } from "@/lib/landing/audience-categories";
 
@@ -18,6 +20,7 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
   const searchParams = useSearchParams();
   const categoryFromUrl = parseAudienceCategory(searchParams.get("category")) ?? initialCategory;
   const [phase, setPhase] = useState<LoadPhase>(() => (skipIntro ? "main" : "splash"));
+  const [guideReady, setGuideReady] = useState(skipIntro);
 
   useBodyScrollLock(phase === "splash");
 
@@ -97,7 +100,15 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
   return (
     <>
       <AnimatePresence mode="wait">
-        {phase === "splash" && <SimpleSplash key="splash" onComplete={() => setPhase("main")} />}
+        {phase === "splash" && (
+          <SimpleSplash
+            key="splash"
+            onComplete={() => {
+              setPhase("main");
+              setGuideReady(true);
+            }}
+          />
+        )}
       </AnimatePresence>
 
       {phase === "main" && (
@@ -112,10 +123,12 @@ export function HomePageClient({ skipIntro = false, initialCategory = null }: { 
             onExploreClothing={handleExploreClothing}
             onExploreMaterials={handleExploreMaterials}
           />
+          <SampleBoutiqueShowcase />
           <FeaturedPreview audienceCategory={categoryFromUrl} />
           <FeaturedClothing audienceCategory={categoryFromUrl} />
           <FeaturedMaterials />
           <VisionStatement />
+          <FirstVisitGuide ready={guideReady && phase === "main"} />
         </motion.div>
       )}
     </>

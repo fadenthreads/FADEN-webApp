@@ -95,7 +95,7 @@ export function MobileMenu() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.45 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[60] bg-navy/60 md:hidden"
+              className="fixed inset-0 z-[60] bg-navy/60"
               onClick={() => setOpen(false)}
               aria-hidden
             />
@@ -104,10 +104,10 @@ export function MobileMenu() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              className="fixed left-0 top-0 z-[60] flex h-[100dvh] w-[min(88vw,340px)] flex-col bg-background shadow-2xl md:hidden"
+              className="fixed left-0 top-0 z-[60] flex h-[100dvh] w-[min(88vw,360px)] flex-col bg-background shadow-2xl md:w-[380px]"
               role="dialog"
               aria-modal="true"
-              aria-label="Mobile navigation"
+              aria-label="Site navigation"
             >
               <div className="flex shrink-0 items-center justify-between border-b border-navy/10 bg-background-elevated px-5 py-4">
                 <Logo />
@@ -140,7 +140,7 @@ export function MobileMenu() {
                 </div>
               </div>
 
-              <div className="shrink-0 border-t border-navy/10 bg-background-soft/80 px-5 pb-[calc(var(--bottom-nav-offset)+env(safe-area-inset-bottom,0px))] pt-4">
+              <div className="shrink-0 border-t border-navy/10 bg-background-soft/80 px-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] pt-4 md:pb-4">
                 <DrawerAuth />
               </div>
             </motion.aside>
