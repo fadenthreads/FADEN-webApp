@@ -12,6 +12,16 @@ export const fadeUpTransition: Transition = {
   ease: [0.22, 1, 0.36, 1],
 };
 
+export const scaleIn: Variants = {
+  hidden: { opacity: 0, scale: 0.96, y: 12 },
+  visible: { opacity: 1, scale: 1, y: 0 },
+};
+
+export const slideInLeft: Variants = {
+  hidden: { opacity: 0, x: -16 },
+  visible: { opacity: 1, x: 0 },
+};
+
 export const staggerContainer: Variants = {
   hidden: {},
   visible: {
@@ -33,4 +43,9 @@ export const openingItem: Variants = {
     y: 0,
     transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
   },
+};
+
+export const gentleHover = {
+  y: -3,
+  transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
 };

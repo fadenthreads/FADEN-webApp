@@ -11,9 +11,10 @@ import { formatPostedAt } from "@/lib/datetime/format";
 
 interface NotificationBellProps {
   className?: string;
+  onNavigate?: () => void;
 }
 
-export function NotificationBell({ className }: NotificationBellProps) {
+export function NotificationBell({ className, onNavigate }: NotificationBellProps) {
   const { user } = useUser();
   const notificationsCtx = useNotificationsOptional();
   const panelId = useId();
@@ -100,7 +101,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
 
           <div className="border-t border-border/60 p-3">
             <Button asChild variant="luxury-outline" size="sm" className="w-full">
-              <Link href="/account/messages" onClick={() => setOpen(false)}>
+              <Link href="/account/messages" onClick={() => { setOpen(false); onNavigate?.(); }}>
                 View all messages
               </Link>
             </Button>

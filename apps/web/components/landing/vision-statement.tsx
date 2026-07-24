@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
+import { fadeUp, fadeUpTransition, scaleIn, staggerContainer } from "@/lib/motion-presets";
 
 export function VisionStatement() {
   const reducedMotion = useReducedMotion();
@@ -19,7 +19,7 @@ export function VisionStatement() {
           VISION STATEMENT
         </motion.p>
         <motion.blockquote
-          variants={fadeUp}
+          variants={scaleIn}
           transition={fadeUpTransition}
           className="mx-auto mt-8 max-w-2xl font-display text-2xl italic leading-relaxed text-foreground md:text-3xl"
         >

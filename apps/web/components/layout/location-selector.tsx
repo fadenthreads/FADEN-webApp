@@ -16,9 +16,10 @@ import { CustomerLocationMapDialog } from "@/components/location/customer-locati
 interface LocationSelectorProps {
   className?: string;
   variant?: "inline" | "drawer";
+  onLocationChange?: () => void;
 }
 
-export function LocationSelector({ className, variant = "inline" }: LocationSelectorProps) {
+export function LocationSelector({ className, variant = "inline", onLocationChange }: LocationSelectorProps) {
   const discovery = useDiscoveryOptional();
   const [location, setLocation] = useState(getDefaultCustomerLocation);
   const [mapOpen, setMapOpen] = useState(false);
@@ -46,6 +47,7 @@ export function LocationSelector({ className, variant = "inline" }: LocationSele
     };
     setLocation(next);
     discovery?.setCustomerLocation(next);
+    onLocationChange?.();
   }
 
   const presetValue = CUSTOMER_LOCATIONS.includes(activeLocation.label as (typeof CUSTOMER_LOCATIONS)[number])
@@ -61,6 +63,7 @@ export function LocationSelector({ className, variant = "inline" }: LocationSele
         setLocation(next);
         discovery?.setCustomerLocation(next);
         setMapOpen(false);
+        onLocationChange?.();
       }}
     />
   );

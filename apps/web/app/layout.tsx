@@ -30,6 +30,10 @@ export const metadata: Metadata = {
   description: "Discover highly rated boutiques, browse designer portfolios and get your dream outfits created with confidence.",
   keywords: ["boutique", "custom fashion", "tailor", "designer", "lehenga", "saree", "bridal wear"],
   authors: [{ name: "FADEN" }],
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-icon.svg", type: "image/svg+xml" }],
+  },
   openGraph: {
     type: "website", locale: "en_IN", url: "https://faden.in", siteName: "FADEN",
     title: "FADEN — Where Fashion Begins with Trust",

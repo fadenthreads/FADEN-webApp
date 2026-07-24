@@ -2,15 +2,18 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { MapPin, Star, Store } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
-import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
+import { fadeUp, fadeUpTransition, scaleIn, staggerContainer } from "@/lib/motion-presets";
 import { InfiniteMaterialsThread } from "@/components/landing/infinite-materials-thread";
+import { DEMO_FEATURED_MATERIALS, DEMO_MATERIAL_SHOP } from "@/data/demo-featured-materials";
 import type { FeaturedMaterialItem } from "@/lib/materials/featured-materials";
 
 export function FeaturedMaterials() {
   const reducedMotion = useReducedMotion();
   const [materials, setMaterials] = useState<FeaturedMaterialItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -19,10 +22,21 @@ export function FeaturedMaterials() {
     fetch("/api/materials/featured")
       .then((res) => res.json())
       .then((payload: { materials?: FeaturedMaterialItem[] }) => {
-        if (!cancelled) setMaterials(payload.materials ?? []);
+        if (cancelled) return;
+        const live = payload.materials ?? [];
+        if (live.length > 0) {
+          setMaterials(live);
+          setIsDemo(false);
+        } else {
+          setMaterials(DEMO_FEATURED_MATERIALS);
+          setIsDemo(true);
+        }
       })
       .catch(() => {
-        if (!cancelled) setMaterials([]);
+        if (!cancelled) {
+          setMaterials(DEMO_FEATURED_MATERIALS);
+          setIsDemo(true);
+        }
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -76,13 +90,48 @@ export function FeaturedMaterials() {
             </motion.p>
           </div>
 
-          <motion.div variants={fadeUp} transition={fadeUpTransition}>
+          {isDemo && !loading && (
+            <motion.article
+              variants={fadeUp}
+              transition={fadeUpTransition}
+              className="premium-surface-3d mt-8 overflow-hidden rounded-2xl border border-gold/20"
+            >
+              <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between md:p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-navy/80 via-navy to-navy-dark text-white shadow-md">
+                    <Store className="h-6 w-6" aria-hidden />
+                  </div>
+                  <div>
+                    <span className="rounded-full bg-gold/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
+                      Demo material shop
+                    </span>
+                    <h3 className="mt-2 font-display text-xl font-semibold text-navy">{DEMO_MATERIAL_SHOP.name}</h3>
+                    <p className="mt-1 text-sm text-gold">{DEMO_MATERIAL_SHOP.tagline}</p>
+                    <p className="mt-2 flex items-center gap-1.5 text-sm text-foreground-muted">
+                      <MapPin className="h-4 w-4 shrink-0 text-gold" aria-hidden />
+                      {DEMO_MATERIAL_SHOP.location}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 sm:flex-col sm:items-end">
+                  <div className="flex items-center gap-1.5">
+                    <Star className="h-4 w-4 fill-gold text-gold" aria-hidden />
+                    <span className="text-sm font-semibold text-navy">{DEMO_MATERIAL_SHOP.rating}</span>
+                    <span className="text-xs text-foreground-muted">({DEMO_MATERIAL_SHOP.reviewCount} reviews)</span>
+                  </div>
+                  <p className="text-xs text-foreground-muted">Preview fabrics below — live listings replace this once suppliers join.</p>
+                </div>
+              </div>
+            </motion.article>
+          )}
+
+          <motion.div variants={scaleIn} transition={fadeUpTransition}>
             {loading ? (
               <div className="-mx-4 mt-8 flex gap-4 overflow-hidden px-4">
                 {Array.from({ length: 6 }, (_, index) => (
                   <div
                     key={`material-skeleton-${index}`}
-                    className="aspect-[3/4] w-[180px] shrink-0 animate-pulse rounded-2xl border border-border bg-background-elevated md:w-[200px]"
+                    className="faden-shimmer aspect-[3/4] w-[180px] shrink-0 rounded-2xl border border-border bg-background-elevated md:w-[200px]"
                   />
                 ))}
               </div>

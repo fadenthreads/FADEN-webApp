@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@faden/utils";
-import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
+import { fadeUp, fadeUpTransition, scaleIn, staggerContainer } from "@/lib/motion-presets";
 import { InfiniteClothingThread } from "@/components/landing/infinite-clothing-thread";
+import { DEMO_FEATURED_CLOTHING } from "@/data/demo-featured-clothing";
 import type { FeaturedDesignItem } from "@/lib/boutique/featured-designs";
 import type { AudienceCategory } from "@/lib/landing/audience-categories";
 
@@ -17,12 +18,18 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "kids", label: "Kids" },
 ];
 
+function filterDemoClothing(tab: Tab): FeaturedDesignItem[] {
+  if (tab === "all") return DEMO_FEATURED_CLOTHING;
+  return DEMO_FEATURED_CLOTHING.filter((item) => item.audience === tab);
+}
+
 export function FeaturedClothing({ audienceCategory = null }: { audienceCategory?: AudienceCategory | null }) {
   const t = useTranslations("Home");
   const reducedMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<Tab>(audienceCategory ?? "all");
   const [designs, setDesigns] = useState<FeaturedDesignItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
 
   useEffect(() => {
     if (audienceCategory) setActiveTab(audienceCategory);
@@ -36,12 +43,36 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
 
     fetch(`/api/portfolio/featured?${params}`)
       .then((res) => res.json())
-      .then((payload: { designs?: FeaturedDesignItem[] }) => { if (!cancelled) setDesigns(payload.designs ?? []); })
-      .catch(() => { if (!cancelled) setDesigns([]); })
-      .finally(() => { if (!cancelled) setLoading(false); });
+      .then((payload: { designs?: FeaturedDesignItem[] }) => {
+        if (cancelled) return;
+        const live = payload.designs ?? [];
+        if (live.length > 0) {
+          setDesigns(live);
+          setIsDemo(false);
+        } else {
+          setDesigns(filterDemoClothing(activeTab));
+          setIsDemo(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setDesigns(filterDemoClothing(activeTab));
+          setIsDemo(true);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [activeTab]);
+
+  const demoLabel = useMemo(
+    () => (isDemo ? "Demo preview — live portfolios appear here once boutiques join FADEN." : null),
+    [isDemo],
+  );
 
   return (
     <section id="featured-clothing" aria-labelledby="featured-clothing-heading" className="faden-section-neat scroll-mt-[200px] border-t px-4 py-10 md:scroll-mt-[160px] md:py-section-gap lg:px-12">
@@ -54,18 +85,26 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
             <motion.p variants={fadeUp} transition={fadeUpTransition} className="mt-2 text-foreground-muted">
               {t("featuredClothingSubtitle")}
             </motion.p>
+            {demoLabel && (
+              <motion.p variants={fadeUp} transition={fadeUpTransition} className="mt-2 text-xs font-medium tracking-wide text-gold">
+                {demoLabel}
+              </motion.p>
+            )}
           </div>
         </div>
 
         <motion.div variants={fadeUp} transition={fadeUpTransition} className="mt-6 flex items-center gap-2 overflow-x-auto scrollbar-none" role="tablist" aria-label="Filter clothing by audience">
           {TABS.map(({ id, label }) => (
             <button
-              key={id} type="button" role="tab" aria-selected={activeTab === id}
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === id}
               onClick={() => setActiveTab(id)}
               className={cn(
-                "shrink-0 rounded-full border px-5 py-1.5 text-sm font-medium transition-colors",
+                "faden-tab-pill shrink-0 rounded-full border px-5 py-1.5 text-sm font-medium transition-all duration-300",
                 activeTab === id
-                  ? "border-navy bg-navy text-white"
+                  ? "border-navy bg-navy text-white shadow-sm"
                   : "border-border text-foreground-muted hover:border-navy/30 hover:text-navy",
               )}
             >
@@ -74,11 +113,11 @@ export function FeaturedClothing({ audienceCategory = null }: { audienceCategory
           ))}
         </motion.div>
 
-        <motion.div variants={fadeUp} transition={fadeUpTransition}>
+        <motion.div variants={scaleIn} transition={fadeUpTransition}>
           {loading ? (
             <div className="-mx-4 mt-8 flex gap-4 overflow-hidden px-4">
               {Array.from({ length: 6 }, (_, index) => (
-                <div key={`skeleton-${index}`} className="aspect-[3/4] w-[180px] shrink-0 animate-pulse rounded-xl border border-border bg-background-elevated md:w-[200px]" />
+                <div key={`skeleton-${index}`} className="faden-shimmer aspect-[3/4] w-[180px] shrink-0 rounded-xl border border-border bg-background-elevated md:w-[200px]" />
               ))}
             </div>
           ) : designs.length === 0 ? (

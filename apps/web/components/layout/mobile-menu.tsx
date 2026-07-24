@@ -12,12 +12,13 @@ import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useUser } from "@/hooks/use-user";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 
-function DrawerAuth() {
+function DrawerAuth({ onNavigate }: { onNavigate?: () => void }) {
   const { user, profile } = useUser();
   const [signingOut, setSigningOut] = useState(false);
 
   async function handleSignOut() {
     setSigningOut(true);
+    onNavigate?.();
     await fetch("/auth/signout", { method: "POST", credentials: "include" });
     window.location.assign("/");
   }
@@ -29,6 +30,7 @@ function DrawerAuth() {
         <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-navy">{displayName}</p>
         <Link
           href="/account"
+          onClick={onNavigate}
           className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-navy/80 transition-colors hover:bg-gold/10 hover:text-navy"
         >
           <User className="h-4 w-4 text-gold" />
@@ -37,6 +39,7 @@ function DrawerAuth() {
         {(profile?.role === "boutique_owner" || profile?.role === "admin") && (
           <Link
             href="/dashboard"
+            onClick={onNavigate}
             className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm text-navy/80 transition-colors hover:bg-gold/10 hover:text-navy"
           >
             Dashboard
@@ -59,12 +62,14 @@ function DrawerAuth() {
     <div className="flex flex-col gap-2.5">
       <Link
         href="/login"
+        onClick={onNavigate}
         className="flex h-11 items-center justify-center rounded-full bg-navy text-sm font-semibold text-white shadow-sm transition-colors hover:bg-navy-light"
       >
         Sign In
       </Link>
       <Link
         href="/signup"
+        onClick={onNavigate}
         className="flex h-11 items-center justify-center rounded-full border border-navy/30 bg-transparent text-sm font-medium text-navy transition-colors hover:border-navy hover:bg-navy/5"
       >
         Sign Up
@@ -76,6 +81,8 @@ function DrawerAuth() {
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
   useBodyScrollLock(open);
+
+  const closeMenu = () => setOpen(false);
 
   return (
     <>
@@ -96,7 +103,7 @@ export function MobileMenu() {
               animate={{ opacity: 0.45 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-[60] bg-navy/60"
-              onClick={() => setOpen(false)}
+              onClick={closeMenu}
               aria-hidden
             />
             <motion.aside
@@ -113,7 +120,7 @@ export function MobileMenu() {
                 <Logo />
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={closeMenu}
                   className="flex h-9 w-9 items-center justify-center rounded-full border border-navy/15 text-navy transition-colors hover:bg-gold/15"
                   aria-label="Close menu"
                 >
@@ -124,24 +131,24 @@ export function MobileMenu() {
               <div className="flex-1 overflow-y-auto overscroll-contain">
                 <div className="space-y-5 px-5 py-5">
                   <Suspense fallback={<div className="h-28 animate-pulse rounded-xl bg-background-soft" />}>
-                    <LocationSelector variant="drawer" />
+                    <LocationSelector variant="drawer" onLocationChange={closeMenu} />
                   </Suspense>
 
                   <div>
                     <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-navy">Language</p>
-                    <LanguageSwitcher variant="buttons" className="gap-2" />
+                    <LanguageSwitcher variant="buttons" className="gap-2" onSelect={closeMenu} />
                   </div>
 
                   <div className="border-t border-navy/10 pt-5">
-                    <CategoryNav mobile onNavigate={() => setOpen(false)} />
+                    <CategoryNav mobile onNavigate={closeMenu} />
                   </div>
 
-                  <NotificationBell />
+                  <NotificationBell onNavigate={closeMenu} />
                 </div>
               </div>
 
               <div className="shrink-0 border-t border-navy/10 bg-background-soft/80 px-5 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] pt-4 md:pb-4">
-                <DrawerAuth />
+                <DrawerAuth onNavigate={closeMenu} />
               </div>
             </motion.aside>
           </>

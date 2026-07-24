@@ -6,7 +6,7 @@ import { ArrowRight, MapPin, Star } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@faden/ui";
 import { SAMPLE_BOUTIQUE } from "@/data/sample-boutique";
-import { fadeUp, fadeUpTransition, staggerContainer } from "@/lib/motion-presets";
+import { fadeUp, fadeUpTransition, scaleIn, staggerContainer } from "@/lib/motion-presets";
 
 export function SampleBoutiqueShowcase() {
   const reducedMotion = useReducedMotion();
@@ -33,14 +33,15 @@ export function SampleBoutiqueShowcase() {
         </motion.div>
 
         <motion.article
-          variants={fadeUp}
+          variants={scaleIn}
           transition={fadeUpTransition}
+          whileHover={{ y: -4 }}
           className="premium-surface-3d mt-8 overflow-hidden rounded-2xl md:mt-10"
         >
           <div className="grid md:grid-cols-2">
             <div className="relative aspect-[4/5] min-h-[260px] md:aspect-auto md:min-h-[380px]">
               <Image src={cover} alt={`${boutique.name} portfolio`} fill className="object-cover" sizes="(max-width:768px) 100vw, 50vw" />
-              <span className="absolute left-4 top-4 rounded-full bg-gold px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+              <span className="faden-float absolute left-4 top-4 rounded-full bg-gold px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
                 Demo preview
               </span>
             </div>

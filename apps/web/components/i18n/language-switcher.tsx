@@ -16,9 +16,10 @@ import { writeLocaleToStorage } from "@/lib/i18n/locale-storage";
 interface LanguageSwitcherProps {
   className?: string;
   variant?: "select" | "buttons";
+  onSelect?: () => void;
 }
 
-export function LanguageSwitcher({ className, variant = "select" }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ className, variant = "select", onSelect }: LanguageSwitcherProps) {
   const locale = useLocale() as AppLocale;
   const t = useTranslations("LanguageSwitcher");
   const router = useRouter();
@@ -30,6 +31,7 @@ export function LanguageSwitcher({ className, variant = "select" }: LanguageSwit
 
     setSelected(nextLocale);
     writeLocaleToStorage(nextLocale);
+    onSelect?.();
 
     startTransition(async () => {
       await setLocalePreference(nextLocale);
